@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model aws_bali {
+  id          Int      @id @default(autoincrement())
+  timestamp   DateTime @default(now()) @db.DateTime(0)
+  date        String?  @db.VarChar(25)
+  time        String?  @db.VarChar(25)
+  Batt_V_Avg  Float?   @db.Float
+  PTemp_Max   Float?   @db.Float
+  WS_S_Avg    Float?   @db.Float
+  W_D_Avg     Float?   @db.Float
+  WD_Std      Float?   @db.Float
+  WS_Max      Float?   @db.Float
+  WD_Max_WS   Float?   @db.Float
+  Ta_Avg      Float?   @db.Float
+  Ta_Max      Float?   @db.Float
+  Ta_Min      Float?   @db.Float
+  RH_Avg      Float?   @db.Float
+  RH_Max      Float?   @db.Float
+  RH_Min      Float?   @db.Float
+  e_Avg       Float?   @db.Float
+  e_Max       Float?   @db.Float
+  e_Min       Float?   @db.Float
+  P           Float?   @db.Float
+  NR_Wm2_Avg  Float?   @db.Float
+  NR_Wm2_Max  Float?   @db.Float
+  NR_Wm2_Min  Float?   @db.Float
+  CNR_Wm2_Avg Float?   @db.Float
+  CNR_Wm2_Max Float?   @db.Float
+  CNR_Wm2_Min Float?   @db.Float
+  Rain_mm_Tot Float?   @db.Float
+}
+
+model aws_bungus {
+  id          Int      @id @default(autoincrement())
+  timestamp   DateTime @default(now()) @db.DateTime(0)
+  date        String?  @db.VarChar(25)
+  time        String?  @db.VarChar(25)
+  Batt_V_Avg  Float?   @db.Float
+  PTemp_Max   Float?   @db.Float
+  WS_S_Avg    Float?   @db.Float
+  W_D_Avg     Float?   @db.Float
+  WD_Std      Float?   @db.Float
+  WS_Max      Float?   @db.Float
+  WD_Max_WS   Float?   @db.Float
+  Ta_Avg      Float?   @db.Float
+  Ta_Max      Float?   @db.Float
+  Ta_Min      Float?   @db.Float
+  RH_Avg      Float?   @db.Float
+  RH_Max      Float?   @db.Float
+  RH_Min      Float?   @db.Float
+  e_Avg       Float?   @db.Float
+  e_Max       Float?   @db.Float
+  e_Min       Float?   @db.Float
+  P           Float?   @db.Float
+  NR_Wm2_Avg  Float?   @db.Float
+  NR_Wm2_Max  Float?   @db.Float
+  NR_Wm2_Min  Float?   @db.Float
+  CNR_Wm2_Avg Float?   @db.Float
+  CNR_Wm2_Max Float?   @db.Float
+  CNR_Wm2_Min Float?   @db.Float
+  Rain_mm_Tot Float?   @db.Float
+}
+
+model datarecord {
+  id        Int      @id @default(autoincrement())
+  label     String
+  value     Int
+  category  String?
+  createdAt DateTime @default(now())
+  userId    Int
+  // user      user     @relation(fields: [userId], references: [id], map: "DataRecord_userId_fkey")
+
+  // @@index([userId], map: "DataRecord_userId_fkey")
+}
+
+// model user {
+//   id         Int          @id @default(autoincrement())
+//   email      String       @unique(map: "User_email_key")
+//   password   String
+//   name       String?
+//   role       user_role    @default(USER)
+//   createdAt  DateTime     @default(now())
+//   datarecord datarecord[]
+// }
+
+// enum user_role {
+//   USER
+//   ADMIN
+// }
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}

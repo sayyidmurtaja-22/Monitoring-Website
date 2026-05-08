@@ -1,7 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Poppins, } from "next/font/google";
 import "./globals.css";
+import { SidebarProvider, SidebarTrigger, SidebarInset, Sidebar } from "@/components/ui/sidebar";
+import { ThemeProvider } from "@/components/theme-provider";
+import 'primereact/resources/themes/lara-light-cyan/theme.css'; // Theme
+import 'primereact/resources/primereact.min.css';                // Core CSS
+import 'primeicons/primeicons.css';      
+import { Toaster } from 'sonner';
 
+ 
+
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'], // Pilih weight yang dibutuhkan
+  variable: '--font-poppins',
+})
+const Sans = Inter({
+  variable: "--font-sans",
+  subsets: ["latin"],
+});
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,11 +41,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
-    </html>
+     <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning={true} className={poppins.variable}>
+         <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+        <main className="flex flex-1 flex-col gap-4 p-4">
+        {children}
+         <Toaster />
+      </main>
+        </ThemeProvider>
+     </body>
+   </html>
   );
 }
