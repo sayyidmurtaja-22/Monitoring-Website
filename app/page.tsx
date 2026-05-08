@@ -1,5 +1,3 @@
-  "use server";
-
   // import { userSession } from "@/libs/auth-libs";
   import { auth } from "@/lib/auth";
   import HomePageClient from "@/components/HomePageClient";

@@ -1,11 +1,10 @@
-import { authOption } from "@/app/api/auth/[...nextauth]/route"
-import { getServerSession } from "next-auth"
-import { type User } from "next-auth"
+import { auth } from "@/lib/auth";
+import { type User } from "next-auth";
 
 
 export const userSession = async (): Promise<User | null> => {
-  const session = await getServerSession(authOption);
-  
+  const session = await auth();
+
   if (!session?.user) return null;
 
   return {

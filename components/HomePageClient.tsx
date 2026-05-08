@@ -1,16 +1,12 @@
 "use client";
 
-import ButtonAuth from "@/components/auth/ButtonAuthApi";
 import { ModeToggle } from "@/components/mode-toggle";
-import { ThemeProvider } from "@/components/theme-provider";
 import { User } from "@/libs/auth-libs";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import "./style.css";
 import * as motion from "motion/react-client";
 import ButtonAuthApi from "@/components/auth/ButtonAuthApi";
-import { Box } from "lucide-react";
 import { SignIn, SignOut } from "@/components/auth-components";
-import { auth } from "@/lib/auth";
 
 interface Auth {
   user: User | null;
@@ -44,12 +40,6 @@ export default function HomePageClient({ user, session }: Auth) {
   return (
     <>
       <div className="flex flex-col min-h-screen ">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
           <header>
             <div className="flex justify-between px-4 py-2  items-center">
               <ModeToggle />
@@ -68,22 +58,18 @@ export default function HomePageClient({ user, session }: Auth) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={circuitTransition}
-              style={{ fontSize: "24px", fontWeight: "bold" }}
+              className="scroll-m-20 text-center text-8xl tracking-tight text-balance font-poppins font-bold"
             >
-              <h1 className="scroll-m-20 text-center text-8xl tracking-tight text-balance font-poppins font-bold ">
-                TeknoWeath
-              </h1>
+              TeknoWeath
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={circuitTransition}
-              style={{ fontSize: "24px", fontWeight: "bold" }}
+              className="text-2xl text-center font-poppins text-muted-foreground"
             >
-              <p className="text-2xl text-center font-poppins text-muted-foreground">
-                TeknoSea Weather Monitoring System
-              </p>
+              TeknoSea Weather Monitoring System
             </motion.p>
 
             {/* prisma auth nextjs */}
@@ -94,7 +80,7 @@ export default function HomePageClient({ user, session }: Auth) {
                 <h1>Auth.js+ Prisma</h1>
                 {!session ? (
                   <div className="text-center">
-                    <SignIn provider="goggle" />
+                    <SignIn provider="google" />
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -150,7 +136,6 @@ export default function HomePageClient({ user, session }: Auth) {
 
             <ButtonAuthApi user={user} />
           </div>
-        </ThemeProvider>
       </div>
     </>
   );
