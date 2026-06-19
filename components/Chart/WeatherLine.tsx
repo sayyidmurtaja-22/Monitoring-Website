@@ -97,7 +97,7 @@ export function WeatherLine({ data, lines, title, yLabel }: ChartAreaProps) {
               domain={["auto", "auto"]}
             />
             <Tooltip
-              formatter={(value: number, name: string) => [
+              formatter={(value: any, name: any) => [
                 value?.toFixed(1),
                 "Nilai",
               ]}

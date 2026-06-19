@@ -60,6 +60,8 @@ export type AvgWeatherData = {
   jumlah_data: number | null;
   P?: number | null;
   avg_P?: number | null;
+  hour_timestampBali?: Date | string | null;
+  hour_timestamp?: Date | string | null;
 };
 
 // Alias untuk kompatibilitas import yang sudah ada

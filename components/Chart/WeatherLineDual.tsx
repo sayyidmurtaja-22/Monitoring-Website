@@ -125,7 +125,7 @@ export function WeatherLineDual({ data, lines, title }: ChartAreaProps) {
             )}
 
             <Tooltip
-              formatter={(value: number, name: string) => {
+              formatter={(value: any, name: any) => {
                 // Mencari line berdasarkan kunci atau nama untuk mendapatkan unit
                 const line = lines.find(
                   (l) => l.key === name || l.name === name

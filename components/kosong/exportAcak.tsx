@@ -27,14 +27,14 @@ export default function Gabungan() {
 
   console.log("tipe useState", setChecked)
 
-  const Randomizeitem = (item) => {
+  const Randomizeitem = (item: any) => {
     return item[Math.floor(Math.random() * item.length)];
   };
   console.log("RandomizeItem tipe nya", typeof Randomizeitem)
 
   // fungsi untuk melakukan pengacakan string di dalam array
   
-  const handlecheckbox = (event) => {
+  const handlecheckbox = (event: any) => {
     const checkedstatus = event.target.checked
     setChecked(checkedstatus);
     

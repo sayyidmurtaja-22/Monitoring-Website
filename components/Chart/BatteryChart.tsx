@@ -94,7 +94,7 @@ export default function BatteryChart({ avgData }: ChartAreaProps) {
             domain={["auto", "auto"]}
           />
           <Tooltip
-            LabelFormatter={(_, payload) => {
+            labelFormatter={(_: any, payload: any) => {
               const timestamp = payload?.[0]?.payload?.rawTimeStamp;
 
               if (!timestamp) return "";
@@ -107,7 +107,7 @@ export default function BatteryChart({ avgData }: ChartAreaProps) {
                 minute: "2-digit",
               });
             }}
-            formatter={(value: number) => [
+            formatter={(value: any) => [
               `${value?.toFixed(2)} V`,
               "Tegangan",
             ]}

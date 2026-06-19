@@ -30,7 +30,7 @@ const shimmerAnimation = {
       duration: 1.5,
       repeat: Infinity,
       repeatDelay: 3,
-      ease: "easeInOut",
+      ease: "easeInOut" as const,
     },
   },
 };
@@ -43,7 +43,7 @@ const mockupAnimation = {
   transition: {
     duration: 6,
     repeat: Infinity,
-    ease: "easeInOut",
+    ease: "easeInOut" as const,
   },
 };
 
@@ -55,7 +55,7 @@ const shadowAnimation = {
   transition: {
     duration: 6,
     repeat: Infinity,
-    ease: "easeInOut",
+    ease: "easeInOut" as const,
   },
 };
 
@@ -66,7 +66,7 @@ const glowAnimation = {
   transition: {
     duration: 6,
     repeat: Infinity,
-    ease: "easeInOut",
+    ease: "easeInOut" as const,
   },
 };
 
@@ -77,7 +77,7 @@ const arrowAnimation = {
     duration: 1,
     repeat: Infinity,
     repeatDelay: 1.5,
-    ease: "easeInOut",
+    ease: "easeInOut" as const,
   },
 };
 
@@ -89,7 +89,7 @@ const scanAnimation = {
     duration: 3.5,
     repeat: Infinity,
     repeatDelay: 2,
-    ease: "easeInOut",
+    ease: "easeInOut" as const,
   },
 };
 

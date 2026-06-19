@@ -29,7 +29,7 @@ export default function BatteryChartBali({ getDataBali }: ChartAreaProps) {
       ...item,
 
       rawTime: item.hour_timestampBali,
-      Batt_Time: new Date(item.hour_timestampBali).toLocaleTimeString("id-ID", {
+      Batt_Time: new Date(item.hour_timestampBali as any).toLocaleTimeString("id-ID", {
         day: "numeric", // Muncul angka tanggal
         month: "short", // Muncul singkatan bulan (Jan, Feb, dsb)
         hour: "2-digit",
@@ -75,7 +75,7 @@ export default function BatteryChartBali({ getDataBali }: ChartAreaProps) {
             domain={["auto", "auto"]}
           />
           <Tooltip
-            Labelformatter={(_, payload) => {
+            labelFormatter={(_: any, payload: any) => {
               const timestamp = payload?.[0]?.payload?.raw_timestampBali;
 
               if (!timestamp) return "";
@@ -88,7 +88,7 @@ export default function BatteryChartBali({ getDataBali }: ChartAreaProps) {
                 minute: "2-digit",
               });
             }}
-            formatter={(value: number) => [
+            formatter={(value: any) => [
               `${value?.toFixed(2)} V`,
               "Tegangan",
             ]}

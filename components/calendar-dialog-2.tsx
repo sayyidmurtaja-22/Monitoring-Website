@@ -27,12 +27,12 @@ const Example = () => {
   const [month, setMonth] = useState<Date>(new Date());
 
   const handleCalendarChange = (
-    value: string | number,
+    value: string | number | null,
     event: ChangeEventHandler<HTMLSelectElement>,
   ) => {
     const newEvent = {
       target: {
-        value: String(value),
+        value: String(value ?? ""),
       },
     } as ChangeEvent<HTMLSelectElement>;
     event(newEvent);

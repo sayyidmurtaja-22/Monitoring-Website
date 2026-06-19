@@ -25,7 +25,7 @@ export function ExportGabungan() {
   const baru =data1.filter(e => e.id === 3)
   console.log("baru", baru)
   
-  const handleCekbox = (event) => {
+  const handleCekbox = (event: any) => {
     const status = event.target.checked;
     setCekbox(status);
     if (!status) {

@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { DayPicker } from "react-day-picker";
-import { AvgHour } from "../../app/ListAws/Padang/AvgHour";
+
 
 export function Picker() {
-  const [Range, setRange] = useState<Date>();
-  const [dataProduct, setDataProduct] = useState([]);
+  const [Range, setRange] = useState<any>();
+  const [dataProduct, setDataProduct] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function dataAcces() {
       try {
-        const res = await AvgHour;
-        const json = await res.json();
+        const json: any[] = [];
 
         setDataProduct(json);
       } catch (error) {
@@ -38,8 +37,8 @@ export function Picker() {
         resetOnSelect
         required
       />
-      {dataProduct.map((item) => (
-        <li key={item.}> {item.avg_e_Avg}/</li>
+      {dataProduct.map((item: any, i) => (
+        <li key={i}> {item.avg_e_Avg}/</li>
       ))}
     </div>
   );

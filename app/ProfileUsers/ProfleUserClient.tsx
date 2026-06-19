@@ -1,7 +1,7 @@
 "use client";
 
 import LogoutButton from "@/components/auth/LogoutButton";
-import { User } from "@/libs/auth-libs";
+import { type User } from "next-auth";
 import Image from "next/image";
 import { UserCircle, Mail, User as UserIcon } from "lucide-react";
 

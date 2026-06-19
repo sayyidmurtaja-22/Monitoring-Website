@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { User } from "@/libs/auth-libs";
+import { type User } from "next-auth";
 import { toast } from "sonner";
 
 interface ButtonAuthApiProps {

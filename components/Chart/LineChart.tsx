@@ -97,7 +97,7 @@ export function ChartLine({ avgData }: ChartAreaProps) {
               domain={["auto", "auto"]}
             />
             <Tooltip
-              formatter={(value: number) => [value?.toFixed(1), "Nilai"]}
+              formatter={(value: any) => [typeof value === 'number' ? value.toFixed(1) : value, "Nilai"]}
               labelFormatter={(label) =>
                 new Date(label).toLocaleString("id-ID")
               }

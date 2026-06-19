@@ -16,7 +16,7 @@ import { WeatherData } from "@/types/weather";
 import { ChartContainer, ChartLegend, ChartLegendContent } from "../ui/chart";
 import { useSearchParams } from "next/navigation";
 import { log } from "console";
-import { AvgHour } from "../../app/ListAws/Padang/AvgHour";
+
 import { AvgWeatherData } from "@/types/AvgTypes";
 import { div } from "framer-motion/client";
 
@@ -84,7 +84,7 @@ export function ChartLineBali({ getDataBali }: ChartAreaProps) {
     getDataBali?.map((item) => ({
       ...item,
 
-      hour_timestampBali: new Date(item.hour_timestampBali).getTime(),
+      hour_timestampBali: new Date(item.hour_timestampBali as any).getTime(),
     })) || [];
   console.log("Data Terformat:", formattedData);
   return (
@@ -156,7 +156,7 @@ export function ChartLineBali({ getDataBali }: ChartAreaProps) {
               domain={["auto", "auto"]}
             />
             <Tooltip
-              formatter={(value: number) => [value?.toFixed(2), "Nilai"]}
+              formatter={(value: any) => [typeof value === 'number' ? value.toFixed(2) : value, "Nilai"]}
               labelFormatter={(label) =>
                 new Date(label).toLocaleString("id-ID")
               }

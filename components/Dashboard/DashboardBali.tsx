@@ -40,7 +40,7 @@ export default function DashboardBali({
 
       const pdf = new jsPDF({
         //pembuatan dokumen baru pdf yang berasal dari jspdf
-        orientation: "potrait",
+        orientation: "portrait",
         unit: "px",
         format: "a4",
       });

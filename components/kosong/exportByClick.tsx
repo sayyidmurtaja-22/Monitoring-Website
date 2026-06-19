@@ -25,7 +25,7 @@ export default function ExportByClick() {
   const [isButton, setIsButton] = useState(false);
   console.log("ischecked", [isChecked, setIsChecked]);
 
-  const handleCheckbox = (event) => {
+  const handleCheckbox = (event: any) => {
     console.log("handle", handleCheckbox);
     const status = event.target.checked;
     console.log("event");
@@ -39,7 +39,7 @@ export default function ExportByClick() {
   };
   console.log("handle", handleCheckbox);
 
-  const handleCheckbox3 = (event) => {
+  const handleCheckbox3 = (event: any) => {
     console.log("handle", handleCheckbox);
     const status = event.target.checked;
     console.log("event");
@@ -52,7 +52,7 @@ export default function ExportByClick() {
     }
   };
 
-  const handle = (event) => {
+  const handle = (event: any) => {
     const status = event.target.checked;
     console.log("event");
     setIsChecked2(status);

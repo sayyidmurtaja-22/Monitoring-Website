@@ -95,7 +95,7 @@ export function ChartBar({ avgData }: ChartAreaProps) {
             <ChartTooltip
               content={
                 <ChartTooltipContent
-                  labelFormatter={(_, payload) => {
+                  labelFormatter={(_: any, payload: any) => {
                     const timestamp = payload?.[0]?.payload?.period;
 
                     if (!timestamp) return "";

@@ -34,7 +34,7 @@ export function ChartBarBali({ getDataBali }: ChartAreaProps) {
     getDataBali?.map((item) => ({
       ...item,
 
-      displayTime: new Date(item.hour_timestampBali).toLocaleTimeString(
+      displayTime: new Date(item.hour_timestampBali as any).toLocaleTimeString(
         "id-ID",
         {
           day: "numeric", // Muncul angka tanggal
@@ -94,7 +94,7 @@ export function ChartBarBali({ getDataBali }: ChartAreaProps) {
             <ChartTooltip
               content={
                 <ChartTooltipContent
-                  labelFormatter={(_, payload) => {
+                  labelFormatter={(_: any, payload: any) => {
                     const timestamp = payload?.[0]?.payload?.hour_timestamp;
 
                     if (!timestamp) return "";

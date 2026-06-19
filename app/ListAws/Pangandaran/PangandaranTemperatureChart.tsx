@@ -97,7 +97,7 @@ export function PangandaranTemperatureChart({ avgData }: PangandaranTemperatureC
               domain={["auto", "auto"]}
             />
             <Tooltip
-              formatter={(value: number) => [value?.toFixed(2), "Nilai"]}
+              formatter={(value: any) => [typeof value === 'number' ? value.toFixed(2) : value, "Nilai"]}
               labelFormatter={(label) =>
                 new Date(label).toLocaleString("id-ID")
               }
