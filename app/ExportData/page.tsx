@@ -1,59 +1,59 @@
-import { AvgHourBali } from "@/components/action/AvgHourBali";
+import React from "react";
+import { format } from "date-fns";
+import { getDataExport } from "@/app/ExportData/GetDataExport";
 import ExportClient from "./ExportClient";
-import { AvgWeatherData, IntervalType } from "@/types/AvgTypes";
-import { AvgHour } from "@/components/action/AvgHour";
-// import prisma from "@/libs/prisma";
+import { auth } from "@/lib/auth";
+import { LOCATIONS, LocationKey } from "@/config/Location";
 
-
-async function getData(timeRange:string) {
-  
-  const columns = await AvgHourBali(timeRange);
-  return columns
+interface Props {
+  searchParams?: {
+    from?: string;
+    to?: string;
+    interval?: string;
+    parameter?: string;
+    location?: string;
+  };
 }
 
-export default async function ExportData({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    [key: string]: string | string[] | undefined;
-  }>;
-}) {
-  
-  const query = await searchParams;
-  const timeRange = Array.isArray(query.timeRange)
-  ? query.timeRange[0]
-  : query.timeRange;
+export default async function ExportPage({ searchParams }: Props) {
+  const params = await searchParams;
 
-  const fromParam = query.from as string | undefined;
-  const toParam = query.to as string | undefined;
-  const intervalParam = query.interval as IntervalType | undefined;
+  const activeParameter = params?.parameter?.split(",") || [];
 
-  let from : Date;
-  let to : Date;
+  const session = await auth();
+  const userRole = session?.user?.role || "USER";
 
-  if (fromParam && toParam ) {
-    from = new Date ( `${fromParam}T17:00:00Z` );
-    to = new Date ( `${toParam}T16:59:59Z` );
-  }
+  // Ambil lokasi dari query string, default "padang"
+  const locationKey = (params?.location || "padang") as LocationKey;
+  const locationConfig = LOCATIONS[locationKey] || LOCATIONS.padang;
 
-  let avgData : AvgWeatherData[] =[];
+  const today = new Date();
+  today.setDate(today.getDate() - 615);
 
-  try{
-    const [data, avg] = await promises.all([
-      getData({from, to}),
-      AvgHour({from,to, interval}),
-    ])
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(today.getDate() - 607);
 
-    avgData= Array.isArray(avg)? avg : [];
-  }catch(error) {
-    console.group("error", error)
-  }
+  const from = params?.from || format(sevenDaysAgo, "yyyy-MM-dd");
+  const to = params?.to || format(today, "yyyy-MM-dd");
 
-  const data = await getData(timeRange!)
+  const rawData = await getDataExport({
+    tableName: locationConfig.table,
+    startDate: from,
+    endDate: to,
+  });
+
+  const safeData = JSON.parse(JSON.stringify(rawData));
 
   return (
-    <div>
-      <ExportClient data={data} avgData={avgData}/>
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-900">
+      <ExportClient
+        data={safeData}
+        initialFrom={from}
+        initialTo={to}
+        activeParameter={activeParameter}
+        userRole={userRole}
+        currentLocation={locationKey}
+      />
     </div>
   );
 }

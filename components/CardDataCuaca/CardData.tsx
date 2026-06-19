@@ -12,8 +12,8 @@ import {
   CloudRain,
   Flame,
 } from "lucide-react"; // Contoh icon
-import { useEffect, useState } from "react";
-import { WeatherData } from "@/types/weather";
+// import { useEffect, useState } from "react";
+// import { WeatherData } from "@/types/weather";
 import { AvgWeatherData } from "@/types/AvgTypes";
 
 interface ChartAreaProps {
@@ -22,21 +22,21 @@ interface ChartAreaProps {
 }
 
 export default function CardData({ data, avgData }: ChartAreaProps) {
+  // Ambil data terbaru (terakhir di array karena data diurutkan ASC)
+  const latest = data && data.length > 0 ? data[data.length - 1] : null;
+    // Hitung total data dari semua data rata-rata
+  const totalRecords = avgData?.reduce((acc, curr) => acc + Number(curr.jumlah_data || 0), 0) || 0;
 
-  const latest = data && data.length > 0 ? data[0] : null;
-  console.log("latest", latest)
-  const latestavg = avgData && avgData.length > 0 ? avgData[0] : null;
-  // const totalRecords = latestavg.reduce((acc, curr) => acc + Number(curr.jumlah_data), 0);
   const cardsInfo = [
     {
-      title: "Suhu Rata-rata",
-      value: `${Number(latest?.avg_Ta_Avg ?? 0).toFixed(1)}°C`,
+      title: "Suhu Terbaru",
+      value: Number(latest?.avg_Ta_Avg ?? 0).toFixed(1),
       icon: <Thermometer className="text-orange-300" size={22} />,
       suffix: " °C",
     },
     {
       title: "Kelembapan",
-      value: `${Number(latest?.avg_RH_Avg ?? 0).toFixed(1)}%`,
+      value: Number(latest?.avg_RH_Avg ?? 0).toFixed(1),
       icon: <Droplet className="text-blue-300" size={22} />,
       suffix: " %",
     },
@@ -48,15 +48,15 @@ export default function CardData({ data, avgData }: ChartAreaProps) {
     },
     {
       title: "Curah Hujan",
-      value: `${Number(latest?.avg_Rain_mm_Tot ?? 0).toFixed(1)} mm`,
+      value: Number(latest?.avg_Rain_mm_Tot ?? 0).toFixed(1),
       icon: <CloudRain className="text-sky-300" size={22} />,
       suffix: " mm",
     },
     {
-      title: "Jumlah Data",
-      value: `${Number(latestavg?.jumlah_data ?? 0).toLocaleString("id-ID")} data`,
-      icon: <Flame className="text-red-300" size={22} />,
-      // suffix: "°C=",
+      title: "Total Data",
+      value: totalRecords.toLocaleString("id-ID"),
+      icon: <Flame className="text-red-300" size={16} />,
+      suffix: "",
     },
   ];
 
@@ -71,8 +71,8 @@ export default function CardData({ data, avgData }: ChartAreaProps) {
             animate={{ y: 0 }}
           >
             <Card
-              className="w-full h-full bg-blue-600 dark:bg-blue-950  transition-all duration-300 ease-in-out
-                    hover:shadow-2xl hover:-translate-y-1 hover:border-transparent"
+              className="w-full h-full bg-[#1d3557] dark:bg-[#59A8D1] font-poppins transition-all duration-200 ease-in-out hover:bg-[#a8dadc]
+               hover:font-black     hover:shadow-2xl hover:-translate-y-1 hover:border-transparent hover:text-[#1d3557] "
             >
               <CardHeader className="pb-2">
                 <CardTitle className="text-xl flex items-center gap-2">
@@ -80,11 +80,11 @@ export default function CardData({ data, avgData }: ChartAreaProps) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className=" text-white dark:text-white capitalize">
+                <p className="text-white dark:text-white capitalize">
                   {card.title}
                 </p>
                 <p className="text-4xl font-bold text-white">
-                  {parseFloat(String(card.value)).toString().substring(0, 4)}
+                  {card.value}
                   {card.suffix}
                 </p>
               </CardContent>

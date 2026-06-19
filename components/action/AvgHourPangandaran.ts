@@ -1,4 +1,4 @@
-// components/action/AvgHour.ts
+// components/action/AvgHourBali.ts
 import prisma from "@/libs/prisma";
 import { AvgWeatherData, IntervalType } from "@/types/AvgTypes";
 
@@ -8,8 +8,7 @@ interface RangeProps {
     interval?: IntervalType;
 }
 
-console.log("avgHour", AvgHour)
-export async function AvgHour({ from, to, interval = 'hour' }: RangeProps): Promise<AvgWeatherData[]> {
+export async function AvgHourPangandaran({ from, to, interval = "hour" }: RangeProps): Promise<AvgWeatherData[]> {
     if (!from || !to) {
         throw new Error("from and to dates are required");
     }
@@ -33,7 +32,7 @@ export async function AvgHour({ from, to, interval = 'hour' }: RangeProps): Prom
     try {
         let result: AvgWeatherData[];
         
-        // ✅ Query untuk interval PER HARI (pakai DATE_ADD)
+        // Query untuk interval PER HARI
         if (interval === 'day') {
             result = await prisma.$queryRaw<AvgWeatherData[]>`
                 SELECT 
@@ -59,7 +58,7 @@ export async function AvgHour({ from, to, interval = 'hour' }: RangeProps): Prom
                     AVG(e_Max) as avg_e_Max,
                     AVG(e_Min) as avg_e_Min,
                     COUNT(*) as jumlah_data
-                FROM aws_bungus
+                FROM aws_pangandaran
                 WHERE 
                     timestamp >= ${startRange} 
                     AND timestamp <= ${endDate}
@@ -69,7 +68,7 @@ export async function AvgHour({ from, to, interval = 'hour' }: RangeProps): Prom
                     period ASC
             `;
         } 
-        // ✅ Query untuk interval PER BULAN (pakai DATE_ADD)
+        // Query untuk interval PER BULAN
         else if (interval === 'month') {
             result = await prisma.$queryRaw<AvgWeatherData[]>`
                 SELECT 
@@ -95,7 +94,7 @@ export async function AvgHour({ from, to, interval = 'hour' }: RangeProps): Prom
                     AVG(e_Max) as avg_e_Max,
                     AVG(e_Min) as avg_e_Min,
                     COUNT(*) as jumlah_data
-                FROM aws_bungus
+                FROM aws_pangandaran
                 WHERE 
                     timestamp >= ${startRange} 
                     AND timestamp <= ${endDate}
@@ -105,7 +104,7 @@ export async function AvgHour({ from, to, interval = 'hour' }: RangeProps): Prom
                     period ASC
             `;
         } 
-        // ✅ Query untuk interval PER JAM (default) (pakai DATE_ADD)
+        // Query untuk interval PER JAM (default)
         else {
           result = await prisma.$queryRaw<AvgWeatherData[]>`
                 SELECT 
@@ -131,7 +130,7 @@ export async function AvgHour({ from, to, interval = 'hour' }: RangeProps): Prom
                     AVG(e_Max) as avg_e_Max,
                     AVG(e_Min) as avg_e_Min,
                     COUNT(*) as jumlah_data
-                FROM aws_bungus
+                FROM aws_pangandaran
                 WHERE 
                     timestamp >= ${startRange} 
                     AND timestamp <= ${endDate}
@@ -142,10 +141,10 @@ export async function AvgHour({ from, to, interval = 'hour' }: RangeProps): Prom
             `;
         }
         
-        console.log(`✅ AvgHour - ${interval} query returned:`, result.length);
+        console.log(`AvgHourPangandaran - ${interval} query returned:`, result.length);
         return result || [];
     } catch (error) {
-        console.error("Error in AvgHour:", error);
+        console.error("Error in Pangandaran:", error);
         return [];
     }
 }

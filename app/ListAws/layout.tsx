@@ -1,58 +1,51 @@
-import { ThemeProvider } from "@/components/theme-provider";
 import {
   SidebarProvider,
-  SidebarInset,
   SidebarTrigger,
+  SidebarInset,
+  Sidebar,
 } from "@/components/ui/sidebar";
+import { ThemeProvider } from "@/components/theme-provider";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ModeToggle } from "@/components/mode-toggle";
-import { userSession } from "@/libs/auth-libs";
 import { Poppins } from "next/font/google";
-import ClockCard from "@/components/Clock/Clock";
 import Greeting from "@/components/Greeting";
+import ClockCard from "@/components/Clock/Clock";
+import { userSession } from "@/libs/auth-libs";
+
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["400", "600", "700"], // Pilih weight yang dibutuhkan
   variable: "--font-poppins",
 });
 
-export default async function RootLayout({
+export default async function DashboardLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
-  const user = await userSession(); // ✅ di dalam async function
+}: {
+  children: React.ReactNode;
+}) {
 
+  const session = await userSession()
+  const role = session?.role === "ADMIN" ? "ADMIN" : "USER";
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-         <nav className="sticky top-0 z-50 h-9 shrink-0 items-center gap-2 p-4 flex w-full justify-between bg-background rounded-3xl">
-                  <div className="text-2xl flex flex-row gap-2 font-black">
-                    <SidebarTrigger />
-                    Dashboard
-                  </div>
-                    <div className="text-2xl font-black">
-                    <ClockCard />
-                    </div>
-                  <div className=" flex items-center gap-4">
-                    <ModeToggle />
-                    <Greeting />
-                  </div>
-                </nav>
-
-          <div className="flex flex-col gap-4 p-2">
-            {/* Location & Calendar */}
-
-            <main className="flex flex-1 flex-col gap-4">{children}</main>
+    <SidebarProvider>
+      <AppSidebar role={role || "USER"} />
+      <SidebarInset>
+        <header className=" h-9 shrink-0 items-center gap-2 p-4 flex w-full justify-between border-none  ">
+          <div className="text-2xl gap-2 flex items-center font-black">
+            <SidebarTrigger />
+            {/* Profil Users */}
           </div>
-        </SidebarInset>
-      </SidebarProvider>
-    </ThemeProvider>
+          <div className="text-2xl font-black">
+            <ClockCard />
+          </div>
+          <div className=" flex items-center gap-4">
+            <ModeToggle />
+            <Greeting />
+          </div>
+        </header>
+        <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

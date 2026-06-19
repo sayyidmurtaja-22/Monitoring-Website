@@ -1,14 +1,14 @@
-// LocationList.tsx (Server Component - async OK)
-import LocationListClient from "./LocationListClient"; // Client component
+// components/LocationList/LocationList.tsx
+import LocationListClient from "./LocationListClient";
 import { type User } from "next-auth";
 
 interface LocationListProps {
   user: User;
+  onClose?: () => void;
 }
 
-const LocationList = ({ user }: LocationListProps) => {
-  // const user = await userSession();
-  return <>{user ? <LocationListClient user={user} /> : null}</>;
+const LocationList = ({ user, onClose }: LocationListProps) => {
+  return <>{user ? <LocationListClient user={user} onClose={onClose} /> : null}</>;
 };
 
 export default LocationList;

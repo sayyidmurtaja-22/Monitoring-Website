@@ -12,12 +12,12 @@ import {
   CloudRain,
   Flame,
 } from "lucide-react"; // Contoh icon
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { WeatherData } from "@/types/weather";
 import { AvgWeatherData } from "@/types/AvgTypes";
 
 interface ChartAreaProps {
-  data?: WeatherData[];
+  data?: AvgWeatherData[];
   getDataBali?: AvgWeatherData[];
 }
 

@@ -58,8 +58,8 @@
 } */
 
 :root {
-  --background: #DBEAFE;
-  --foreground: #0F172A;
+  --background: #F1FAEE;
+  --foreground: #1D3557;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -82,14 +82,14 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --sidebar: #DBEAFE;
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: #F1FAEE;
+  --sidebar-foreground: #457B9D;
+  --sidebar-primary: #457B9D;
+  --sidebar-primary-foreground: #457B9D;
+  --sidebar-accent: #457B9D;
+  --sidebar-accent-foreground: #457B9D;
+  --sidebar-border: #457B9D;
+  --sidebar-ring: #457B9D;
    --color-line-stroke: #000080;
    --color-line-stroke-Temp: #8B0000;
   --color-surface-base: #ffffff;
@@ -120,7 +120,7 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --sidebar:#0F172A;
-  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-foreground: #1D3557;
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent:#162D47;
@@ -185,4 +185,67 @@
     @apply font-poppins;
   }
 
+  @keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.zoom-in-95 {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* react-day-picker styles */
+@import 'react-day-picker/dist/style.css';
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.zoom-in-95 {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Dark mode for date picker */
+.dark .rdp {
+  --rdp-accent-color: #60a5fa;
+  --rdp-background-color: #1e293b;
+}
+
+.dark .rdp-day {
+  color: #e2e8f0;
+}
+
+.dark .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+  background-color: #334155;
+}
 }

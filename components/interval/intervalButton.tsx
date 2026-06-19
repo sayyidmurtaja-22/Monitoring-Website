@@ -20,35 +20,27 @@ export function IntervalButtons({ currentInterval }: IntervalButtonsProps) {
     router.replace(`${pathname}?${params.toString()}`);
   };
 
+  const baseClass = "px-3 py-2 text-sm font-medium rounded-lg transition-all duration-150 flex items-center gap-2";
+  const activeClass = "bg-[#E63946] text-white shadow-md hover:bg-[#D90429] dark:hover:bg-white dark:text-black";
+  const inactiveClass = "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:shadow-md";
+
   return (
-    <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
+    <div className="flex gap-2 bg-transparent rounded-lg">
       <button
         onClick={() => handleIntervalChange('hour')}
-        className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
-          currentInterval === 'hour'
-            ? 'bg-blue-600 text-white shadow-sm'
-            : 'text-gray-600 hover:bg-gray-200'
-        }`}
+        className={`${baseClass} ${currentInterval === 'hour' ? activeClass : inactiveClass}`}
       >
         Per Jam
       </button>
       <button
         onClick={() => handleIntervalChange('day')}
-        className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
-          currentInterval === 'day'
-            ? 'bg-blue-600 text-white shadow-sm'
-            : 'text-gray-600 hover:bg-gray-200'
-        }`}
+        className={`${baseClass} ${currentInterval === 'day' ? activeClass : inactiveClass}`}
       >
         Per Hari
       </button>
       <button
         onClick={() => handleIntervalChange('month')}
-        className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
-          currentInterval === 'month'
-            ? 'bg-blue-600 text-white shadow-sm'
-            : 'text-gray-600 hover:bg-gray-200'
-        }`}
+        className={`${baseClass} ${currentInterval === 'month' ? activeClass : inactiveClass}`}
       >
         Per Bulan
       </button>

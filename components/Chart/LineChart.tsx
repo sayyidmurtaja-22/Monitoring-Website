@@ -12,13 +12,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { RechartsDevtools } from "@recharts/devtools";
-import { WeatherData } from "@/types/weather";
 import { ChartContainer, ChartLegend, ChartLegendContent } from "../ui/chart";
-import { useSearchParams } from "next/navigation";
-import { log } from "console";
-import { AvgHour } from "../action/AvgHour";
 import { AvgWeatherData } from "@/types/AvgTypes";
-import { div } from "framer-motion/client";
 
 interface ChartAreaProps {
   data?: AvgWeatherData[];
@@ -26,40 +21,36 @@ interface ChartAreaProps {
 }
 
 const chartConfig = {
-  avg_e_Avg: { label: "Suhu Rata-rata", color: "#FF0000" },
-  avg_e_Max: { label: "Tekanan Uap Rata-rata", color: "#FFFF00" },
-  avg_e_Min: { label: "Tekanan Uap Rata-rata", color: "#00FFFF" },
+  avg_Ta_Avg: { label: "Suhu Rata-rata", color: "#FF0000" },
+  avg_Ta_Max: { label: "Suhu Tertinggi", color: "#FFFF00" },
+  avg_Ta_Min: { label: "Suhu Terendah", color: "#00FFFF" },
 };
 
 // console.log("avgdaata", AvgHour);
 
 export function ChartLine({ avgData }: ChartAreaProps) {
+  // console.log("data di chart ", typeof avgData);
+
   const formattedData =
-  avgData?.map((item) => ({
-    ...item,
-    
-    period : new Date(item.period).getTime(),
-  })) || [];
-  // console.log("Data Terformat:", formattedData);
+    avgData?.map((item) => ({
+      period: new Date(item.period.replace(" ", "T")).getTime(),
+      avg_e_Avg: (item as any).e_Avg != null ? Number((item as any).e_Avg) : null,
+      avg_e_Max: (item as any).e_Max != null ? Number((item as any).e_Max) : null,
+      avg_e_Min: (item as any).e_Min != null ? Number((item as any).e_Min) : null,
+    })) || [];
   return (
-    <>
-      <div className=" rounded-3xl w-40 py-1 bg-blue-800">
-        <h3 className=" w-60 px-4 font-black  "> Line Chart Suhu </h3>
+    <div className="w-full border rounded-3xl bg-[#A8DADC] dark:bg-blue-950 flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6 mb-4">
+      <div className="w-full flex justify-center mb-4">
+        <h3 className="text-[#575555ff] font-poppins font-bold text-lg md:text-xl tracking-wide">
+          Line Chart Suhu
+        </h3>
       </div>
-      <ChartContainer
-        config={chartConfig}
-        className="h-[380px] w-full border rounded-3xl bg-blue-600 dark:bg-blue-950 flex flex-col-2  transition-all duration-300 ease-in-out
-        hover:shadow-2xl hover:-translate-y-1 hover:border-transparent "
-        >
+      <ChartContainer config={chartConfig} className="h-[380px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             style={{
-              // width: "100%",
-              // maxWidth: "400px",
-              // maxHeight: "200px",
               aspectRatio: 1.618,
             }}
-            responsive
             data={formattedData}
             margin={{
               top: 20,
@@ -71,21 +62,17 @@ export function ChartLine({ avgData }: ChartAreaProps) {
             <CartesianGrid
               strokeDasharray="2 2"
               stroke="#ffffff"
-              strokeWidth={0.5}
-              opacity={0.5}
-              />
+              strokeWidth={1}
+              opacity={0.1}
+            />
             <XAxis
               dataKey="period"
-              // height={40}
-              // tick={CustomizedAxisTick}
-              // axisLine={true}
-              // interval={23}
+              
               type="number" // WAJIB: agar jarak antar waktu akurat
               domain={["dataMin", "dataMax"]} // Mulai dari data terkecil sampai terbesar
               scale="time" // Menggunakan skala waktu
-              tick={{ fill: "#ffffff", fontSize: 11 }}
+              tick={{ fill: "#575555ff", fontSize: 11 }}
               tickFormatter={(unixTime) => {
-                // Menampilkan label per hari (Contoh: 13 Sep)
                 return new Date(unixTime).toLocaleTimeString("id-ID", {
                   day: "numeric", // Muncul angka tanggal
                   month: "short", // Muncul singkatan bulan (Jan, Feb, dsb)
@@ -100,17 +87,17 @@ export function ChartLine({ avgData }: ChartAreaProps) {
                 value: "Suhu (°C)",
                 angle: -90,
                 position: "insideLeft",
-                color: "#ffffff",
+                color: "#575555ff",
               }}
               axisLine={true}
               tickLine={true}
-              tick={{ fill: "#ffffff", fontSize: 12 }}
+              tick={{ fill: "#575555ff", fontSize: 12 }}
               tickCount={4}
               interval={0}
               domain={["auto", "auto"]}
-              />
+            />
             <Tooltip
-              formatter={(value: number) => [value?.toFixed(2), "Nilai"]}
+              formatter={(value: number) => [value?.toFixed(1), "Nilai"]}
               labelFormatter={(label) =>
                 new Date(label).toLocaleString("id-ID")
               }
@@ -119,24 +106,24 @@ export function ChartLine({ avgData }: ChartAreaProps) {
                 borderColor: "#FFFFFF",
                 color: "#fff",
               }}
-              />
+            />
             <ChartLegend
-              content={<ChartLegendContent className="text-white" />}
-              />
+              content={<ChartLegendContent className="text-[#575555ff]" />}
+            />
             <Line
               type="monotone"
               dataKey="avg_e_Avg"
               stroke="#008000"
               // label={CustomizedLabel}
               // dot={{
-                //   fill: "var(--color-surface-base)",
-                // }}
-                dot={false}
-                isAnimationActive={false}
-                activeDot={{
-                  stroke: "var(--color-line-stroke)",
-                }}
-                />
+              //   fill: "var(--color-surface-base)",
+              // }}
+              dot={false}
+              isAnimationActive={false}
+              activeDot={{
+                stroke: "var(--color-line-stroke)",
+              }}
+            />
             <Line
               type="monotone"
               dataKey="avg_e_Max"
@@ -144,77 +131,32 @@ export function ChartLine({ avgData }: ChartAreaProps) {
               // label={CustomizedLabel}
               dot={false}
               // dot={{
-                //   fill: "var(--color-surface-base)",
-                // }}
-                activeDot={{
-                  stroke: "var(--color-line-stroke)",
-                }}
-                isAnimationActive={false}
-                />
+              //   fill: "var(--color-surface-base)",
+              // }}
+              activeDot={{
+                stroke: "var(--color-line-stroke)",
+              }}
+              isAnimationActive={false}
+            />
             <Line
               type="monotone"
               dataKey="avg_e_Min"
               stroke="#00FFFF"
               // label={CustomizedLabel}
               // dot={{
-                //   fill: "#A78BFA",
-                // }}
-                dot={false}
-                activeDot={{
-                  stroke: "var(--color-line-stroke-Temp)",
-                }}
-                isAnimationActive={false}
-                />
+              //   fill: "#A78BFA",
+              // }}
+              dot={false}
+              activeDot={{
+                stroke: "var(--color-line-stroke-Temp)",
+              }}
+              isAnimationActive={false}
+            />
             <RechartsDevtools />
           </LineChart>
         </ResponsiveContainer>
       </ChartContainer>
-    </>
+    </div>
   );
 }
 
-// const CustomizedLabel = ({ x, y, stroke, value }: LabelProps) => {
-//   const formatedValue = Number(value).toFixed(1);
-//   return (
-//     <text
-//       x={x}
-//       y={y}
-//       dy={-4}
-//       fill={"#ffffff"}
-//       fontSize={12}
-//       textAnchor="middle"
-//     >
-//       {formatedValue}
-//     </text>
-//   );
-// };
-
-// const CustomizedAxisTick = ({ x, y, payload }: any) => {
-//   const date = new Date(payload.value);
-//   if (isNaN(date.getTime())) return null;
-
-//   const formatted = date.toLocaleString("id-ID", {
-//     day: "2-digit",
-//     month: "2-digit",
-//     hour: "2-digit",
-//     minute: "2-digit",
-//     hour12: false,
-//   });
-
-//   return (
-//     <g transform={`translate(${x},${y})`}>
-//       <text
-//         x={0}
-//         y={0}
-//         dy={20}
-//         textAnchor="middle"
-//         fill="#FFFFFF"
-//         fontSize={12}
-//         transform="rotate(-15)"
-//         fontWeight={500}
-//       >
-//         {formatted}
-//       </text>
-//     </g>
-//   );
-// };

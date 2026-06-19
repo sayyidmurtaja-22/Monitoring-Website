@@ -5,8 +5,10 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-const createClient = () =>
-  new PrismaClient({ adapter: new PrismaMariaDb(process.env.DATABASE_URL!) });
+const createClient = () => {
+  const dbUrl = process.env.DATABASE_URL?.replace("mysql://", "mariadb://") || "";
+  return new PrismaClient({ adapter: new PrismaMariaDb(dbUrl) });
+};
 
 let prisma: PrismaClient;
 

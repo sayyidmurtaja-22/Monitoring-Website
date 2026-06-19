@@ -28,7 +28,7 @@ import { AvgWeatherData } from "@/types/AvgTypes";
 interface ChartAreaProps {
   data?: AvgWeatherData[];
   avgData: AvgWeatherData[];
-  getDataBali?: AvgWeatherData[];
+  Bali?: AvgWeatherData[];
 }
 
 const chartConfig = {
@@ -38,26 +38,31 @@ const chartConfig = {
 export default function BatteryChart({ avgData }: ChartAreaProps) {
   const formattedData =
     avgData?.map((item) => ({
-      ...item,
-
       rawTimeStamp: item.period,
-      Batt_Time: new Date(item.period).toLocaleTimeString("id-ID", {
-        day: "numeric", // Muncul angka tanggal
-        month: "short", // Muncul singkatan bulan (Jan, Feb, dsb)
+      // Ganti spasi dengan "T" agar format "YYYY-MM-DD HH:00:00" menjadi ISO string yang valid
+      Batt_Time: new Date(item.period.replace(" ", "T")).toLocaleTimeString("id-ID", {
+        day: "numeric",
+        month: "short",
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
       }),
+      avg_Batt: (item as any).Batt_V_Avg != null ? Number((item as any).Batt_V_Avg) : null,
     })) || [];
 
   return (
-    <ChartContainer
-      config={chartConfig}
-      className="h-[380px] w-full border  rounded-3xl bg-blue-600 dark:bg-blue-950 flex flex-col-2  transition-all duration-300 ease-in-out
-                    hover:shadow-2xl hover:-translate-y-1 hover:border-transparent"
-    >
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
+    <div className="w-full border rounded-3xl bg-[#A8DADC] dark:bg-blue-950 flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6 mb-4">
+      <div className="w-full flex justify-center mb-4">
+        <h3 className="text-[#575555ff] font-poppins font-bold text-lg md:text-xl tracking-wide">
+          Chart Tegangan Baterai
+        </h3>
+      </div>
+      <ChartContainer
+        config={chartConfig}
+        className="h-[380px] w-full"
+      >
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
           data={formattedData}
           margin={{
             top: 20,
@@ -66,10 +71,10 @@ export default function BatteryChart({ avgData }: ChartAreaProps) {
             bottom: 10,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" strokeWidth={1} opacity={0.1} />
           <XAxis
             dataKey="Batt_Time"
-            tick={{ fill: "#ffffff", fontSize: 11 }}
+            tick={{ fill: "#575555ff", fontSize: 11 }}
             domain={["auto", "auto"]}
             axisLine={true}
             // label={{
@@ -83,7 +88,9 @@ export default function BatteryChart({ avgData }: ChartAreaProps) {
               value: "Tegangan (V)",
               angle: -90,
               position: "insideLeft",
+              fill: "#575555ff",
             }}
+            tick={{ fill: "#575555ff", fontSize: 12 }}
             domain={["auto", "auto"]}
           />
           <Tooltip
@@ -124,5 +131,6 @@ export default function BatteryChart({ avgData }: ChartAreaProps) {
         </LineChart>
       </ResponsiveContainer>
     </ChartContainer>
+    </div>
   );
 }

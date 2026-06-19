@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "components/auth/ButtonAuthApi.tsx"  ],
+, "components/auth/ButtonAuthApi.tsx", "app/kosong/page.tsx", "components/kosong/exportAcak.tsx"  ],
   "exclude": ["node_modules"]
 }

@@ -39,6 +39,37 @@ model aws_bali {
   Rain_mm_Tot Float?   @db.Float
 }
 
+model aws_pangandaran {
+  id          Int      @id @default(autoincrement())
+  timestamp   DateTime @default(now()) @db.DateTime(0)
+  date        String?  @db.VarChar(25)
+  time        String?  @db.VarChar(25)
+  Batt_V_Avg  Float?   @db.Float
+  PTemp_Max   Float?   @db.Float
+  WS_S_Avg    Float?   @db.Float
+  W_D_Avg     Float?   @db.Float
+  WD_Std      Float?   @db.Float
+  WS_Max      Float?   @db.Float
+  WD_Max_WS   Float?   @db.Float
+  Ta_Avg      Float?   @db.Float
+  Ta_Max      Float?   @db.Float
+  Ta_Min      Float?   @db.Float
+  RH_Avg      Float?   @db.Float
+  RH_Max      Float?   @db.Float
+  RH_Min      Float?   @db.Float
+  e_Avg       Float?   @db.Float
+  e_Max       Float?   @db.Float
+  e_Min       Float?   @db.Float
+  P           Float?   @db.Float
+  NR_Wm2_Avg  Float?   @db.Float
+  NR_Wm2_Max  Float?   @db.Float
+  NR_Wm2_Min  Float?   @db.Float
+  CNR_Wm2_Avg Float?   @db.Float
+  CNR_Wm2_Max Float?   @db.Float
+  CNR_Wm2_Min Float?   @db.Float
+  Rain_mm_Tot Float?   @db.Float
+}
+
 model aws_bungus {
   id          Int      @id @default(autoincrement())
   timestamp   DateTime @default(now()) @db.DateTime(0)
@@ -92,10 +123,10 @@ model datarecord {
 //   datarecord datarecord[]
 // }
 
-// enum user_role {
-//   USER
-//   ADMIN
-// }
+enum Role {
+  USER
+  ADMIN
+}
 
 model Account {
   id                String  @id @default(cuid())
@@ -130,6 +161,8 @@ model User {
   id            String    @id @default(cuid())
   name          String?
   email         String?   @unique
+  password      String?
+  role          Role     @default(USER) 
   emailVerified DateTime? @map("email_verified")
   image         String?
   accounts      Account[]

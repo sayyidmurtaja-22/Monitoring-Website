@@ -4,6 +4,7 @@ export type IntervalType = 'hour' | 'day' | 'month';
 
 export type WeatherData = {
   period: string; 
+  time : Date | string | null;
   id: string | number;
   timestamp: Date | string | null;
   Batt_V_Avg: number | null;
@@ -31,12 +32,14 @@ export type WeatherData = {
 };
 
 export type AvgWeatherData = {
-
- period: string;
+  id?: string;
+  time?: Date | string | null;
+  period: string;
   avg_Batt: number | null;
   avg_Ptemp: number | null;
   avg_WS_S_Avg: number | null;
   // avg_WS_Std: number | null;
+  avg_W_D_Avg?: number | null;
   avg_WS_Max: number | null;
   avg_WD_Max_WS: number | null;
   avg_Ta_Avg: number | null;
@@ -55,4 +58,9 @@ export type AvgWeatherData = {
   avg_e_Max: number | null;
   avg_e_Min: number | null;
   jumlah_data: number | null;
+  P?: number | null;
+  avg_P?: number | null;
 };
+
+// Alias untuk kompatibilitas import yang sudah ada
+export type WeatherDataTypes = WeatherData;

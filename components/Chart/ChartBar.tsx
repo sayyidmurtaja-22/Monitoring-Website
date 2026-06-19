@@ -32,27 +32,31 @@ interface ChartAreaProps {
 export function ChartBar({ avgData }: ChartAreaProps) {
   const formattedData =
     avgData?.map((item) => ({
-      ...item,
-
-      displayTime: new Date(item.period).toLocaleTimeString("id-ID", {
-        day: "numeric", // Muncul angka tanggal
-        month: "short", // Muncul singkatan bulan (Jan, Feb, dsb)
+      // Ganti spasi dengan "T" agar format "YYYY-MM-DD HH:00:00" menjadi ISO string yang valid
+      displayTime: new Date(item.period.replace(" ", "T")).toLocaleTimeString("id-ID", {
+        day: "numeric",
+        month: "short",
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
       }),
+      period: item.period,
+      avg_CNR_Wm2_Avg: (item as any).CNR_Wm2_Avg != null ? Number((item as any).CNR_Wm2_Avg) : null,
+      avg_CNR_Wm2_Max: (item as any).CNR_Wm2_Max != null ? Number((item as any).CNR_Wm2_Max) : null,
+      avg_CNR_Wm2_Min: (item as any).CNR_Wm2_Min != null ? Number((item as any).CNR_Wm2_Min) : null,
     })) || [];
   // console.log("Data chart:", formattedData);
 
   return (
-    <>
-      <div className="rounded-3xl bg-blue-800 w-60 py-1">
-        <h3 className="font-black w-60 px-4 ">Bar Chart NetRadiometer</h3>
+    <div className="w-full border rounded-3xl bg-[#A8DADC] dark:bg-blue-950 flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6 mb-4">
+      <div className="w-full flex justify-center mb-4">
+        <h3 className="text-[#575555ff] font-poppins font-bold text-lg md:text-xl tracking-wide">
+          Bar Chart NetRadiometer
+        </h3>
       </div>
       <ChartContainer
         config={chartConfig}
-        className="h-[380px] w-full border rounded-3xl bg-blue-600 dark:bg-blue-950 flex flex-col-2  transition-all duration-300 ease-in-out
-                    hover:shadow-2xl hover:-translate-y-1 hover:border-transparent"
+        className="h-[380px] w-full"
       >
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -68,7 +72,7 @@ export function ChartBar({ avgData }: ChartAreaProps) {
             <XAxis
               dataKey="displayTime"
               type="category"
-              tick={{ fill: "#ffffff", fontSize: 11 }}
+              tick={{ fill: "#575555ff", fontSize: 11 }}
               tickMargin={10}
               domain={["auto", "auto"]}
               axisLine={false}
@@ -78,11 +82,11 @@ export function ChartBar({ avgData }: ChartAreaProps) {
                 value: "Suhu (W/m^2)",
                 angle: -90,
                 position: "insideLeft",
-                color: "#ffffff",
+                color: "#575555ff",
               }}
               axisLine={true}
               tickLine={true}
-              tick={{ fill: "#ffffff", fontSize: 12 }}
+              tick={{ fill: "#575555ff", fontSize: 12 }}
               tickCount={4}
               interval={0}
               domain={["auto", "auto"]}
@@ -108,13 +112,13 @@ export function ChartBar({ avgData }: ChartAreaProps) {
                 />
               }
             />
-            <ChartLegend content={<ChartLegendContent />} />
+            <ChartLegend content={<ChartLegendContent className="text-[#575555ff]" />} />
             <Bar dataKey="avg_CNR_Wm2_Avg" fill="#FBBF24" radius={4} />
             <Bar dataKey="avg_CNR_Wm2_Max" fill="#10B981" radius={4} />
             <Bar dataKey="avg_CNR_Wm2_Min" fill="#F43F5E" radius={4} />
           </BarChart>
         </ResponsiveContainer>
       </ChartContainer>
-    </>
+    </div>
   );
 }

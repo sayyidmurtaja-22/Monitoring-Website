@@ -10,6 +10,8 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { Poppins } from "next/font/google";
 import Greeting from "@/components/Greeting";
 import ClockCard from "@/components/Clock/Clock";
+import { userSession } from "@/libs/auth-libs";
+
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -17,14 +19,19 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
+  const session = await userSession()
+
+    const role = session?.role === "ADMIN" ? "ADMIN" : "USER";
+
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar  role={role || "USER"} />
       <SidebarInset>
         <nav className="sticky top-0 z-50 h-9 shrink-0 items-center gap-2 p-4 flex w-full justify-between bg-background rounded-3xl">
           <div className="text-2xl flex flex-row gap-2 font-black">
@@ -34,7 +41,7 @@ export default function DashboardLayout({
             <div className="text-2xl font-black">
             <ClockCard />
             </div>
-          <div className=" flex items-center gap-4">
+          <div className=" flex items-center justify-center ">
             <ModeToggle />
             <Greeting />
           </div>

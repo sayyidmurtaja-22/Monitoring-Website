@@ -1,7 +1,7 @@
 "use client"; // Required for usePathname in Next.js App Router
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Command, LayoutDashboard, Users } from "lucide-react";
+import { LayoutDashboard, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarHeader,
@@ -15,12 +15,17 @@ import {
 import { cn } from "@/lib/utils"; // Assuming shadcn utils
 import { BiExport } from "react-icons/bi";
 
-export function AppSidebar() {
+interface UserProps {
+  role?: "ADMIN" | "USER";
+}
+
+export function AppSidebar({ role }: UserProps) {
   const pathname = usePathname();
   const menuItems = [
     { title: "Dashboard", url: "/users/dashboard", icon: LayoutDashboard },
     { title: "Export Data", url: "/ExportData", icon: BiExport },
-    { title: "Users", url:"/ProfileUsers", icon: Users },
+    { title: "Users", url: "/ProfileUsers", icon: Users },
+    { title: "Logout", url: "/api/auth/signout", icon: Users },
   ];
 
   return (
@@ -28,41 +33,46 @@ export function AppSidebar() {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex items-center gap-2 p-2">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Command className="size-4" />
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <Link href="/">
-                  <span className="truncate font-semibold font-poppins">
-                    TeknoWeath
-                  </span>
-                </Link>
-                <span className="truncate text-xs font-poppins">
-                  TeknoSea Weather
+            <div className="flex flex-col items-center gap-3 py-4">
+              {/* Logo TeknoSEA - di atas */}
+              <Link href="/" className="flex items-center justify-center">
+                <span className="font-bold text-2xl tracking-tighter text-[#457B9D] font-poppins">
+                  Tekno<span className="text-foreground">SEA</span>
                 </span>
-              </div>
+              </Link>
+              <span className={`
+                 py-1  rounded-lg text-bold font-bold text-center w-40
+                ${role === "ADMIN" 
+                  ? "bg-[#E63946] text-white" 
+                  : "bg-[#1D3557] text-white"
+                }
+              `}>
+                {role === "ADMIN" ? "Administrator" : "User"}
+              </span>
             </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="font-poppins">Menu</SidebarGroupLabel>
+          <SidebarGroupLabel className="font-poppins text-1xl font-bold">
+            Menu
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-1.5">
               {menuItems.map((item) => {
                 // Perbaikan: Pastikan perbandingan URL akurat (contoh: /users vs /users/dashboard)
                 const isActive = pathname === item.url;
                 return (
+                  
                   <SidebarMenuItem key={item.title}>
                     <Link
                       href={item.url}
                       className={cn(
-                        "flex items-center w-full p-2 rounded-md transition-colors",
-                        "hover:bg-accent hover:text-accent-foreground font-poppins",
+                        "flex items-center w-full p-2 rounded-md transition-colors ",
+                        "hover:bg-[#457B9D] hover:text-accent-foreground font-poppins",
                         isActive
-                          ? "bg-accent text-accent-foreground "
+                          ? "bg-[#457B9D] text-accent-foreground "
                           : "text-muted-foreground",
                       )}
                     >
