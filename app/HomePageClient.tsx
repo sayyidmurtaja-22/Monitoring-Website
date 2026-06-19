@@ -1,7 +1,7 @@
 "use client";
 
 import { ModeToggle } from "@/components/mode-toggle";
-import { User } from "@/libs/auth-libs";
+import { type User } from "next-auth";
 import * as motion from "motion/react-client";
 import Link from "next/link";
 import Image from "next/image";
