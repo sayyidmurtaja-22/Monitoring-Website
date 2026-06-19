@@ -17,7 +17,7 @@ interface Auth {
 
 const circuitTransition = {
   duration: 0.8,
-  ease: "circInOut",
+  ease: "circInOut" as const,
 };
 
 // ✨ ANIMASI KILAP UNTUK TOMBOL
