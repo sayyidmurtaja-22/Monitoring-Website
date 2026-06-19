@@ -6,7 +6,7 @@ async function main() {
   try {
     // Try to call GET handler with a mock request
     const req = new Request("http://localhost:3000/api/auth/providers");
-    const res = await handlers.GET(req);
+    const res = await handlers.GET(req as any);
     console.log("GET /api/auth/providers status:", res.status);
     const text = await res.text();
     console.log("Response text:", text);

@@ -1,10 +1,12 @@
 import ButtonAuth from "@/components/auth/ButtonAuthApi";
+import { userSession } from "@/libs/auth-libs";
 
-const Navbar = () => {
+const Navbar = async () => {
+  const user = await userSession();
   return (
     <aside>
       <div>
-        <ButtonAuth />
+        <ButtonAuth user={user} />
       </div>
     </aside>
   );
