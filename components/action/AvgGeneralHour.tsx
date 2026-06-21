@@ -1,7 +1,7 @@
 import { TableName } from "@/config/Location";
 import { AvgWeatherData, IntervalType,WeatherData, WeatherDataTypes } from "@/types/AvgTypes";
 import prisma from "@/libs/prisma";
-import { table } from "console";
+
 
 interface DataProps {
   from: Date;
