@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
- images: {
+  serverExternalPackages: ["@prisma/client", "bcrypt-ts"],
+  images: {
     remotePatterns: [
       {
         protocol: 'https',

@@ -5,7 +5,7 @@ import jsPDF from "jspdf";
 import { useRef, useState } from "react"; //import dependencies
 import RefreshButton from "../Refresh/RefreshBut";
 import RefreshJam from "../Refresh/RefreshJam";
-import { User } from "@/prisma/generated/client";
+import { User } from "@prisma/client";
 import WeatherDataBali from "../WeatherDataBali";
 import LocationList from "../LocationList/LocationList";
 
