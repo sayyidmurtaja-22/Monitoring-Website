@@ -20,6 +20,7 @@ export default function ButtonAuthApi({ user }: ButtonAuthApiProps) {
       toast.success("Selamat telah login ", {
         duration: 4000,
       });
+      console.log("handleauth", handleAuth)
     }
   };
 
