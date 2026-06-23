@@ -75,7 +75,7 @@ export function AppSidebar({ role, user }: UserProps) {
                         "flex items-center w-full p-2 rounded-md transition-colors ",
                         "hover:bg-[#457B9D] hover:text-accent-foreground font-poppins",
                         isActive
-                          ? "bg-[#457B9D] text-accent-foreground "
+                          ? "bg-[#457B9D] text-white "
                           : "text-muted-foreground",
                       )}
                     >
