@@ -31,15 +31,15 @@ export default async function DashboardLayout({
     <SidebarProvider>
       <AppSidebar role={role || "USER"} user={session} />
       <SidebarInset>
-        <header className=" h-9 shrink-0 items-center gap-2 p-4 flex w-full justify-between border-none  ">
-          <div className="text-2xl gap-2 flex items-center font-black">
+        <header className="shrink-0 items-center gap-2 p-4 flex w-full justify-between border-none flex-wrap">
+          <div className="text-lg md:text-2xl gap-2 flex items-center font-black">
             <SidebarTrigger />
             Export Data
           </div>
-          <div className="text-2xl font-black">
+          <div className="text-2xl font-black hidden md:block">
             <ClockCard />
           </div>
-          <div className=" flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <ModeToggle />
             <Greeting />
           </div>
