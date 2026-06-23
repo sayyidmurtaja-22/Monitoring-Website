@@ -82,12 +82,12 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --sidebar: #F1FAEE;
-  --sidebar-foreground: #457B9D;
+  --sidebar: #E2EAF4; /* Lebih gelap sedikit dari background utama (#F1FAEE) */
+  --sidebar-foreground: #1D3557;
   --sidebar-primary: #457B9D;
-  --sidebar-primary-foreground: #457B9D;
-  --sidebar-accent: #457B9D;
-  --sidebar-accent-foreground: #457B9D;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #D1DFEF;
+  --sidebar-accent-foreground: #1D3557;
   --sidebar-border: #457B9D;
   --sidebar-ring: #457B9D;
    --color-line-stroke: #000080;
@@ -96,40 +96,40 @@
 }
 
 .dark {
-  --background: #0F172A;
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: #162D47;
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --background: #091524; /* Biru sangat gelap (kebalikan dari F1FAEE) */
+  --foreground: #F1FAEE; /* Teks sangat terang (kebalikan dari 1D3557) */
+  --card: #1D3557; /* Biru Navy (Warna Foreground Light) */
+  --card-foreground: #F1FAEE;
+  --popover: #1D3557;
+  --popover-foreground: #F1FAEE;
+  --primary: #457B9D;
+  --primary-foreground: #F1FAEE;
+  --secondary: #162D47;
+  --secondary-foreground: #F1FAEE;
+  --muted: #162D47;
+  --muted-foreground: #A8DADC;
+  --accent: #457B9D;
+  --accent-foreground: #F1FAEE;
+  --destructive: #E63946;
+  --border: #457B9D;
+  --input: #162D47;
+  --ring: #A8DADC;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar:#0F172A;
-  --sidebar-foreground: #1D3557;
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent:#162D47;
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-  --color-line-stroke: #8080ff; 
-  --color-line-stroke-Temp: #FFA07A; 
-  --color-surface-base: #1a1a1a;
+  --sidebar: #122238; /* Sedikit lebih gelap/berbeda dari background utama untuk kontras sidebar */
+  --sidebar-foreground: #F1FAEE;
+  --sidebar-primary: #457B9D;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #1D3557;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #1D3557;
+  --sidebar-ring: #457B9D;
+  --color-line-stroke: #A8DADC; 
+  --color-line-stroke-Temp: #E63946; 
+  --color-surface-base: #1D3557;
 }
 
 .small-calendar-panel {
