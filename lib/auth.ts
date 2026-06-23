@@ -6,7 +6,6 @@ import prisma from "@/libs/prisma";
 import { compareSync } from "bcrypt-ts";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-    debug: true,
     adapter: PrismaAdapter(prisma),
     trustHost: true,
     session: {
