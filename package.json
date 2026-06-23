@@ -19,7 +19,6 @@
     "@heroicons/react": "^2.2.0",
     "@heroui/react": "^3.0.3",
     "@paper-design/shaders-react": "^0.0.76",
-    "@prisma/adapter-mariadb": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "@recharts/devtools": "^0.0.11",
     "add": "^2.0.6",
