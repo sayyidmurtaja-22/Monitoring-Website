@@ -29,7 +29,7 @@ export default async function DashboardLayout({
   const role = session?.role === "ADMIN" ? "ADMIN" : "USER";
   return (
     <SidebarProvider>
-      <AppSidebar role={role || "USER"} />
+      <AppSidebar role={role || "USER"} user={session} />
       <SidebarInset>
         <header className=" h-9 shrink-0 items-center gap-2 p-4 flex w-full justify-between border-none  ">
           <div className="text-2xl gap-2 flex items-center font-black">

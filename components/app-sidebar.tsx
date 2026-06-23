@@ -1,7 +1,7 @@
 "use client"; // Required for usePathname in Next.js App Router
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users } from "lucide-react";
+import { LayoutDashboard, Users, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarHeader,
@@ -11,21 +11,23 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarGroupContent,
+  SidebarFooter,
 } from "@/components/ui/sidebar"; // Adjust imports to your project structure
 import { cn } from "@/lib/utils"; // Assuming shadcn utils
 import { BiExport } from "react-icons/bi";
+import { signOut } from "next-auth/react";
 
 interface UserProps {
   role?: "ADMIN" | "USER";
+  user?: any;
 }
 
-export function AppSidebar({ role }: UserProps) {
+export function AppSidebar({ role, user }: UserProps) {
   const pathname = usePathname();
   const menuItems = [
     { title: "Dashboard", url: "/users/dashboard", icon: LayoutDashboard },
     { title: "Export Data", url: "/ExportData", icon: BiExport },
     { title: "Users", url: "/ProfileUsers", icon: Users },
-    { title: "Logout", url: "/api/auth/signout", icon: Users },
   ];
 
   return (
@@ -63,6 +65,7 @@ export function AppSidebar({ role }: UserProps) {
               {menuItems.map((item) => {
                 // Perbaikan: Pastikan perbandingan URL akurat (contoh: /users vs /users/dashboard)
                 const isActive = pathname === item.url;
+
                 return (
                   
                   <SidebarMenuItem key={item.title}>
@@ -87,6 +90,30 @@ export function AppSidebar({ role }: UserProps) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="p-4 pb-6">
+        <div className="flex flex-col gap-3 bg-[#1D3557]/5 p-4 rounded-xl border border-border/50">
+          <div className="flex items-center gap-3">
+            {user?.image ? (
+              <img src={user.image} alt={user.name || "User"} className="h-10 w-10 rounded-full object-cover" />
+            ) : (
+              <div className="h-10 w-10 rounded-full bg-[#457B9D] flex items-center justify-center text-white font-bold shrink-0">
+                {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+              </div>
+            )}
+            <div className="flex flex-col overflow-hidden">
+              <span className="text-sm font-bold truncate text-[#1D3557] font-poppins">{user?.name || "Guest"}</span>
+              <span className="text-xs text-muted-foreground truncate font-poppins">{user?.email || "No email"}</span>
+            </div>
+          </div>
+          <button
+            onClick={() => signOut({ callbackUrl: "/", redirect: true })}
+            className="flex items-center justify-center w-full p-2 mt-1 rounded-md transition-colors bg-[#E63946]/10 text-[#E63946] hover:bg-[#E63946] hover:text-white font-poppins text-sm font-bold"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
+          </button>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }

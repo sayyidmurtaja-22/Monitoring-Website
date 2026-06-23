@@ -31,7 +31,7 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar  role={role || "USER"} />
+      <AppSidebar role={role || "USER"} user={session} />
       <SidebarInset>
         <nav className="sticky top-0 z-50 h-9 shrink-0 items-center gap-2 p-4 flex w-full justify-between bg-background rounded-3xl">
           <div className="text-2xl flex flex-row gap-2 font-black">
