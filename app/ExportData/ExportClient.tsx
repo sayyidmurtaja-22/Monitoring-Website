@@ -71,12 +71,12 @@ const formatDateTime = (dateString: string) => {
   if (!dateString) return "-";
   const date = new Date(dateString);
   if (isNaN(date.getTime())) return dateString;
+
+  // Format baku/formal: 01 Oktober 2024
   return new Intl.DateTimeFormat("id-ID", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+    day: "2-digit",  // Menghasilkan tanggal 2 digit (01, 02, dst)
+    month: "long",   // Menghasilkan nama bulan utuh (Januari, Februari, dst)
+    year: "numeric", // Menghasilkan tahun 4 digit (2024, 2026, dst)
   }).format(date);
 };
 

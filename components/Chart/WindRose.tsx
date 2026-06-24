@@ -179,7 +179,7 @@ const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
   return (
     <div className="w-full border rounded-3xl bg-[#A8DADC] dark:bg-blue-950 flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6 mb-4">
       <div className="w-full flex justify-center mb-2">
-        <h3 className="text-[#575555ff] font-poppins font-bold text-lg md:text-xl tracking-wide">
+        <h3 className="text-[#ffff] font-poppins font-bold text-lg md:text-xl tracking-wide">
           Wind Rose (Arah & Kecepatan Angin)
         </h3>
       </div>

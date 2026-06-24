@@ -52,7 +52,7 @@ export default function ProfileUserClient({ user }: AuthProps) {
         </div>
 
         <div className="mt-8 w-full flex justify-center">
-          <LogoutButton />
+          {/* <LogoutButton /> */}
         </div>
       </div>
     </div>

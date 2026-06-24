@@ -29,13 +29,12 @@ const Greeting = async () => {
           <p className="text-sm font-bold hidden md:block text-[#1D3557] dark:text-white">
             Halo, {session?.name?.split(" ")[0] || "User"}
           </p>
-
           {/* HOVER CARD (Akan muncul saat profile di-hover) */}
           <div className="absolute right-0 top-full mt-2 w-64 p-4 bg-background border border-border shadow-lg rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col gap-4">
             
             {/* Info Profil Utama */}
             <div className="flex items-center gap-3 border-b border-border pb-3">
-               {session?.image ? (
+              {session?.image ? (
                   <img src={session.image} alt="Profile" className="w-12 h-12 rounded-full object-cover" />
                 ) : (
                   <div className="h-12 w-12 rounded-full bg-[#457B9D] flex items-center justify-center text-white font-bold shrink-0 text-xl">

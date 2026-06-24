@@ -10,15 +10,11 @@ interface GetDataExportProps {
   interval?: "hour" | "day" | "month";
 }
 
-/**
- * Server action genérik untuk mengambil data export dari tabel manapun.
- * Menggantikan GetDataAwsBungusExport.ts yang hardcode ke aws_bungus.
- */
 export async function getDataExport({
   tableName,
   startDate,
   endDate,
-  interval = "day",
+  interval = "day", // <-- Pastikan defaultnya memanggil 'day'
 }: GetDataExportProps): Promise<AvgWeatherData[]> {
   try {
     const fromDate = typeof startDate === "string" ? parseISO(startDate) : startDate;
@@ -30,20 +26,20 @@ export async function getDataExport({
     const startString = `${format(fromDate, "yyyy-MM-dd")} 00:00:00`;
     const endString = `${format(toDate, "yyyy-MM-dd")} 23:59:59`;
 
+    // Penentuan Format Tanggal (Tanpa Waktu/Jam untuk Day dan Month)
     let dateFormat: string;
     switch (interval) {
-      case "hour":
-        dateFormat = "%Y-%m-%d %H:00:00";
-        break;
       case "month":
-        dateFormat = "%Y-%m";
+        dateFormat = "%Y-%m"; // Hasil: 2026-06
         break;
+      case "hour":
+      case "day":
       default:
-        dateFormat = "%Y-%m-%d";
+        // HANYA menampilkan Tahun-Bulan-Tanggal, jamnya dihilangkan.
+        dateFormat = "%Y-%m-%d"; // Hasil: 2026-06-24
+        break;
     }
 
-    // Gunakan nama tabel dari config (aws_bungus, aws_bali, aws_pangandaran)
-    // Kolom time vs timestamp: aws_bungus pakai "time", aws_bali/aws_pangandaran pakai "timestamp"
     const timeColumn = tableName === "aws_bungus" ? "time" : "timestamp";
 
     const data = await prisma.$queryRawUnsafe<any[]>(`
@@ -72,8 +68,8 @@ export async function getDataExport({
         COUNT(*)          as jumlah_data
       FROM ${tableName}
       WHERE 
-        ${timeColumn} >= '${startString}' 
-        AND ${timeColumn} <= '${endString}'
+        DATE_ADD(${timeColumn}, INTERVAL 7 HOUR) >= '${startString}' 
+        AND DATE_ADD(${timeColumn}, INTERVAL 7 HOUR) <= '${endString}'
       GROUP BY 
         DATE_FORMAT(DATE_ADD(${timeColumn}, INTERVAL 7 HOUR), '${dateFormat}')
       ORDER BY 
