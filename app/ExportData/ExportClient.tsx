@@ -206,7 +206,7 @@ export default function ExportClient({ data, initialFrom, initialTo, activeParam
   const locations = Object.entries(LOCATIONS) as [LocationKey, typeof LOCATIONS[LocationKey]][];
 
   return (
-    <div className="p-4 bg-[#1d3557]">
+    <div className="p-4 bg-[#f1faee] dark:bg-[#1d3557]">
       {/* Header dengan nama lokasi */}
       <div className="mb-4">
         <h1 className="text-2xl md:text-3xl font-extrabold font-poppins text-[#1D3557] dark:text-[#457B9D]">
