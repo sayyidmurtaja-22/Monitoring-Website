@@ -219,7 +219,7 @@ export default function BaliDashboardClient({
           </div>
 
           {/* Interval */}
-          <div className="w-full sm:w-auto mt-2 sm:mt-0 order-last sm:order-none">
+          <div>
             <IntervalButtons currentInterval={interval} onIntervalChange={handleIntervalChange} />
           </div>
 
