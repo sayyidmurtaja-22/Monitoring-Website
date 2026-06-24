@@ -5,6 +5,7 @@ import Link from "next/link";
 import { type User } from "next-auth";
 import { useEffect, useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { GrLocationPin } from "react-icons/gr";
 import { LOCATIONS } from "@/config/Location";
 
 import { usePathname } from "next/navigation";
@@ -54,18 +55,18 @@ const LocationListClient = ({ user, onClose }: LocationListClientProps) => {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-rose-50 to-orange-50 dark:from-slate-800 dark:to-slate-800">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-800">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <h3 className="text-base font-semibold text-slate-900 dark:text-white">
-            Lokasi AWS
+          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wide">
+            Pilih Lokasi
           </h3>
         </div>
         <button
           onClick={onClose}
-          className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+          className="p-1.5 rounded-md hover:bg-white dark:hover:bg-slate-700 transition-colors text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 shadow-sm border border-transparent hover:border-slate-200 dark:hover:border-slate-600"
         >
-          <XMarkIcon className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+          <XMarkIcon className="w-5 h-5" />
         </button>
       </div>
 
@@ -73,7 +74,6 @@ const LocationListClient = ({ user, onClose }: LocationListClientProps) => {
       <div className="p-3">
         <div className="flex flex-col gap-2">
           {locations.map((loc) => {
-            // Tentukan apakah item ini sedang dipilih (selected)
             const isSelected = pathname === loc.href;
 
             return (
@@ -81,34 +81,44 @@ const LocationListClient = ({ user, onClose }: LocationListClientProps) => {
                 key={loc.label}
                 href={loc.href}
                 onClick={handleLocationClick}
-                className={`group flex items-center justify-between p-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md ${
+                className={`group flex items-center justify-between p-3.5 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md ${
                   isSelected
-                    ? "bg-gradient-to-r from-emerald-500 to-green-600 shadow-green-500/30 border border-green-400"
-                    : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 border border-transparent"
+                    ? "bg-gradient-to-r from-emerald-500 to-green-600 shadow-green-500/30 border border-green-400 text-white"
+                    : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 border border-blue-500 text-white"
                 }`}
               >
-              <span className="text-white font-medium text-sm">
-                {loc.label}
-              </span>
-              {(loc.active === true && status === "online") ? (
-                <div className="flex items-center gap-2">
-                  <span className="relative flex size-2.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                    <span className="relative inline-flex size-2.5 rounded-full bg-green-500" />
+                <div>
+                  <span className="font-semibold text-sm block">
+                    {loc.label}
                   </span>
-                  <span className="text-xs font-bold text-white/90">ONLINE</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <span className="relative flex size-2.5">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                    <span className="relative inline-flex size-2.5 rounded-full bg-red-500" />
+                  <span className="text-white/70 text-xs font-medium">
+                    {loc.region || "Stasiun AWS"}
                   </span>
-                  <span className="text-xs font-bold text-white/70">OFFLINE</span>
                 </div>
-              )}
-            </Link>
-          )})}
+
+                {/* Status Indicator */}
+                {(loc.active === true && status === "online") ? (
+                  <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm ${
+                    isSelected 
+                      ? "bg-white text-green-700" 
+                      : "bg-white/20 text-white border border-white/30"
+                  }`}>
+                    <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-green-500" : "bg-green-400"} animate-pulse`} />
+                    ONLINE
+                  </div>
+                ) : (
+                  <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm ${
+                    isSelected 
+                      ? "bg-white/20 text-white border border-white/30" 
+                      : "bg-white/20 text-white border border-white/30"
+                  }`}>
+                    <div className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                    OFFLINE
+                  </div>
+                )}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>

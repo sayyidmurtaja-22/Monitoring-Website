@@ -7,17 +7,22 @@ type IntervalType = 'hour' | 'day' | 'month';
 
 interface IntervalButtonsProps {
   currentInterval: IntervalType;
+  onIntervalChange?: (interval: IntervalType) => void;
 }
 
-export function IntervalButtons({ currentInterval }: IntervalButtonsProps) {
+export function IntervalButtons({ currentInterval, onIntervalChange }: IntervalButtonsProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const handleIntervalChange = (interval: IntervalType) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("interval", interval);
-    router.replace(`${pathname}?${params.toString()}`);
+    if (onIntervalChange) {
+      onIntervalChange(interval);
+    } else {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("interval", interval);
+      router.replace(`${pathname}?${params.toString()}`);
+    }
   };
 
   const baseClass = "px-3 py-2 text-sm font-medium rounded-lg transition-all duration-150 flex items-center gap-2";

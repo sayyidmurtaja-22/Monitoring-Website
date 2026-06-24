@@ -27,6 +27,17 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
   const [tempRange, setTempRange] = React.useState<DateRange | undefined>(selectedRange);
   const [error, setError] = React.useState<string | null>(null);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  // Deteksi ukuran layar untuk responsivitas kalender
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile(); // Inisialisasi awal
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Tutup dropdown saat klik di luar
   React.useEffect(() => {
@@ -106,17 +117,19 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
     }
     .rdp-months {
       display: flex !important;
-      flex-direction: row !important;
-      gap: 8px !important;
+      flex-direction: ${isMobile ? 'column' : 'row'} !important;
+      gap: ${isMobile ? '16px' : '8px'} !important;
     }
     .rdp-month {
       margin: 0 !important;
+      width: ${isMobile ? '100%' : 'auto'} !important;
     }
     .rdp-caption {
       padding: 0 0 8px 0 !important;
     }
     .rdp-table {
-      margin: 0 !important;
+      margin: ${isMobile ? '0 auto' : '0'} !important;
+      max-width: ${isMobile ? '280px' : 'none'} !important;
     }
     .rdp-head_cell {
       font-size: 11px !important;
@@ -201,28 +214,32 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-150 text-slate-700 dark:text-slate-200"
+        className="flex items-center justify-between sm:justify-start gap-2 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-150 text-slate-700 dark:text-slate-200"
       >
-        <FaCalendarAlt className="text-white" cursor="pointer" />
-        <span className="text-sm">{formatDateDisplay()}</span>
-        <span className={`text-xs transition-transform ${isOpen ? 'rotate-180' : ''}`}>▼</span>
+        <div className="flex items-center gap-2">
+          <FaCalendarAlt className="text-[#E63946] dark:text-[#A8DADC]" cursor="pointer" />
+          <span className="text-sm font-medium">{formatDateDisplay()}</span>
+        </div>
+        <span className={`text-xs text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}>▼</span>
       </button>
 
       {/* Dropdown kalender */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 z-50 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden" style={{ width: 'auto', minWidth: '380px' }}>
+        <div className={`absolute ${isMobile ? 'left-0 w-[calc(100vw-2rem)]' : 'right-0 w-auto'} mt-2 z-[60] bg-white dark:bg-slate-800 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden origin-top-left sm:origin-top-right`} style={!isMobile ? { minWidth: '380px' } : {}}>
           <style>{calendarCSS}</style>
 
           <div className="p-3">
-            <DayPicker
-              mode="range"
-              defaultMonth={tempRange?.from || new Date()}
-              selected={tempRange}
-              onSelect={handleDateChange}
-              numberOfMonths={2}
-              locale={id}
-              showOutsideDays={true}
-            />
+            <div className="flex justify-center">
+              <DayPicker
+                mode="range"
+                defaultMonth={tempRange?.from || new Date()}
+                selected={tempRange}
+                onSelect={handleDateChange}
+                numberOfMonths={isMobile ? 1 : 2}
+                locale={id}
+                showOutsideDays={true}
+              />
+            </div>
 
             {error && (
               <div className="mt-2 p-1.5 text-xs text-red-600 bg-red-50 dark:bg-red-950/30 rounded text-center">
@@ -232,23 +249,23 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
 
             {/* Info jumlah hari yang dipilih sementara */}
             {tempRange?.from && tempRange?.to && !error && (
-              <div className="mt-2 p-1.5 text-xs text-blue-600 bg-blue-50 dark:bg-blue-950/30 rounded text-center">
-                {differenceInDays(tempRange.to, tempRange.from)} hari terpilih
+              <div className="mt-3 p-2 text-xs font-medium text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 rounded-md text-center border border-slate-100 dark:border-slate-600">
+                <span className="text-blue-600 dark:text-blue-400 font-bold">{differenceInDays(tempRange.to, tempRange.from)}</span> hari terpilih
               </div>
             )}
           </div>
 
           {/* Tombol Terapkan dan Batal */}
-          <div className="flex items-center justify-end gap-2 px-3 py-2 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+          <div className="flex items-center justify-end gap-2 px-3 py-2.5 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
             <button
               onClick={handleCancel}
-              className="px-3 py-1 text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
             >
               Batal
             </button>
             <button
               onClick={handleApply}
-              className="px-3 py-1 text-xs text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors"
+              className="px-4 py-1.5 text-xs font-medium text-white bg-[#E63946] border border-[#E63946] rounded-md hover:bg-[#D90429] shadow-sm transition-colors"
             >
               Terapkan
             </button>

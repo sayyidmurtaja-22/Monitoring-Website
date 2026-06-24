@@ -2,6 +2,8 @@
 
 import { type User } from "next-auth";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useTransition } from "react";
+import LoadingSkeleton from "@/app/skeletondots";
 import { useRef, useState, useEffect } from "react";
 import { GrLocationPin } from "react-icons/gr";
 import { DatePicker } from "@/components/Calendar/DatePicker";
@@ -45,6 +47,7 @@ export default function BaliDashboardClient({
   const locationRef = useRef<HTMLDivElement>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const [exporting, setExporting] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   // Tutup dropdown saat klik di luar
   useEffect(() => {
@@ -85,8 +88,17 @@ export default function BaliDashboardClient({
       params.delete("to");
     }
 
-    // Push URL baru -> halaman server akan re-fetch data secara otomatis
-    router.push(`${pathname}?${params.toString()}`);
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
+  };
+
+  const handleIntervalChange = (newInterval: "hour" | "day" | "month") => {
+    startTransition(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("interval", newInterval);
+      router.push(`${pathname}?${params.toString()}`);
+    });
   };
 
   const [showExportModal, setShowExportModal] = useState(false);
@@ -191,13 +203,13 @@ export default function BaliDashboardClient({
               }}
               className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-150 text-slate-700 dark:text-slate-200"
             >
-              <GrLocationPin className="text-slate-700 dark:text-slate-200" cursor="pointer" />
+              <GrLocationPin className="text-[#E63946] dark:text-[#A8DADC]" cursor="pointer" />
               <span className="hidden sm:inline text-sm">Lokasi</span>
               <span className="text-xs">▼</span>
             </button>
 
             {showLocationDropdown && (
-              <div className="absolute right-0 mt-2 w-80 z-50">
+              <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 z-[60] origin-top-left sm:origin-top-right">
                 <LocationList user={user} onClose={() => setShowLocationDropdown(false)} />
               </div>
             )}
@@ -212,9 +224,9 @@ export default function BaliDashboardClient({
             />
           </div>
 
-          {/* Tombol Interval */}
-          <div className="hidden sm:block">
-            <IntervalButtons currentInterval={interval} />
+          {/* Interval */}
+          <div className="w-full sm:w-auto mt-2 sm:mt-0 order-last sm:order-none">
+            <IntervalButtons currentInterval={interval} onIntervalChange={handleIntervalChange} />
           </div>
 
           <button
@@ -242,7 +254,11 @@ export default function BaliDashboardClient({
       </div>
 
       {/* ─── Konten: Card + Chart Suhu ─── */}
-      {avgData.length === 0 ? (
+      {isPending ? (
+        <div className="pt-4">
+          <LoadingSkeleton />
+        </div>
+      ) : avgData.length === 0 ? (
         <div className="p-10 bg-white dark:bg-slate-800/50 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center">
           <div className="text-slate-400 mb-2">
             <svg
