@@ -272,13 +272,34 @@ const IconCompass = () => (
 
 // ─── Header Laporan PDF ─────────────────────────────────────────────────────────
 function ExportHeader({ data }: { data: { nama: string; nim: string; instansi: string } }) {
+  // 1. Ambil waktu saat ini secara dinamis (mengikuti zona waktu perangkat lokal)
+  const now = new Date();
+
+  // 2. Format Tanggal (Contoh: 24 Juni 2026)
+  const dateStr = new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(now);
+
+  // 3. Format Jam (Contoh: 14.41)
+  const timeStr = new Intl.DateTimeFormat("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(now).replace(":", ".");
+
+  // 4. Deteksi otomatis Zona Waktu (WIB/WITA/WIT) berdasarkan lokasi perangkat pengguna
+  const tzParts = new Intl.DateTimeFormat("id-ID", { timeZoneName: "short" }).formatToParts(now);
+  const timeZoneName = tzParts.find((part) => part.type === "timeZoneName")?.value || "";
+
   return (
     <div style={{ padding: "24px 32px", borderBottom: "3px solid #1d3557", marginBottom: 16, backgroundColor: "#ffffff" }}>
       <h1 style={{ fontSize: 22, fontWeight: 800, color: "#1d3557", marginBottom: 4, fontFamily: "sans-serif" }}>
         Laporan Data Cuaca — AWS Padang
       </h1>
       <p style={{ fontSize: 12, color: "#64748b", marginBottom: 12, fontFamily: "sans-serif" }}>
-        Diekspor pada {new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+        Diekspor pada {dateStr} pukul {timeStr} {timeZoneName}
       </p>
       <div style={{ display: "flex", gap: 32, fontSize: 13, fontFamily: "sans-serif" }}>
         <div><span style={{ color: "#64748b" }}>Nama:</span> <strong style={{ color: "#1e293b" }}>{data.nama}</strong></div>
