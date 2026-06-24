@@ -27,7 +27,6 @@ export function AppSidebar({ role, user }: UserProps) {
   const menuItems = [
     { title: "Dashboard", url: "/users/dashboard", icon: LayoutDashboard },
     { title: "Export Data", url: "/ExportData", icon: BiExport },
-    { title: "Users", url: "/ProfileUsers", icon: Users },
   ];
 
   return (
