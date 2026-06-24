@@ -278,6 +278,22 @@ export default function DashboardClient({
         onOpenChange={setShowExportModal} 
         onExport={handleExportSubmit} 
       />
+
+      {/* Loading Overlay saat Export PDF */}
+      {exporting && (
+        <div data-html2canvas-ignore="true" className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center transition-all">
+          <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-2xl flex flex-col items-center gap-5 border border-slate-200 dark:border-slate-700 max-w-sm w-full mx-4 text-center transform scale-100 animate-in fade-in zoom-in duration-200">
+            <div className="relative">
+              <div className="w-12 h-12 border-4 border-slate-200 dark:border-slate-600 rounded-full"></div>
+              <div className="w-12 h-12 border-4 border-[#E63946] border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">Menyiapkan Laporan</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Mohon tunggu sebentar, PDF sedang diproses...</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
