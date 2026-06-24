@@ -225,52 +225,69 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
 
       {/* Dropdown kalender */}
       {isOpen && (
-        <div className={`absolute ${isMobile ? 'left-0 w-[calc(100vw-2rem)]' : 'right-0 w-auto'} mt-2 z-[60] bg-white dark:bg-slate-800 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden origin-top-left sm:origin-top-right`} style={!isMobile ? { minWidth: '380px' } : {}}>
-          <style>{calendarCSS}</style>
+        <>
+          {/* Backdrop untuk mobile */}
+          {isMobile && (
+            <div 
+              className="fixed inset-0 bg-black/40 z-[50]"
+              onClick={() => setIsOpen(false)}
+            />
+          )}
+          
+          <div 
+            className={`${
+              isMobile 
+                ? 'fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-[340px]' 
+                : 'absolute right-0 mt-2 w-auto origin-top-right'
+            } z-[60] bg-white dark:bg-slate-800 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden`} 
+            style={!isMobile ? { minWidth: '380px' } : {}}
+          >
+            <style>{calendarCSS}</style>
 
-          <div className="p-3">
-            <div className="flex justify-center">
-              <DayPicker
-                mode="range"
-                defaultMonth={tempRange?.from || new Date()}
-                selected={tempRange}
-                onSelect={handleDateChange}
-                numberOfMonths={isMobile ? 1 : 2}
-                locale={id}
-                showOutsideDays={true}
-              />
+            <div className="p-3">
+              <div className="flex justify-center">
+                <DayPicker
+                  mode="range"
+                  defaultMonth={tempRange?.from || new Date()}
+                  selected={tempRange}
+                  onSelect={handleDateChange}
+                  numberOfMonths={isMobile ? 1 : 2}
+                  locale={id}
+                  showOutsideDays={true}
+                />
+              </div>
+
+              {error && (
+                <div className="mt-2 p-1.5 text-xs text-red-600 bg-red-50 dark:bg-red-950/30 rounded text-center">
+                  ⚠ {error}
+                </div>
+              )}
+
+              {/* Info jumlah hari yang dipilih sementara */}
+              {tempRange?.from && tempRange?.to && !error && (
+                <div className="mt-3 p-2 text-xs font-medium text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 rounded-md text-center border border-slate-100 dark:border-slate-600">
+                  <span className="text-blue-600 dark:text-blue-400 font-bold">{differenceInDays(tempRange.to, tempRange.from)}</span> hari terpilih
+                </div>
+              )}
             </div>
 
-            {error && (
-              <div className="mt-2 p-1.5 text-xs text-red-600 bg-red-50 dark:bg-red-950/30 rounded text-center">
-                ⚠ {error}
-              </div>
-            )}
-
-            {/* Info jumlah hari yang dipilih sementara */}
-            {tempRange?.from && tempRange?.to && !error && (
-              <div className="mt-3 p-2 text-xs font-medium text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 rounded-md text-center border border-slate-100 dark:border-slate-600">
-                <span className="text-blue-600 dark:text-blue-400 font-bold">{differenceInDays(tempRange.to, tempRange.from)}</span> hari terpilih
-              </div>
-            )}
+            {/* Tombol Terapkan dan Batal */}
+            <div className="flex items-center justify-end gap-2 px-3 py-2.5 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+              <button
+                onClick={handleCancel}
+                className="px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleApply}
+                className="px-4 py-1.5 text-xs font-medium text-white bg-[#E63946] border border-[#E63946] rounded-md hover:bg-[#D90429] shadow-sm transition-colors"
+              >
+                Terapkan
+              </button>
+            </div>
           </div>
-
-          {/* Tombol Terapkan dan Batal */}
-          <div className="flex items-center justify-end gap-2 px-3 py-2.5 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-            <button
-              onClick={handleCancel}
-              className="px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
-            >
-              Batal
-            </button>
-            <button
-              onClick={handleApply}
-              className="px-4 py-1.5 text-xs font-medium text-white bg-[#E63946] border border-[#E63946] rounded-md hover:bg-[#D90429] shadow-sm transition-colors"
-            >
-              Terapkan
-            </button>
-          </div>
-        </div>
+        </>
       )}
     </div>
   );
