@@ -41,13 +41,16 @@ export function AppSidebar({ role, user }: UserProps) {
                   Tekno<span className="text-foreground">SEA</span>
                 </span>
               </Link>
-              <span className={`
+              <span
+                className={`
                  py-1  rounded-lg text-bold font-bold text-center w-40
-                ${role === "ADMIN" 
-                  ? "bg-[#E63946] text-white" 
-                  : "bg-[#1D3557] text-white"
+                ${
+                  role === "ADMIN"
+                    ? "bg-[#E63946] text-white"
+                    : "bg-[#1D3557] text-white"
                 }
-              `}>
+              `}
+              >
                 {role === "ADMIN" ? "Administrator" : "User"}
               </span>
             </div>
@@ -66,7 +69,6 @@ export function AppSidebar({ role, user }: UserProps) {
                 const isActive = pathname === item.url;
 
                 return (
-                  
                   <SidebarMenuItem key={item.title}>
                     <Link
                       href={item.url}
@@ -93,19 +95,33 @@ export function AppSidebar({ role, user }: UserProps) {
         <div className="flex flex-col gap-3 bg-[#1D3557]/5 p-4 rounded-xl border border-border/50">
           <div className="flex items-center gap-3">
             {user?.image ? (
-              <img src={user.image} alt={user.name || "User"} className="h-10 w-10 rounded-full object-cover" />
+              <img
+                src={user.image}
+                alt={user.name || "User"}
+                className="h-10 w-10 rounded-full object-cover"
+              />
             ) : (
               <div className="h-10 w-10 rounded-full bg-[#457B9D] flex items-center justify-center text-white font-bold shrink-0">
                 {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
               </div>
             )}
             <div className="flex flex-col overflow-hidden">
-              <span className="text-sm font-bold truncate text-[#1D3557] font-poppins">{user?.name || "Guest"}</span>
-              <span className="text-xs text-muted-foreground truncate font-poppins">{user?.email || "No email"}</span>
+              <span className="text-sm font-bold truncate text-[#1D3557] font-poppins">
+                {user?.name || "Guest"}
+              </span>
+              <span className="text-xs text-muted-foreground truncate font-poppins">
+                {user?.email || "No email"}
+              </span>
             </div>
           </div>
           <button
-            onClick={() => signOut({ callbackUrl: "/", redirect: true })}
+            onClick={async () => {
+              // 1. Matikan redirect bawaan NextAuth dan tunggu proses penghapusan session selesai
+              await signOut({ redirect: false });
+
+              // 2. Paksa browser melakukan hard-reload ke halaman utama
+              window.location.href = "/";
+            }}
             className="flex items-center justify-center w-full p-2 mt-1 rounded-md transition-colors bg-[#E63946]/10 text-[#E63946] hover:bg-[#E63946] hover:text-white font-poppins text-sm font-bold"
           >
             <LogOut className="h-4 w-4 mr-2" />
