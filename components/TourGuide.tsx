@@ -104,20 +104,22 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
       steps={steps}
       run={run}
       continuous
-      showProgress
-      showSkipButton
-      disableScrolling={page === 'dashboard'} // Disable scroll for main dashboard page
-      skipBeacon={true} // Nonaktifkan lingkaran berdenyut untuk semua langkah
-      scrollOffset={150} // Hindari tertutup navbar sticky di atas
       callback={handleJoyrideCallback}
-      primaryColor="#E63946"
-      zIndex={10000}
       locale={{
         back: 'Kembali',
         close: 'Tutup',
         last: 'Selesai',
         next: 'Lanjut',
         skip: 'Lewati',
+      }}
+      options={{
+        showProgress: true,
+        skipBeacon: true, // Nonaktifkan lingkaran berdenyut untuk semua langkah
+        skipScroll: page === 'dashboard', // Disable scroll for main dashboard page
+        scrollOffset: 150, // Hindari tertutup navbar sticky di atas
+        primaryColor: "#E63946",
+        zIndex: 10000,
+        buttons: ['back', 'close', 'primary', 'skip'], // Menampilkan tombol skip
       }}
     />
   );
