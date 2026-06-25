@@ -31,37 +31,31 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
       target: '#tour-status-server', 
       content: 'Indikator ini menunjukkan status koneksi server pusat. Pastikan sistem terhubung dan seluruh stasiun aktif sebelum melakukan pemantauan.',
       skipBeacon: true,
-      disableScroll: true,
     },
     {
       target: '#tour-lokasi-stasiun', 
       content: 'Ini adalah daftar stasiun AWS yang tersedia. Klik salah satu kartu stasiun (misalnya Padang atau Bali) untuk masuk dan melihat data cuaca secara detail.',
       skipBeacon: true,
-      disableScroll: true,
     },
     {
       target: '#tour-menu-sidebar', 
       content: 'Gunakan navigasi ini untuk mengakses fitur lain. Anda bisa kembali ke halaman ini melalui menu Dashboard, atau mengunduh laporan di menu Export Data.',
       skipBeacon: true,
-      disableScroll: true,
     },
     {
       target: '#tour-top-menu', 
       content: 'Di sini Anda dapat melihat jam secara real-time dan menekan ikon bulan untuk beralih antara Mode Gelap (Dark Mode) atau Terang (Light Mode).',
       skipBeacon: true,
-      disableScroll: true,
     },
     ...(isAdmin ? [{
       target: '#tour-user-profile',
       content: 'Sebagai Admin, Anda dapat mengklik profil Anda di sini untuk melihat daftar siapa saja yang sudah mendaftar di sistem ini.',
       skipBeacon: true,
-      disableScroll: true,
     } as Step] : []),
     {
       target: '#tour-user-logout', 
       content: 'Di sudut ini terdapat detail akun Anda. Klik tombol Logout jika Anda sudah selesai melakukan pemantauan.',
       skipBeacon: true,
-      disableScroll: true,
     }
   ];
 
@@ -112,6 +106,7 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
       continuous
       showProgress
       showSkipButton
+      disableScrolling={page === 'dashboard'} // Disable scroll for main dashboard page
       skipBeacon={true} // Nonaktifkan lingkaran berdenyut untuk semua langkah
       scrollOffset={150} // Hindari tertutup navbar sticky di atas
       callback={handleJoyrideCallback}
