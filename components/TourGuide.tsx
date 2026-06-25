@@ -104,7 +104,7 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
       steps={steps}
       run={run}
       continuous
-      callback={handleJoyrideCallback}
+      onEvent={handleJoyrideCallback}
       locale={{
         back: 'Kembali',
         close: 'Tutup',
