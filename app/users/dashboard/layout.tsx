@@ -34,7 +34,7 @@ export default async function DashboardLayout({
     <SidebarProvider>
       <AppSidebar role={role || "USER"} user={session} />
       <SidebarInset>
-        <nav className="sticky top-0 z-50 shrink-0 items-center gap-2 p-4 flex w-full justify-between bg-background rounded-3xl flex-wrap">
+        <nav id="tour-top-menu" className="sticky top-0 z-50 shrink-0 items-center gap-2 p-4 flex w-full justify-between bg-background rounded-3xl flex-wrap">
           <div className="text-lg md:text-2xl flex flex-row gap-2 font-black items-center">
             <SidebarTrigger />
             Dashboard

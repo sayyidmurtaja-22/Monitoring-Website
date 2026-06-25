@@ -16,6 +16,10 @@ import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
 import { ExportPdfDialog, ExportConfigData } from "@/components/ExportPdfDialog";
 
+import dynamic from "next/dynamic";
+
+const TourGuide = dynamic(() => import("@/components/TourGuide"), { ssr: false });
+
 interface BaliDashboardClientProps {
   user: User;
   locationName: string;
@@ -152,7 +156,7 @@ export default function BaliDashboardClient({
         month: "long",
         year: "numeric",
       });
-      return `${from} â€” ${to}`;
+      return `${from} - ${to}`;
     }
     return "7 hari terakhir";
   };
@@ -173,14 +177,15 @@ export default function BaliDashboardClient({
 
   return (
     <div className="w-full flex flex-col gap-4">
-      {/* â”€â”€â”€ Toolbar: Judul + Kalender + Interval â”€â”€â”€ */}
+      <TourGuide page="station" />
+      {/* ─── Toolbar: Judul + Kalender + Interval ─── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold font-poppins text-slate-800 dark:text-white">
             AWS {locationName} Dashboard
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            {formatDateDisplay()} Â·{" "}
+            {formatDateDisplay()} ·{" "}
             <span className="text-blue-500 font-medium">
               {getIntervalLabel(interval)}
             </span>
@@ -189,7 +194,7 @@ export default function BaliDashboardClient({
 
         <div className="flex items-center gap-3 relative flex-wrap">
           {/* Lokasi */}
-          <div ref={locationRef} className="relative">
+          <div ref={locationRef} id="tour-filter-lokasi" className="relative scroll-mt-40">
             <button
               type="button"
               onClick={() => {
@@ -210,7 +215,7 @@ export default function BaliDashboardClient({
           </div>
 
           {/* Kalender DatePicker */}
-          <div className="relative">
+          <div id="tour-filter-tanggal" className="relative scroll-mt-40">
             <DatePicker
               onDateChange={handleDateChange}
               initialFrom={fromParam || undefined}
@@ -219,15 +224,16 @@ export default function BaliDashboardClient({
           </div>
 
           {/* Interval */}
-          <div>
+          <div id="tour-filter-interval" className="scroll-mt-40">
             <IntervalButtons currentInterval={interval} onIntervalChange={handleIntervalChange} />
           </div>
 
           <button
+            id="tour-export-pdf"
             onClick={() => setShowExportModal(true)}
             disabled={exporting || user?.role !== "ADMIN"}
             title={user?.role !== "ADMIN" ? "Hanya Admin yang dapat mengunduh PDF" : "Unduh PDF"}
-            className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed scroll-mt-40"
           >
             {user?.role !== "ADMIN" ? <FaLock /> : <FaDownload />}
             <span className="text-sm">
@@ -239,15 +245,14 @@ export default function BaliDashboardClient({
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-150 text-slate-700 dark:text-slate-200"
+            className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-150 text-slate-700 dark:text-slate-200 scroll-mt-40"
           >
-            <span>â†»</span>
+            <span>&#x21bb;</span>
             <span className="hidden sm:inline text-sm">Refresh</span>
           </button>
         </div>
       </div>
 
-      {/* â”€â”€â”€ Konten: Card + Chart Suhu â”€â”€â”€ */}
       {isPending ? (
         <div className="pt-4">
           <LoadingSkeleton />
@@ -274,7 +279,7 @@ export default function BaliDashboardClient({
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-6">
+        <div id="tour-weather-cards" className="flex flex-col gap-6 scroll-mt-40">
           <WeatherDataBali
             exportRef={exportRef}
             initialData={initialData}

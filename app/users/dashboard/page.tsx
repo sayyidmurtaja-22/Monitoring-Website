@@ -4,6 +4,5 @@ import HomePage from "./HomepageClient"
 
 export default async function Page() {
   const session = await userSession()
-  return <HomePage user={session?.name ?? "Pengguna"}
-   />
+  return <HomePage user={session?.name ?? "Pengguna"} role={session?.role} />
 }

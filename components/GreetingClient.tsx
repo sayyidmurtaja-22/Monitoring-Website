@@ -39,6 +39,7 @@ export default function GreetingClient({ session, role }: GreetingClientProps) {
     <div ref={menuRef} className="relative z-50 font-poppins">
       {/* Tombol Trigger (Bisa di-klik di HP & PC) */}
       <button
+        id="tour-user-profile"
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 md:gap-3 p-1.5 md:p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none"
       >

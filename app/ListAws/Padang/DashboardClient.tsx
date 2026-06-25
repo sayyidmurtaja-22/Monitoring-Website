@@ -32,6 +32,10 @@ interface AuthProps {
   initialInterval: "hour" | "day" | "month";
 }
 
+import dynamic from "next/dynamic";
+
+const TourGuide = dynamic(() => import("@/components/TourGuide"), { ssr: false });
+
 export default function DashboardClient({
   user,
   locationName,
@@ -189,6 +193,7 @@ export default function DashboardClient({
 
   return (
     <div className="w-full flex flex-col gap-4">
+      <TourGuide page="station" />
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold font-poppins text-[#1D3557] dark:text-[#457B9D]">
@@ -204,7 +209,7 @@ export default function DashboardClient({
 
         <div className="flex items-center gap-3 relative flex-wrap">
           {/* Lokasi */}
-          <div ref={locationRef} className="relative">
+          <div ref={locationRef} id="tour-filter-lokasi" className="relative scroll-mt-40">
             <button
               type="button"
               onClick={() => {
@@ -229,7 +234,7 @@ export default function DashboardClient({
           </div>
 
           {/* Tanggal - DatePicker langsung muncul tanpa dropdown tambahan */}
-          <div className="relative">
+          <div id="tour-filter-tanggal" className="relative scroll-mt-40">
             <DatePicker
               onDateChange={handleDateChange}
               initialFrom={fromParam || undefined}
@@ -238,16 +243,17 @@ export default function DashboardClient({
           </div>
 
           {/* Interval */}
-          <div>
+          <div id="tour-filter-interval" className="scroll-mt-40">
             <IntervalButtons currentInterval={interval} onIntervalChange={handleIntervalChange} />
           </div>
 
           {/* Download PDF */}
           <button
+            id="tour-export-pdf"
             onClick={() => setShowExportModal(true)}
             disabled={exporting || user?.role !== "ADMIN"}
             title={user?.role !== "ADMIN" ? "Hanya Admin yang dapat mengunduh PDF" : "Unduh PDF"}
-            className="flex items-center gap-2 px-3 py-2 bg-[#E63946] text-white rounded-lg shadow-sm hover:bg-[#D90429] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-3 py-2 bg-[#E63946] text-white rounded-lg shadow-sm hover:bg-[#D90429] transition-colors disabled:opacity-60 disabled:cursor-not-allowed scroll-mt-40"
           >
             {user?.role !== "ADMIN" ? <FaLock /> : <FaDownload />}
             <span className="text-sm">
@@ -262,15 +268,17 @@ export default function DashboardClient({
           <LoadingSkeleton />
         </div>
       ) : (
-        <WeatherData
-          exportRef={exportRef}
-          initialData={initialData}
-          avgData={avgData}
-          lastData={lastData}
-          dateRange={dateRange}
-          interval={interval}
-          exportHeaderData={exportHeaderData}
-        />
+        <div id="tour-weather-cards" className="scroll-mt-40">
+          <WeatherData
+            exportRef={exportRef}
+            initialData={initialData}
+            avgData={avgData}
+            lastData={lastData}
+            dateRange={dateRange}
+            interval={interval}
+            exportHeaderData={exportHeaderData}
+          />
+        </div>
       )}
 
       <ExportPdfDialog 

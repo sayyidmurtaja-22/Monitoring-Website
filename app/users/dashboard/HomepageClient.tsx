@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MapPinIcon, SignalIcon } from "@heroicons/react/24/outline";
 import { LOCATIONS } from "@/config/Location";
+import dynamic from "next/dynamic";
 
+const TourGuide = dynamic(() => import("@/components/TourGuide"), { ssr: false });
 
 // const locations = [
 //   { label: "Pangandaran", href: "/ListAws/Pangandaran", region: "Jawa Barat" },
@@ -14,17 +16,14 @@ import { LOCATIONS } from "@/config/Location";
 
 interface HomePageProps {
   user: string;
- 
+  role?: string;
 }
 
-export default function HomePage({ user }: HomePageProps) {
+export default function HomePage({ user, role }: HomePageProps) {
   const [status, setStatus] = useState<"loading" | "online" | "offline">("loading");
   const [time, setTime] = useState("");
   
-
   const firstName = user?.split(" ")[0] ?? "Pengguna";
-
-  
 
   const locations = Object.values(LOCATIONS)
 
@@ -61,6 +60,7 @@ export default function HomePage({ user }: HomePageProps) {
 
   return (
     <main className="min-h-screen bg-background flex flex-col">
+      <TourGuide isAdmin={role === "ADMIN"} />
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section className="flex flex-col items-center text-center px-6 pt-16 pb-10 relative overflow-hidden">
@@ -88,7 +88,7 @@ export default function HomePage({ user }: HomePageProps) {
         </p>
 
         {/* Status badge */}
-        <div className="mt-5 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E63946] border border-white/10 text-xs text-white ">
+        <div id="tour-status-server" className="scroll-mt-64 mt-5 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E63946] border border-white/10 text-xs text-white ">
           {status === "loading" && (
             <>
               <span className="w-2 h-2 rounded-full bg-slate-400 animate-pulse font-poppins font-medium" />
@@ -126,7 +126,7 @@ export default function HomePage({ user }: HomePageProps) {
           </div>
 
           {/* Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div id="tour-lokasi-stasiun" className="scroll-mt-64 grid grid-cols-1 sm:grid-cols-3 gap-4">
             {locations.map((loc) => (
               <Link
                 key={loc.label}

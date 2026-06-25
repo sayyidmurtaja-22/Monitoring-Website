@@ -68,8 +68,22 @@ function calcStats(avgData: any[], key: string) {
   };
 }
 
+// ─── Helper: konversi derajat ke arah mata angin ───────────────────────────────
+function getCompassDirection(degree: number) {
+  const dirs = ["Utara", "Timur Laut", "Timur", "Tenggara", "Selatan", "Barat Daya", "Barat", "Barat Laut"];
+  const index = Math.round(degree / 45) % 8;
+  return dirs[index];
+}
+
 // ─── Helper: status badge berdasarkan nilai vs rata-rata ─────────────────────
 function getStatus(value: number, avg: number, unit: string, analysisConfig?: any) {
+  if (analysisConfig?.type === "none") return null;
+
+  if (analysisConfig?.type === "compass") {
+    const direction = getCompassDirection(value);
+    return { label: `Arah: ${direction}`, color: "bg-blue-900 text-blue-100 border border-blue-400" };
+  }
+
   // Fallback default jika tidak ada konfigurasi analysis (10% selisih absolut dari rata-rata)
   if (!analysisConfig) {
     const threshold = Math.abs(avg) * 0.1;
@@ -104,9 +118,14 @@ interface StatCardsProps {
   avgData: any[];
   config: any; // Menggunakan ChartConfig
   icon: React.ReactNode;
+  secondary?: {
+    config: any;
+    icon: React.ReactNode;
+    label: string;
+  };
 }
 
-function StatCards({ avgData, config, icon }: StatCardsProps) {
+function StatCards({ avgData, config, icon, secondary }: StatCardsProps) {
   const primaryLine = config.lines[0];
   const unit = primaryLine.unit || "";
   let label = config.title.replace("Grafik ", "");
@@ -149,10 +168,24 @@ function StatCards({ avgData, config, icon }: StatCardsProps) {
     minPeriod = minRow.period;
   }
 
-  const maxStatus = periodMax !== null && periodAvg !== null
+  let maxStatus = periodMax !== null && periodAvg !== null
     ? getStatus(periodMax, periodAvg, unit, config.analysis) : null;
-  const minStatus = periodMin !== null && periodAvg !== null
+  let minStatus = periodMin !== null && periodAvg !== null
     ? getStatus(periodMin, periodAvg, unit, config.analysis) : null;
+
+  // Jika ada secondary (seperti arah angin), ganti status badge dengan arah pada waktu tersebut
+  if (secondary) {
+    const secKey = secondary.config.lines[0].key;
+    const maxRow = avgData.find((d) => d.period === maxPeriod);
+    const minRow = avgData.find((d) => d.period === minPeriod);
+    
+    if (maxRow && maxRow[secKey] !== undefined && !isNaN(Number(maxRow[secKey]))) {
+      maxStatus = getStatus(Number(maxRow[secKey]), 0, "", secondary.config.analysis);
+    }
+    if (minRow && minRow[secKey] !== undefined && !isNaN(Number(minRow[secKey]))) {
+      minStatus = getStatus(Number(minRow[secKey]), 0, "", secondary.config.analysis);
+    }
+  }
 
   // Kelas card (warna & hover tetap seperti sebelumnya)
   const cardBase =
@@ -250,8 +283,14 @@ const IconThermometer = () => (
   </svg>
 );
 const IconWind = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2" />
+  </svg>
+);
+const IconCompass = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
   </svg>
 );
 const IconGauge = () => (
@@ -360,6 +399,11 @@ export default function WeatherDataBali({
             avgData={avgData}
             config={WIND_CONFIG}
             icon={<IconWind />}
+            secondary={{
+              config: WIND_DIRECTION_CONFIG,
+              icon: <IconCompass />,
+              label: "Arah Dominan"
+            }}
           />
         </div>
 

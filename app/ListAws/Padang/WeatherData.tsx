@@ -118,9 +118,14 @@ interface StatCardsProps {
   avgData: any[];
   config: any; // Menggunakan ChartConfig
   icon: React.ReactNode;
+  secondary?: {
+    config: any;
+    icon: React.ReactNode;
+    label: string;
+  };
 }
 
-function StatCards({ avgData, config, icon }: StatCardsProps) {
+function StatCards({ avgData, config, icon, secondary }: StatCardsProps) {
   const primaryLine = config.lines[0];
   const unit = primaryLine.unit || "";
   let label = config.title.replace("Grafik ", "");
@@ -163,10 +168,24 @@ function StatCards({ avgData, config, icon }: StatCardsProps) {
     minPeriod = minRow.period;
   }
 
-  const maxStatus = periodMax !== null && periodAvg !== null
+  let maxStatus = periodMax !== null && periodAvg !== null
     ? getStatus(periodMax, periodAvg, unit, config.analysis) : null;
-  const minStatus = periodMin !== null && periodAvg !== null
+  let minStatus = periodMin !== null && periodAvg !== null
     ? getStatus(periodMin, periodAvg, unit, config.analysis) : null;
+
+  // Jika ada secondary (seperti arah angin), ganti status badge dengan arah pada waktu tersebut
+  if (secondary) {
+    const secKey = secondary.config.lines[0].key;
+    const maxRow = avgData.find((d) => d.period === maxPeriod);
+    const minRow = avgData.find((d) => d.period === minPeriod);
+    
+    if (maxRow && maxRow[secKey] !== undefined && !isNaN(Number(maxRow[secKey]))) {
+      maxStatus = getStatus(Number(maxRow[secKey]), 0, "", secondary.config.analysis);
+    }
+    if (minRow && minRow[secKey] !== undefined && !isNaN(Number(minRow[secKey]))) {
+      minStatus = getStatus(Number(minRow[secKey]), 0, "", secondary.config.analysis);
+    }
+  }
 
   // Kelas card (warna & hover tetap seperti sebelumnya)
   const cardBase =
@@ -412,21 +431,17 @@ export default function WeatherData({
             speedConfig={WIND_CONFIG}
             directionConfig={WIND_DIRECTION_CONFIG}
           />
-          <div className="flex flex-col gap-4 h-full">
-            <div className="flex-1">
-              <StatCards
-                avgData={avgData}
-                config={WIND_CONFIG}
-                icon={<IconWind />}
-              />
-            </div>
-            <div className="flex-1">
-              <StatCards
-                avgData={avgData}
-                config={WIND_DIRECTION_CONFIG}
-                icon={<IconCompass />}
-              />
-            </div>
+          <div className="h-full">
+            <StatCards
+              avgData={avgData}
+              config={WIND_CONFIG}
+              icon={<IconWind />}
+              secondary={{
+                config: WIND_DIRECTION_CONFIG,
+                icon: <IconCompass />,
+                label: "Arah Dominan"
+              }}
+            />
           </div>
         </div>
 

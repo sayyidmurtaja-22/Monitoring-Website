@@ -62,7 +62,7 @@ export function AppSidebar({ role, user }: UserProps) {
           <SidebarGroupLabel className="font-poppins text-1xl font-bold">
             Menu
           </SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarGroupContent id="tour-menu-sidebar">
             <SidebarMenu className="gap-1.5">
               {menuItems.map((item) => {
                 // Perbaikan: Pastikan perbandingan URL akurat (contoh: /users vs /users/dashboard)
@@ -92,7 +92,7 @@ export function AppSidebar({ role, user }: UserProps) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="p-4 pb-6">
-        <div className="flex flex-col gap-3 bg-[#1D3557]/5 p-4 rounded-xl border border-border/50">
+        <div id="tour-user-logout" className="flex flex-col gap-3 bg-[#1D3557]/5 p-4 rounded-xl border border-border/50">
           <div className="flex items-center gap-3">
             {user?.image ? (
               <img
