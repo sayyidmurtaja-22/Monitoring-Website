@@ -17,6 +17,9 @@ import CheckboxBtn, { allParameters } from "@/components/CheckBoxParams/Checkbox
 import { FaDownload, FaLock } from "react-icons/fa6";
 import { GrLocationPin } from "react-icons/gr";
 import { LOCATIONS, LocationKey } from "@/config/Location";
+import dynamic from "next/dynamic";
+
+const TourGuide = dynamic(() => import("@/components/TourGuide"), { ssr: false });
 
 interface dataProps {
   data?: AvgWeatherData[];
@@ -207,6 +210,8 @@ export default function ExportClient({ data, initialFrom, initialTo, activeParam
 
   return (
     <div className="p-4 bg-[#f1faee] dark:bg-[#091524]">
+      <TourGuide page="export" isAdmin={userRole === "ADMIN"} />
+
       {/* Header dengan nama lokasi */}
       <div className="mb-4">
         <h1 className="text-2xl md:text-3xl font-extrabold font-poppins text-[#1D3557] dark:text-[#457B9D]">
@@ -274,40 +279,46 @@ export default function ExportClient({ data, initialFrom, initialTo, activeParam
           </div>
 
           {/* Tanggal */}
-          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Filter Tanggal:</span>
-          <DatePicker 
-            onDateChange={handleDateChange}
-            initialFrom={dateRange.from}
-            initialTo={dateRange.to}
-          />
+          <div id="tour-export-tanggal" className="flex items-center gap-2 scroll-mt-40">
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Filter Tanggal:</span>
+            <DatePicker 
+              onDateChange={handleDateChange}
+              initialFrom={dateRange.from}
+              initialTo={dateRange.to}
+            />
+          </div>
           {/* Filter Parameter Popover */}
-          <CheckboxBtn
-            selectedKeys={selectedKeys}
-            onChange={setSelectedKeys}
-          />
+          <div id="tour-export-parameter" className="scroll-mt-40">
+            <CheckboxBtn
+              selectedKeys={selectedKeys}
+              onChange={setSelectedKeys}
+            />
+          </div>
         </div>
         
-        {userRole === "ADMIN" ? (
-          <CSVLink
-            data={csvData}
-            filename={`Data_Cuaca_${currentLocationConfig.label}_${dateRange.from}_to_${dateRange.to}.csv`}
-            className={`px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors flex items-center gap-2 ${
-              selectedKeys.length === 0
-                ? "bg-gray-400 cursor-not-allowed pointer-events-none"
-                : "bg-green-600 hover:bg-green-700"
-            }`}
-          >
-            <FaDownload className="text-white" cursor="pointer"/> Export CSV ({selectedKeys.length} parameter)
-          </CSVLink>
-        ) : (
-          <button
-            disabled
-            title="Hanya Admin yang dapat mengunduh data"
-            className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors flex items-center gap-2 bg-gray-400 cursor-not-allowed"
-          >
-            <FaLock className="text-white" /> Export CSV ({selectedKeys.length} parameter)
-          </button>
-        )}
+        <div id="tour-export-csv" className="scroll-mt-40">
+          {userRole === "ADMIN" ? (
+            <CSVLink
+              data={csvData}
+              filename={`Data_Cuaca_${currentLocationConfig.label}_${dateRange.from}_to_${dateRange.to}.csv`}
+              className={`px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors flex items-center gap-2 ${
+                selectedKeys.length === 0
+                  ? "bg-gray-400 cursor-not-allowed pointer-events-none"
+                  : "bg-green-600 hover:bg-green-700"
+              }`}
+            >
+              <FaDownload className="text-white" cursor="pointer"/> Export CSV ({selectedKeys.length} parameter)
+            </CSVLink>
+          ) : (
+            <button
+              disabled
+              title="Hanya Admin yang dapat mengunduh data"
+              className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors flex items-center gap-2 bg-gray-400 cursor-not-allowed"
+            >
+              <FaLock className="text-white" /> Export CSV ({selectedKeys.length} parameter)
+            </button>
+          )}
+        </div>
       </div>
 
 

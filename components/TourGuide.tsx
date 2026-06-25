@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Joyride, Step } from "react-joyride";
 
 interface TourGuideProps {
-  page?: 'dashboard' | 'station';
+  page?: 'dashboard' | 'station' | 'export';
   isAdmin?: boolean;
 }
 
@@ -12,7 +12,10 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
   const [run, setRun] = useState(false);
 
   // Gunakan key berbeda untuk tiap halaman agar tour bisa muncul sekali di dashboard dan sekali di station
-  const storageKey = page === 'dashboard' ? 'hasSeenDashboardTour' : 'hasSeenStationTour';
+  const storageKey = 
+    page === 'dashboard' ? 'hasSeenDashboardTour' : 
+    page === 'export' ? 'hasSeenExportTour' : 
+    'hasSeenStationTour';
 
   useEffect(() => {
     // Only run on mount
@@ -87,7 +90,28 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
     }
   ];
 
-  const steps = page === 'dashboard' ? dashboardSteps : stationSteps;
+  const exportSteps: Step[] = [
+    {
+      target: '#tour-export-tanggal', 
+      content: 'Pertama, tentukan rentang tanggal data yang ingin Anda lihat atau ekspor ke dalam tabel.',
+      skipBeacon: true,
+    },
+    {
+      target: '#tour-export-parameter', 
+      content: 'Kedua, klik menu ini untuk memilih parameter cuaca apa saja (Suhu, Angin, Curah Hujan, dll.) yang ingin Anda tampilkan.',
+      skipBeacon: true,
+    },
+    {
+      target: '#tour-export-csv', 
+      content: 'Terakhir, klik tombol ini untuk mengunduh data yang telah Anda saring ke dalam format CSV agar bisa dibuka di Excel.',
+      skipBeacon: true,
+    }
+  ];
+
+  const steps = 
+    page === 'dashboard' ? dashboardSteps : 
+    page === 'export' ? exportSteps : 
+    stationSteps;
 
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
