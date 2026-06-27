@@ -56,7 +56,7 @@ export default function GreetingClient({ session, role }: GreetingClientProps) {
 
         {/* Sapaan Singkat */}
         <p className="text-sm font-bold hidden md:block text-[#1D3557] dark:text-white">
-          Halo, {session?.name?.split(" ")[0] || "User"}
+          Hello, {session?.name?.split(" ")[0] || "User"}
         </p>
       </button>
 
@@ -97,7 +97,7 @@ export default function GreetingClient({ session, role }: GreetingClientProps) {
               className="flex items-center gap-3 text-sm p-2 rounded-lg bg-[#1D3557]/5 text-[#1D3557] dark:text-white hover:bg-[#457B9D] hover:text-white transition-colors font-semibold active:bg-[#1D3557] active:text-white"
             >
               <Users className="w-4 h-4" />
-              Daftar Pengguna Aktif
+              Active Users List
             </Link>
           </div>
         )}

@@ -23,7 +23,7 @@ export default function HomePage({ user, role }: HomePageProps) {
   const [status, setStatus] = useState<"loading" | "online" | "offline">("loading");
   const [time, setTime] = useState("");
   
-  const firstName = user?.split(" ")[0] ?? "Pengguna";
+  const firstName = user?.split(" ")[0] ?? "User";
 
   const locations = Object.values(LOCATIONS)
 
@@ -68,7 +68,7 @@ export default function HomePage({ user, role }: HomePageProps) {
         {/* Greeting (H2 for Hierarchy) */}
         <div className="mb-2 px-2">
           <h2 className="text-base sm:text-lg font-medium text-slate-500 dark:text-slate-400 font-poppins tracking-wide leading-snug">
-            Selamat Datang kembali,{" "}
+            Welcome back,{" "}
             <span className="font-bold text-[#457B9D] dark:text-[#A8DADC] block sm:inline mt-1 sm:mt-0">
               {user}
             </span>
@@ -82,8 +82,8 @@ export default function HomePage({ user, role }: HomePageProps) {
 
         {/* Description */}
         <p className="max-w-md text-slate-500 dark:text-slate-400 text-sm sm:text-base leading-relaxed font-poppins font-medium mb-8">
-          Pantau kondisi cuaca real-time dari seluruh stasiun AWS yang terhubung.
-          Pilih lokasi di bawah untuk melihat data secara detail.
+          Monitor real-time weather conditions from all connected AWS stations. 
+          Select a location below to view detailed data.
         </p>
 
         {/* Status badge */}
@@ -91,7 +91,7 @@ export default function HomePage({ user, role }: HomePageProps) {
           {status === "loading" && (
             <>
               <span className="w-2 h-2 rounded-full bg-slate-400 animate-pulse font-poppins font-medium" />
-              Menghubungkan ke server…
+              Connecting to server…
             </>
           )}
           {status === "online" && (
@@ -100,13 +100,13 @@ export default function HomePage({ user, role }: HomePageProps) {
                 <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" />
                 <span className="relative inline-flex w-2 h-2 rounded-full bg-green-500" />
               </span>
-              Server terhubung — semua stasiun aktif
+              Server connected — all stations active
             </>
           )}
           {status === "offline" && (
             <>
               <span className="w-2 h-2 rounded-full bg-red-500" />
-              Server tidak dapat dijangkau
+              Server unreachable
             </>
           )}
         </div>
@@ -120,7 +120,7 @@ export default function HomePage({ user, role }: HomePageProps) {
           <div className="flex items-center gap-2 mb-5">
             <MapPinIcon className="w-4 h-4 text-blue-400" />
             <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">
-              Pilih Lokasi Stasiun
+              Select Station Location
             </span>
           </div>
 
@@ -176,7 +176,7 @@ export default function HomePage({ user, role }: HomePageProps) {
 
           {/* Hint */}
           <p className="mt-6 text-center text-xs text-slate-600">
-            Klik salah satu stasiun untuk melihat data cuaca secara lengkap
+            Click on a station to view complete weather data
           </p>
         </div>
       </section>

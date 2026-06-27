@@ -43,7 +43,12 @@ export default function RootLayout({
 }>) {
   return (
      <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning={true} className={poppins.variable}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Pliant:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+      </head>
+      <body suppressHydrationWarning={true} className={`${poppins.variable} font-sans`}>
          <ThemeProvider
           attribute="class"
           defaultTheme="system"
