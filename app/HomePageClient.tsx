@@ -8,7 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import AuthModal from "@/components/auth/AuthModal";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, FileText, Table, Download, Activity, BarChart2 } from "lucide-react";
 import { MeshGradient } from "@paper-design/shaders-react";
 import "./style.css";
 
@@ -209,8 +209,8 @@ export default function HomePageClient({ user, session }: Auth) {
         {/* Navigation Menu */}
         <nav className="hidden md:flex items-center gap-8 font-medium text-sm text-[#1D3557] dark:text-slate-300">
           <a href="#home" className="hover:text-[#457B9D] dark:hover:text-white transition-colors">Home</a>
-          <a href="#about" className="hover:text-[#457B9D] dark:hover:text-white transition-colors">About</a>
-          <a href="#contact" className="hover:text-[#457B9D] dark:hover:text-white transition-colors">Contact</a>
+          <a href="#features" className="hover:text-[#457B9D] dark:hover:text-white transition-colors">Features</a>
+          <a href="#get-started" className="hover:text-[#457B9D] dark:hover:text-white transition-colors">Get Started</a>
         </nav>
 
         <div className="flex items-center gap-4">
@@ -240,13 +240,13 @@ export default function HomePageClient({ user, session }: Auth) {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-white/95 dark:bg-[#1D3557]/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 md:hidden transition-all duration-300">
           <a href="#home" onClick={() => setIsMobileMenuOpen(false)} className="text-3xl font-bold text-[#1D3557] dark:text-white font-pliant uppercase tracking-widest hover:text-[#457B9D] dark:hover:text-[#A8DADC] transition-colors">Home</a>
-          <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="text-3xl font-bold text-[#1D3557] dark:text-white font-pliant uppercase tracking-widest hover:text-[#457B9D] dark:hover:text-[#A8DADC] transition-colors">About</a>
-          <a href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="text-3xl font-bold text-[#1D3557] dark:text-white font-pliant uppercase tracking-widest hover:text-[#457B9D] dark:hover:text-[#A8DADC] transition-colors">Contact</a>
+          <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-3xl font-bold text-[#1D3557] dark:text-white font-pliant uppercase tracking-widest hover:text-[#457B9D] dark:hover:text-[#A8DADC] transition-colors">Features</a>
+          <a href="#get-started" onClick={() => setIsMobileMenuOpen(false)} className="text-3xl font-bold text-[#1D3557] dark:text-white font-pliant uppercase tracking-widest hover:text-[#457B9D] dark:hover:text-[#A8DADC] transition-colors">Get Started</a>
         </div>
       )}
 
       {/* Konten Utama */}
-      <main id="home" className="relative z-10 flex flex-col lg:flex-row items-center justify-center pt-28 pb-12 px-6 lg:px-12 max-w-7xl mx-auto w-full gap-8 lg:gap-12 min-h-[100vh]">
+      <main id="home" className="relative z-10 flex flex-col lg:flex-row items-center justify-center pt-28 pb-8 px-6 lg:px-12 max-w-7xl mx-auto w-full gap-8 lg:gap-12 min-h-[90vh]">
         
         {/* ========== KOLOM KIRI (Teks & Tombol) ========== */}
         <div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 z-20 max-w-xl w-full">
@@ -295,7 +295,7 @@ export default function HomePageClient({ user, session }: Auth) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-base md:text-lg text-[#1D3557]/60 dark:text-white/50 max-w-md lg:max-w-lg font-light leading-relaxed font-sans"
+            className="text-base md:text-lg text-[#1D3557]/80 dark:text-white/90 max-w-md lg:max-w-lg font-medium leading-relaxed font-sans"
           >
             {!user && (
               <span className="block mb-2">
@@ -334,9 +334,45 @@ export default function HomePageClient({ user, session }: Auth) {
                 alt="Dashboard Mockup"
                 width={1200}
                 height={800}
-                className="w-full h-auto object-contain scale-110 lg:scale-[1.25] lg:origin-center transition-transform duration-700 ease-out lg:group-hover:scale-[1.30]"
+                className="relative z-10 w-full h-auto object-contain scale-100 md:scale-110 lg:scale-[1.25] lg:origin-center transition-transform duration-700 ease-out lg:group-hover:scale-[1.30] pointer-events-none"
                 priority
               />
+
+              {/* PDF Card (Top Right) */}
+              <div 
+                className="absolute -top-10 -right-6 sm:-top-12 sm:-right-8 md:-top-16 md:-right-12 lg:-top-24 lg:-right-24 w-40 sm:w-44 md:w-52 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-xl p-2.5 sm:p-3.5 shadow-lg border border-slate-100 dark:border-slate-700 cursor-pointer 
+                z-0 opacity-95 scale-95 sm:scale-95 rotate-6
+                transition-all duration-300 ease-out
+                hover:z-30 hover:opacity-100 hover:scale-105 sm:hover:scale-110 hover:rotate-0 hover:-translate-y-2 hover:translate-x-1 md:hover:translate-x-2 hover:shadow-2xl"
+              >
+                <div className="flex items-center gap-2.5 sm:gap-3.5">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center text-red-500 shrink-0">
+                    <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-slate-800 dark:text-white text-xs sm:text-sm md:text-base leading-tight">PDF Report</span>
+                    <span className="text-[9px] sm:text-[11px] md:text-xs text-slate-500 font-medium">Auto-generated</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Excel/CSV Card (Bottom Left) */}
+              <div 
+                className="absolute -bottom-10 -left-6 sm:-bottom-12 sm:-left-8 md:-bottom-16 md:-left-12 lg:-bottom-24 lg:-left-24 w-40 sm:w-44 md:w-52 bg-[#111827]/95 dark:bg-slate-900/95 backdrop-blur-md rounded-xl p-2.5 sm:p-3.5 shadow-lg border border-slate-700/80 cursor-pointer 
+                z-0 opacity-95 scale-95 sm:scale-95 -rotate-6
+                transition-all duration-300 ease-out
+                hover:z-30 hover:opacity-100 hover:scale-105 sm:hover:scale-110 hover:rotate-0 hover:translate-y-2 hover:-translate-x-1 md:hover:-translate-x-2 hover:shadow-2xl"
+              >
+                <div className="flex items-center gap-2.5 sm:gap-3.5">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 shrink-0">
+                    <Table className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="font-bold text-white text-xs sm:text-sm md:text-base leading-tight">Raw Data</span>
+                    <span className="text-[9px] sm:text-[11px] md:text-xs text-slate-400 font-medium">CSV / XLSX</span>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         </div>
@@ -361,50 +397,49 @@ export default function HomePageClient({ user, session }: Auth) {
         </div>
       </main>
 
-      {/* ========== ABOUT SECTION ========== */}
-      <section id="about" className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 py-24 min-h-[80vh] flex flex-col justify-center">
-        <div className="max-w-3xl mx-auto text-center mb-16 gsap-fade-up">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1D3557] dark:text-white mb-6 font-pliant uppercase tracking-wide">
-            Intelligent <span className="text-[#457B9D] dark:text-[#A8DADC]">Monitoring</span>
+      {/* ========== FEATURES SECTION ========== */}
+      <section id="features" className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 py-16 lg:py-20 min-h-[70vh] flex flex-col justify-center items-center">
+        <div className="w-full max-w-3xl mx-auto text-center mb-16 gsap-fade-up">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1D3557] dark:text-white mb-6 font-pliant uppercase tracking-wide">
+            Key <span className="text-[#457B9D] dark:text-[#A8DADC]">Features</span>
           </h2>
-          <p className="text-[#1D3557]/70 dark:text-slate-300/80 text-lg leading-relaxed">
-            Discover a state-of-the-art platform designed to transform complex climatological data into 
-            actionable insights. Our systems provide real-time updates and seamless exploration capabilities.
+          <p className="text-[#1D3557]/70 dark:text-slate-300/80 text-base md:text-lg leading-relaxed">
+            A cutting-edge platform designed to present climatological data comprehensively. Monitor weather in real-time with high accuracy and explore data without limits.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 gsap-stagger-up">
+        <div className="w-full flex flex-col md:flex-row items-stretch gap-6 lg:gap-8">
           {[
-            { title: "Real-Time Tracking", desc: "Monitor weather shifts the exact moment they happen." },
-            { title: "Precision Analytics", desc: "Deep dive into historical data with unparalleled accuracy." },
-            { title: "Seamless Exports", desc: "Export crucial data effortlessly in multiple formats." }
+            { title: "Real-Time Tracking", desc: "Monitor weather changes and climate conditions instantly as they happen.", icon: <Activity className="w-7 h-7 text-[#457B9D] dark:text-[#A8DADC]" /> },
+            { title: "Precision Analytics", desc: "Explore historical data and weather trends with unparalleled accuracy.", icon: <BarChart2 className="w-7 h-7 text-[#457B9D] dark:text-[#A8DADC]" /> },
+            { title: "Effortless Export", desc: "Download weather reports and data into PDF or CSV formats with a single click.", icon: <Download className="w-7 h-7 text-[#457B9D] dark:text-[#A8DADC]" /> }
           ].map((feature, idx) => (
-            <div key={idx} className="gsap-item bg-white/40 dark:bg-[#1D3557]/40 backdrop-blur-md p-8 rounded-2xl border border-white/50 dark:border-white/10 shadow-xl dark:shadow-none hover:-translate-y-2 transition-transform duration-300">
-              <div className="w-12 h-12 rounded-full bg-[#457B9D]/20 dark:bg-[#A8DADC]/20 flex items-center justify-center mb-6">
-                <span className="text-[#457B9D] dark:text-[#A8DADC] font-bold text-lg">{idx + 1}</span>
+            <div key={idx} className="w-full md:w-1/3 bg-white/40 dark:bg-[#1D3557]/40 backdrop-blur-md p-8 rounded-2xl border border-white/50 dark:border-white/10 shadow-xl dark:shadow-none hover:-translate-y-2 transition-transform duration-300 flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-full bg-[#457B9D]/10 dark:bg-[#A8DADC]/10 flex items-center justify-center mb-6 border border-[#457B9D]/20 dark:border-[#A8DADC]/20 shrink-0">
+                {feature.icon}
               </div>
               <h3 className="text-xl font-bold text-[#1D3557] dark:text-white mb-3">{feature.title}</h3>
-              <p className="text-[#1D3557]/70 dark:text-slate-300/70">{feature.desc}</p>
+              <p className="text-[#1D3557]/70 dark:text-slate-300/70 text-sm md:text-base leading-relaxed flex-1 flex flex-col justify-start">{feature.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ========== CONTACT SECTION ========== */}
-      <section id="contact" className="relative z-10 w-full max-w-4xl mx-auto px-6 lg:px-12 py-24 min-h-[60vh] flex flex-col justify-center text-center gsap-fade-up">
-        <div className="bg-gradient-to-b from-white/60 to-white/30 dark:from-[#1D3557]/60 dark:to-[#1D3557]/30 backdrop-blur-xl p-12 md:p-16 rounded-3xl border border-white/50 dark:border-white/10 shadow-2xl relative overflow-hidden">
+      {/* ========== GET STARTED SECTION ========== */}
+      <section id="get-started" className="relative z-10 w-full max-w-4xl mx-auto px-6 lg:px-12 py-24 min-h-[50vh] flex flex-col justify-center text-center gsap-fade-up">
+        <div className="bg-gradient-to-b from-white/60 to-white/30 dark:from-[#1D3557]/60 dark:to-[#1D3557]/30 backdrop-blur-xl p-10 md:p-16 rounded-3xl border border-white/50 dark:border-white/10 shadow-2xl relative overflow-hidden flex flex-col items-center">
           {/* Ornamen Latar Tipis */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#457B9D]/10 dark:bg-[#A8DADC]/10 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2"></div>
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#1D3557]/10 dark:bg-white/5 rounded-full blur-3xl -z-10 -translate-x-1/2 translate-y-1/2"></div>
           
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1D3557] dark:text-white mb-6 font-pliant uppercase tracking-wide">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1D3557] dark:text-white mb-6 font-pliant uppercase tracking-wide">
             Ready to <span className="text-[#457B9D] dark:text-[#A8DADC]">Explore?</span>
           </h2>
-          <p className="text-[#1D3557]/70 dark:text-slate-300/80 text-lg mb-10 max-w-2xl mx-auto">
-            Join thousands of researchers and institutions relying on our advanced environmental data dashboard.
+          <p className="text-[#1D3557]/70 dark:text-slate-300/80 text-base md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
+            Join thousands of researchers and institutions relying on our advanced environmental data dashboard to make better decisions.
           </p>
           <AuthModal defaultTab="register">
-            <button className="px-10 py-4 bg-[#1D3557] hover:bg-[#457B9D] dark:bg-[#A8DADC] dark:hover:bg-white text-white dark:text-[#1D3557] font-bold rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 tracking-wider uppercase text-sm">
+            <button className="px-10 py-4 bg-[#1D3557] hover:bg-[#457B9D] dark:bg-[#A8DADC] dark:hover:bg-white text-white dark:text-[#1D3557] font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 tracking-wider uppercase text-sm">
               Get Started Now
             </button>
           </AuthModal>
