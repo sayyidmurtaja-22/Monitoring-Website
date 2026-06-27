@@ -65,24 +65,23 @@ export default function HomePage({ user, role }: HomePageProps) {
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section className="flex flex-col items-center text-center px-6 pt-16 pb-10 relative overflow-hidden">
 
-        {/* Logo */}
-        <div className="mb-5">
-          <h2 className="font-bold text-6xl tracking-tighter text-[#457B9D] font-poppins">
-            AWS {""}<span className="text-foreground">Monitoring Dashboard</span>
-
+        {/* Greeting (H2 for Hierarchy) */}
+        <div className="mb-2 px-2">
+          <h2 className="text-base sm:text-lg font-medium text-slate-500 dark:text-slate-400 font-poppins tracking-wide leading-snug">
+            Selamat Datang kembali,{" "}
+            <span className="font-bold text-[#457B9D] dark:text-[#A8DADC] block sm:inline mt-1 sm:mt-0">
+              {user}
+            </span>
           </h2>
         </div>
 
-        <h1 className={`   text-3xl sm:text-4xl font-bold text-[#1D3557] dark:text-[#A8DADC] leading-tight`}>
-            Selamat Datang Kembali
-
-          <br></br>
-          <span className="text-transparent bg-clip-text bg-[#457B9D]">
-            {user}
-          </span>
+        {/* Logo / Main Title (H1 for SEO) */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-extrabold text-[#1D3557] dark:text-white leading-tight font-poppins tracking-tighter mb-6">
+          AWS <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1D3557] to-[#457B9D] dark:from-[#A8DADC] dark:to-[#F1FAEE] drop-shadow-sm">Monitoring Dashboard</span>
         </h1>
 
-        <p className="mt-3 max-w-md text-slate-400 text-sm leading-relaxed font-poppins font-medium">
+        {/* Description */}
+        <p className="max-w-md text-slate-500 dark:text-slate-400 text-sm sm:text-base leading-relaxed font-poppins font-medium mb-8">
           Pantau kondisi cuaca real-time dari seluruh stasiun AWS yang terhubung.
           Pilih lokasi di bawah untuk melihat data secara detail.
         </p>

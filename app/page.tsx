@@ -11,18 +11,23 @@
 
     let user = null;
     if (session?.user) {
-      if (session.user.id) {
-        user = await prisma?.user.findUnique({
-          where: {
-            id: session.user.id,
-          },
-        });
-      } else if (session.user.email) {
-        user = await prisma?.user.findUnique({
-          where: {
-            email: session.user.email,
-          },
-        });
+      try {
+        if (session.user.id) {
+          user = await prisma?.user.findUnique({
+            where: {
+              id: session.user.id,
+            },
+          });
+        } else if (session.user.email) {
+          user = await prisma?.user.findUnique({
+            where: {
+              email: session.user.email,
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Gagal terhubung ke database:", error);
+        user = null;
       }
     }
 

@@ -144,14 +144,18 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
     /* Style untuk range yang dipilih - BACKGROUND TRANSPARAN */
     .rdp-day_range_start:not(.rdp-day_range_end),
     .rdp-day_range_end:not(.rdp-day_range_start),
-    .rdp-day_range_middle {
+    .rdp-day_range_middle,
+    .rdp-range_start:not(.rdp-range_end),
+    .rdp-range_end:not(.rdp-range_start),
+    .rdp-range_middle {
       background-color: transparent !important;
       color: #3b82f6 !important;
       font-weight: 600 !important;
     }
     
     /* Border untuk start date */
-    .rdp-day_range_start:not(.rdp-day_range_end) {
+    .rdp-day_range_start:not(.rdp-day_range_end),
+    .rdp-range_start:not(.rdp-range_end) {
       border-top-left-radius: 100% !important;
       border-bottom-left-radius: 100% !important;
       border-left: 2px solid #3b82f6 !important;
@@ -159,7 +163,8 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
     }
     
     /* Border untuk end date */
-    .rdp-day_range_end:not(.rdp-day_range_start) {
+    .rdp-day_range_end:not(.rdp-day_range_start),
+    .rdp-range_end:not(.rdp-range_start) {
       border-top-right-radius: 100% !important;
       border-bottom-right-radius: 100% !important;
       border-right: 2px solid #3b82f6 !important;
@@ -167,7 +172,8 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
     }
     
     /* Garis untuk middle dates */
-    .rdp-day_range_middle {
+    .rdp-day_range_middle,
+    .rdp-range_middle {
       border-radius: 0 !important;
       border-left: 1px solid #93c5fd !important;
       border-right: 1px solid #93c5fd !important;
@@ -175,27 +181,31 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
     }
     
     /* Style untuk tanggal yang dipilih (start/end yang sama) */
-    .rdp-day_selected {
+    .rdp-day_selected,
+    .rdp-selected {
       background-color: #3b82f6 !important;
       color: white !important;
       border-radius: 100% !important;
     }
     
     /* Hover effect */
-    .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+    .rdp-button:hover:not([disabled]):not(.rdp-day_selected):not(.rdp-selected) {
       background-color: #e0e7ff !important;
       border-radius: 100% !important;
     }
     
     /* Dark mode */
-    .dark .rdp-day_range_middle {
+    .dark .rdp-day_range_middle,
+    .dark .rdp-range_middle {
       border-left: 1px solid #475569 !important;
       border-right: 1px solid #475569 !important;
       color: #93c5fd !important;
     }
     
     .dark .rdp-day_range_start:not(.rdp-day_range_end),
-    .dark .rdp-day_range_end:not(.rdp-day_range_start) {
+    .dark .rdp-day_range_end:not(.rdp-day_range_start),
+    .dark .rdp-range_start:not(.rdp-range_end),
+    .dark .rdp-range_end:not(.rdp-range_start) {
       color: #93c5fd !important;
     }
     
@@ -203,7 +213,7 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
       color: #cbd5e1;
     }
     
-    .dark .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+    .dark .rdp-button:hover:not([disabled]):not(.rdp-day_selected):not(.rdp-selected) {
       background-color: #334155 !important;
     }
   `;

@@ -236,7 +236,7 @@
 }
 
 /* Dark mode for date picker */
-.dark .rdp {
+.dark .rdp, .dark .rdp-root {
   --rdp-accent-color: #60a5fa;
   --rdp-background-color: #1e293b;
 }

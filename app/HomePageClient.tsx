@@ -1,6 +1,7 @@
 "use client";
 
 import { ModeToggle } from "@/components/mode-toggle";
+import { useTheme } from "next-themes";
 import { type User } from "next-auth";
 import * as motion from "motion/react-client";
 import Link from "next/link";
@@ -96,6 +97,7 @@ const scanAnimation = {
 export default function HomePageClient({ user, session }: Auth) {
   const [dimensions, setDimensions] = useState({ width: 1920, height: 1080 });
   const [mounted, setMounted] = useState(false);
+  const { theme, resolvedTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -110,25 +112,26 @@ export default function HomePageClient({ user, session }: Auth) {
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
-  // 🎨 Warna MeshGradient: Dominan Abu & Putih + Sentuhan Biru
-  const grayWhiteBlueColors = [
-    "#F5F5F5",  // Putih keabuan (cerah)
-    "#E0E0E0",  // Abu-abu sangat muda
-    "#D3D3D3",  // Abu-abu terang
-    "#B0B0B0",  // Abu-abu medium
-    "#A8DADC",  // Biru pucat (sentuhan biru lembut)
-    "#C0C0C0",  // Abu-abu perak
+  // 🎨 Warna MeshGradient: Berdasarkan palette (F1FAEE, A8DADC, 457B9D, 1D3557)
+  const lightColors = [
+    "#F1FAEE",  // Light
+    "#A8DADC",  // Light Blue
+    "#457B9D",  // Medium Blue
+    "#F1FAEE",
+    "#A8DADC",
+    "#457B9D",
   ];
 
-  // Alternatif warna jika ingin lebih gelap (moody)
-  const darkGrayBlueColors = [
-    "#E8E8E8",  // Abu-abu sangat muda
-    "#D4D4D4",  // Abu-abu terang
-    "#B0B0B0",  // Abu-abu medium
-    "#8C8C8C",  // Abu-abu gelap
-    "#6C9EBF",  // Biru abu-abu (sentuhan biru)
-    "#A3B5C5",  // Biru keabuan
+  const darkColors = [
+    "#1D3557",  // Dark Blue
+    "#457B9D",  // Medium Blue
+    "#1D3557",
+    "#1D3557",
+    "#457B9D",
+    "#1D3557",
   ];
+  
+  const currentColors = mounted && resolvedTheme === "dark" ? darkColors : lightColors;
 
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col font-poppins">
@@ -140,7 +143,7 @@ export default function HomePageClient({ user, session }: Auth) {
             <MeshGradient
               width={dimensions.width}
               height={dimensions.height}
-              colors={grayWhiteBlueColors}  // ← warna abu-putih dengan sentuhan biru
+              colors={currentColors}  // ← warna dinamis berdasarkan mode
               distortion={0.6}              // ← dikurangi agar lebih halus
               swirl={0.4}                   // ← dikurangi agar tidak terlalu ramai
               grainMixer={0}
@@ -149,7 +152,7 @@ export default function HomePageClient({ user, session }: Auth) {
               offsetX={0.05}                // ← gerakan lebih subtle
             />
             {/* Veil overlay tipis untuk meningkatkan keterbacaan teks */}
-            <div className="absolute inset-0 pointer-events-none bg-white/20" />
+            <div className="absolute inset-0 pointer-events-none bg-white/20 dark:bg-[#1D3557]/20 transition-colors duration-500" />
           </>
         )}
       </div>
@@ -164,18 +167,18 @@ export default function HomePageClient({ user, session }: Auth) {
       </div>
 
       {/* Header */}
-      <header className="relative z-10 w-full p-4 flex justify-between items-center max-w-[1200px] mx-auto">
+      <header className="fixed top-0 left-0 right-0 z-50 w-full p-4 flex justify-between items-center max-w-[1200px] mx-auto bg-white/60 dark:bg-[#1D3557]/60 backdrop-blur-md transition-all duration-300 border-b border-transparent dark:border-white/10 rounded-b-2xl shadow-sm dark:shadow-none">
         <div className="flex items-center gap-2">
-          <span className="font-bold text-2xl tracking-tighter text-[#1D3557]">
-            Tekno<span className="text-[#457B9D]">SEA</span>
+          <span className="font-bold text-xl md:text-2xl tracking-tighter text-[#1D3557] dark:text-white">
+            Tekno<span className="text-[#457B9D] dark:text-[#A8DADC]">SEA</span>
           </span>
         </div>
         <div className="flex items-center gap-4">
           {user ? (
-            <div className="hidden sm:flex items-center text-sm px-4 py-1.5 bg-black/5 backdrop-blur-md rounded-full border border-black/10">
-              <span className="text-slate-700">
+            <div className="hidden sm:flex items-center text-sm px-4 py-1.5 bg-black/5 dark:bg-white/10 backdrop-blur-md rounded-full border border-black/10 dark:border-white/20">
+              <span className="text-slate-700 dark:text-slate-200">
                 Welcome,{" "}
-                <span className="font-semibold text-[#457B9D]">
+                <span className="font-semibold text-[#457B9D] dark:text-[#A8DADC]">
                   {user.name}
                 </span>
               </span>
@@ -186,16 +189,16 @@ export default function HomePageClient({ user, session }: Auth) {
       </header>
 
       {/* Konten Utama */}
-      <main className="relative z-10 flex-1 flex flex-col items-center pt-8 pb-12 px-4">
+      <main className="relative z-10 flex-1 flex flex-col items-center pt-28 pb-12 px-4">
 
         {/* ========== JUDUL ========== */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={circuitTransition}
-          className="text-center text-5xl sm:text-6xl md:text-[5rem] font-extrabold tracking-tight mb-4 max-w-4xl"
+          transition={{ duration: 0.8 }}
+          className="text-4xl md:text-5xl lg:text-7xl font-extrabold text-center tracking-tight mb-4 md:mb-6 max-w-4xl px-2"
         >
-          <span className="bg-gradient-to-r from-[#1D3557] to-[#457B9D] bg-clip-text text-transparent drop-shadow-lg">
+          <span className="bg-gradient-to-r from-[#1D3557] to-[#457B9D] dark:from-white dark:to-[#A8DADC] bg-clip-text text-transparent drop-shadow-lg">
             TeknoSEA
           </span>
         </motion.h1>
@@ -205,7 +208,7 @@ export default function HomePageClient({ user, session }: Auth) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...circuitTransition, delay: 0.15 }}
-          className="text-center text-xl sm:text-2xl md:text-3xl font-medium mb-3 text-slate-600 drop-shadow-sm"
+          className="text-center text-xl sm:text-2xl md:text-3xl font-medium mb-3 text-slate-600 dark:text-slate-300 drop-shadow-sm"
         >
           Weather & Marine Monitoring System
         </motion.h2>
@@ -214,8 +217,8 @@ export default function HomePageClient({ user, session }: Auth) {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ ...circuitTransition, delay: 0.3 }}
-          className="text-lg sm:text-xl text-center text-slate-500 mb-6 max-w-2xl font-light"
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="text-base md:text-xl text-center text-slate-700 dark:text-[#F1FAEE]/80 mb-8 md:mb-10 max-w-2xl font-light px-4"
         >
           FPIK Unsoed Weather & Marine Monitoring Dashboard. The ultimate
           destination to monitor environmental data in real-time.
@@ -225,15 +228,15 @@ export default function HomePageClient({ user, session }: Auth) {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ ...circuitTransition, delay: 0.45 }}
-          className="mb-8"
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="flex flex-row gap-2 sm:gap-4 mb-8 w-full sm:w-auto px-2 sm:px-6 justify-center items-center"
         >
           {user ? (
-            <div className="relative group">
+            <div className="relative group w-full sm:w-auto">
               <div className="absolute -inset-1 bg-[#457B9D]/30 rounded-2xl blur-lg opacity-50 group-hover:opacity-80 transition duration-300" />
               <Link
                 href="/users/dashboard"
-                className="relative inline-flex items-center justify-center px-8 py-4 bg-[#457B9D] text-white font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+                className="relative flex items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-[#457B9D] text-white font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden text-sm sm:text-base"
               >
                 <motion.span
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
@@ -241,26 +244,26 @@ export default function HomePageClient({ user, session }: Auth) {
                   initial="hidden"
                   animate="visible"
                 />
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center justify-center gap-2">
                   Go to Dashboard
                   <motion.span animate={arrowAnimation}>→</motion.span>
                 </span>
               </Link>
             </div>
           ) : (
-            <div className="flex flex-row gap-3">
+            <div className="flex flex-row gap-2 sm:gap-3 w-full sm:w-auto justify-center">
               {/* Tombol Register */}
-              <div className="relative group">
+              <div className="relative group flex-1 sm:flex-none">
                 <div className="absolute -inset-1 bg-emerald-500/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-80 transition duration-300" />
                 <AuthModal defaultTab="register">
-                  <button className="relative inline-flex items-center justify-center px-8 py-4 bg-white text-slate-900 font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden border border-slate-200">
+                  <button className="relative flex w-full items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-white text-slate-900 font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden border border-slate-200 text-sm sm:text-base">
                     <motion.span
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent -skew-x-12"
                       variants={shimmerAnimation}
                       initial="hidden"
                       animate="visible"
                     />
-                    <span className="relative z-10 flex items-center gap-2">
+                    <span className="relative z-10 flex items-center justify-center gap-1 sm:gap-2">
                       Register
                       <motion.span animate={arrowAnimation}>→</motion.span>
                     </span>
@@ -269,17 +272,17 @@ export default function HomePageClient({ user, session }: Auth) {
               </div>
 
               {/* Tombol Login */}
-              <div className="relative group">
+              <div className="relative group flex-1 sm:flex-none">
                 <div className="absolute -inset-1 bg-[#457B9D]/30 rounded-2xl blur-lg opacity-50 group-hover:opacity-80 transition duration-300" />
                 <AuthModal defaultTab="login">
-                  <button className="relative inline-flex items-center justify-center px-8 py-4 bg-[#457B9D] text-white font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden">
+                  <button className="relative flex w-full items-center justify-center px-4 sm:px-8 py-3 sm:py-4 bg-[#457B9D] text-white font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden text-sm sm:text-base">
                     <motion.span
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
                       variants={shimmerAnimation}
                       initial="hidden"
                       animate="visible"
                     />
-                    <span className="relative z-10 flex items-center gap-2">
+                    <span className="relative z-10 flex items-center justify-center gap-1 sm:gap-2">
                       Login
                       <motion.span animate={arrowAnimation}>→</motion.span>
                     </span>
@@ -294,50 +297,26 @@ export default function HomePageClient({ user, session }: Auth) {
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ ...circuitTransition, delay: 0.6 }}
-          className="relative w-full max-w-4xl mx-auto"
+          transition={{ duration: 1, delay: 0.2 }}
+          className="relative w-full max-w-5xl mx-auto mt-4 md:mt-8 z-10 drop-shadow-2xl px-2 sm:px-4"
         >
-          {/* Glow effect di belakang mockup (biru lembut) */}
-          <motion.div
-            className="absolute -inset-10 bg-[#457B9D]/20 rounded-full blur-3xl -z-10"
-            animate={glowAnimation}
-          />
-
-          <motion.div animate={mockupAnimation} className="relative">
+          <motion.div animate={mockupAnimation} className="relative w-full flex justify-center">
             {/* Efek bayangan */}
             <motion.div
-              className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-4/5 h-8 bg-black/20 rounded-full blur-md"
+              className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-4/5 h-8 bg-black/20 rounded-full blur-xl -z-10"
               animate={shadowAnimation}
             />
 
-            {/* Card Mockup */}
-            <div className="relative rounded-3xl border border-white/30 shadow-[0_0_50px_rgba(0,0,0,0.08)] overflow-hidden bg-white/40 backdrop-blur-sm">
-              {/* Background gradient lembut */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 via-transparent to-cyan-500/5 rounded-3xl" />
-
-              {/* Efek scanning */}
-              <motion.div
-                className="absolute inset-0 pointer-events-none overflow-hidden rounded-3xl z-10"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.1, 0] }}
-                transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
-              >
-                <motion.div
-                  className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#457B9D]/50 to-transparent"
-                  animate={scanAnimation}
-                />
-              </motion.div>
-
-              <Image
-                src="/MockupGambar.png"
-                alt="Dashboard Mockup"
-                width={1200}
-                height={800}
-                className="w-full h-auto object-cover scale-[1.25] origin-center translate-y-[2%]"
-                priority
-              />
-            </div>
+            <Image
+              src={mounted && resolvedTheme === "dark" ? "/mockup-dark.png" : "/mockup-light.png"}
+              alt="Dashboard Mockup"
+              width={1200}
+              height={800}
+              className="w-full h-auto object-contain"
+              priority
+            />
           </motion.div>
+        </motion.div>
 
           {/* Efek partikel */}
           <div className="absolute -top-10 -right-10 w-20 h-20">
@@ -357,7 +336,6 @@ export default function HomePageClient({ user, session }: Auth) {
               transition={{ duration: 3.5, repeat: Infinity, delay: 1 }}
             />
           </div>
-        </motion.div>
 
       </main>
     </div>
