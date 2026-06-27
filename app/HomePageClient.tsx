@@ -221,7 +221,7 @@ export default function HomePageClient({ user, session }: Auth) {
           className="text-base md:text-xl text-center text-slate-700 dark:text-[#F1FAEE]/80 mb-8 md:mb-10 max-w-2xl font-light px-4"
         >
           FPIK Unsoed Weather & Marine Monitoring Dashboard. The ultimate
-          destination to monitor environmental data in real-time.
+          destination to monitoring environmental data in real-time.
         </motion.p>
 
         {/* ========== TOMBOL ========== */}
