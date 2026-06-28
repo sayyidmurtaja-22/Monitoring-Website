@@ -82,11 +82,11 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --sidebar: #E2EAF4; /* Lebih gelap sedikit dari background utama (#F1FAEE) */
+  --sidebar: #A8DADC; /* Light Blue from palette */
   --sidebar-foreground: #1D3557;
   --sidebar-primary: #457B9D;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #D1DFEF;
+  --sidebar-primary-foreground: #F1FAEE;
+  --sidebar-accent: #F1FAEE; /* Off-white for hover accent */
   --sidebar-accent-foreground: #1D3557;
   --sidebar-border: #457B9D;
   --sidebar-ring: #457B9D;
@@ -157,23 +157,20 @@
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
-    color: #0000801;
     transition: all 1000ms;
     font-size:12px;
     position: relative;
     overflow:hidden;
-    outline: 2px solid #092039;
-    font: 
-  }
-.export.dark{
-    color: #ffffff;
+    outline: 2px solid #1D3557;
 }
-  .export:hover {
-    color: #0000801;
+.export.dark {
+    outline: 2px solid #457B9D;
+}
+.export:hover {
     transform: scale(1.1);
-    outline:2px solid #092059;
-    box-shadow: 4px 5px 17px -4px #092049;
-  }
+    outline: 2px solid #457B9D;
+    box-shadow: 4px 5px 17px -4px #1D3557;
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -41,7 +41,7 @@ export default function BatteryChartBali({ getDataBali }: ChartAreaProps) {
   return (
     <ChartContainer
       config={chartConfig}
-      className="h-[380px] w-full border  rounded-3xl bg-blue-600 dark:bg-blue-950 flex flex-col-2  transition-all duration-300 ease-in-out
+      className="h-[380px] w-full border dark:border-[#457B9D] rounded-3xl bg-[#A8DADC] dark:bg-[#1D3557] flex flex-col-2  transition-all duration-300 ease-in-out
                     hover:shadow-2xl hover:-translate-y-1 hover:border-transparent"
     >
       <ResponsiveContainer width="100%" height="100%">

@@ -59,15 +59,15 @@ export default function HomePage({ user, role }: HomePageProps) {
   }, []);
 
   return (
-    <main className="min-h-screen bg-background flex flex-col">
+    <main className="h-screen bg-background flex flex-col overflow-y-auto">
       <TourGuide isAdmin={role === "ADMIN"} />
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <section className="flex flex-col items-center text-center px-6 pt-16 pb-10 relative overflow-hidden">
+      <section className="flex flex-col items-center text-center px-6 pt-12 pb-6 relative shrink-0">
 
         {/* Greeting (H2 for Hierarchy) */}
         <div className="mb-2 px-2">
-          <h2 className="text-base sm:text-lg font-medium text-slate-500 dark:text-slate-400 font-poppins tracking-wide leading-snug">
+          <h2 className="text-base sm:text-lg font-medium text-[#1D3557] dark:text-[#F1FAEE] opacity-90 font-poppins tracking-wide leading-snug">
             Welcome back,{" "}
             <span className="font-bold text-[#457B9D] dark:text-[#A8DADC] block sm:inline mt-1 sm:mt-0">
               {user}
@@ -76,21 +76,21 @@ export default function HomePage({ user, role }: HomePageProps) {
         </div>
 
         {/* Logo / Main Title (H1 for SEO) */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-extrabold text-[#1D3557] dark:text-white leading-tight font-poppins tracking-tighter mb-6">
-          AWS <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1D3557] to-[#457B9D] dark:from-[#A8DADC] dark:to-[#F1FAEE] drop-shadow-sm">Monitoring Dashboard</span>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-extrabold text-[#1D3557] dark:text-[#F1FAEE] leading-tight font-poppins tracking-tighter mb-6">
+          AWS <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#457B9D] to-[#1D3557] dark:from-[#A8DADC] dark:to-[#F1FAEE] drop-shadow-sm">Monitoring Dashboard</span>
         </h1>
 
         {/* Description */}
-        <p className="max-w-md text-slate-500 dark:text-slate-400 text-sm sm:text-base leading-relaxed font-poppins font-medium mb-8">
+        <p className="max-w-md text-[#1D3557] dark:text-[#F1FAEE] opacity-80 text-sm sm:text-base leading-relaxed font-poppins font-medium mb-8">
           Monitor real-time weather conditions from all connected AWS stations. 
           Select a location below to view detailed data.
         </p>
 
         {/* Status badge */}
-        <div id="tour-status-server" className="scroll-mt-64 mt-5 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E63946] border border-white/10 text-xs text-white ">
+        <div id="tour-status-server" className="scroll-mt-64 mt-5 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1D3557] dark:bg-[#457B9D] shadow-sm text-xs text-[#F1FAEE] ">
           {status === "loading" && (
             <>
-              <span className="w-2 h-2 rounded-full bg-slate-400 animate-pulse font-poppins font-medium" />
+              <span className="w-2 h-2 rounded-full bg-[#A8DADC] animate-pulse font-poppins font-medium" />
               Connecting to server…
             </>
           )}
@@ -105,7 +105,7 @@ export default function HomePage({ user, role }: HomePageProps) {
           )}
           {status === "offline" && (
             <>
-              <span className="w-2 h-2 rounded-full bg-red-500" />
+              <span className="w-2 h-2 rounded-full bg-[#E63946]" />
               Server unreachable
             </>
           )}
@@ -113,13 +113,13 @@ export default function HomePage({ user, role }: HomePageProps) {
       </section>
 
       {/* ── Location Cards ───────────────────────────────────────────── */}
-      <section className="flex-1 px-6 pb-16">
+      <section className="flex-1 px-6 pb-6">
         <div className="max-w-3xl mx-auto">
 
           {/* Label */}
           <div className="flex items-center gap-2 mb-5">
-            <MapPinIcon className="w-4 h-4 text-blue-400" />
-            <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">
+            <MapPinIcon className="w-4 h-4 text-[#1D3557] dark:text-[#A8DADC]" />
+            <span className="text-xs font-semibold text-[#1D3557] dark:text-[#A8DADC] uppercase tracking-widest">
               Select Station Location
             </span>
           </div>
@@ -130,20 +130,20 @@ export default function HomePage({ user, role }: HomePageProps) {
               <Link
                 key={loc.label}
                 href={loc.href}
-                className="grouap flex flex-col gap-4 p-5 rounded-2xl bg-[#1D3557] border border-[#1a3a6e]/40 hover:border-blue-500/40 hover:bg-[#112348] transition-all duration-200"
+                className="group flex flex-col gap-4 p-5 rounded-3xl border border-[#457B9D] bg-[#A8DADC] dark:bg-[#1D3557] transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent"
               >
                 {/* Icon */}
-                <SignalIcon className="w-6 h-6 text-blue-400" />
+                <SignalIcon className="w-6 h-6 text-[#1D3557] dark:text-[#A8DADC]" />
 
                 {/* Label + Nama + Region */}
                 <div>
-                  <p className="text-sm text-slate-400 mb-1 font-poppins font-bold uppercase tracking-widest text-[11px]">
+                  <p className="text-sm text-[#1D3557] dark:text-[#F1FAEE] opacity-80 mb-1 font-poppins font-bold uppercase tracking-widest text-[11px]">
                     AWS Station
                   </p>
-                  <p className="text-2xl font-bold text-white group-hover:text-blue-300 transition-colors duration-200">
+                  <p className="text-2xl font-bold text-[#1D3557] dark:text-[#F1FAEE] group-hover:text-[#457B9D] dark:group-hover:text-[#A8DADC] transition-colors duration-200">
                     {loc.label}
                   </p>
-                  <p className="text-sm text-slate-400 mt-0.5 font-poppins font-bold">
+                  <p className="text-sm text-[#1D3557] dark:text-[#F1FAEE] opacity-80 mt-0.5 font-poppins font-bold">
                     {loc.region}
                   </p>
                 </div>
@@ -151,8 +151,8 @@ export default function HomePage({ user, role }: HomePageProps) {
                 {/* Status */}
                 {status === "loading" && (
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-slate-400 animate-pulse" />
-                    <span className="text-xs font-bold text-slate-400">LOADING</span>
+                    <span className="w-2 h-2 rounded-full bg-[#A8DADC] animate-pulse" />
+                    <span className="text-xs font-bold text-[#1D3557] dark:text-[#A8DADC]">LOADING</span>
                   </div>
                 )}
                 {status === "online" && (
@@ -166,8 +166,8 @@ export default function HomePage({ user, role }: HomePageProps) {
                 )}
                 {status === "offline" && (
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-red-500" />
-                    <span className="text-xs font-bold text-red-400">OFFLINE</span>
+                    <span className="w-2 h-2 rounded-full bg-[#E63946]" />
+                    <span className="text-xs font-bold text-[#E63946]">OFFLINE</span>
                   </div>
                 )}
               </Link>
@@ -175,7 +175,7 @@ export default function HomePage({ user, role }: HomePageProps) {
           </div>
 
           {/* Hint */}
-          <p className="mt-6 text-center text-xs text-slate-600">
+          <p className="mt-6 text-center text-xs text-[#1D3557] dark:text-[#A8DADC] opacity-80 font-poppins">
             Click on a station to view complete weather data
           </p>
         </div>

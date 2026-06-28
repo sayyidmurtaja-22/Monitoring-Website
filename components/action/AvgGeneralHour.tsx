@@ -24,7 +24,7 @@ export async function AvgGeneralHour({
   const startRange = new Date(from);
   const endDate = new Date(to);
 
-  // 1. PERBAIKAN: Set jam/tanggal DULUAN sebelum diubah ke format ISO string
+  // 1. PERBAIKAN: Set jam/tanggal DULUAN dan format manual ke String (Mencegah pergeseran Timezone UTC dari toISOString)
   if (interval !== "month") {
     startRange.setHours(0, 0, 0, 0);
     endDate.setHours(23, 59, 59, 999);
@@ -34,9 +34,19 @@ export async function AvgGeneralHour({
     endDate.setHours(23, 59, 59, 999);
   }
 
-  // 2. Baru ubah ke format String SQL setelah jam disesuaikan
-  const start = startRange.toISOString().slice(0, 19).replace("T", " ");
-  const end = endDate.toISOString().slice(0, 19).replace("T", " ");
+  // 2. Format secara manual menjadi YYYY-MM-DD HH:mm:ss menggunakan Local Time
+  const formatSQLDate = (d: Date) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const hours = String(d.getHours()).padStart(2, "0");
+    const minutes = String(d.getMinutes()).padStart(2, "0");
+    const seconds = String(d.getSeconds()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
+  const start = formatSQLDate(startRange);
+  const end = formatSQLDate(endDate);
 
   const formatWaktu =
     interval === "day"
@@ -102,7 +112,7 @@ export async function ExportGeneric({
   const startRange = new Date(from);
   const endDate = new Date(to);
 
-  // PERBAIKAN: Set waktu duluan
+  // PERBAIKAN: Set waktu duluan dan format secara manual
   if (interval !== "month") {
     startRange.setHours(0, 0, 0, 0);
     endDate.setHours(23, 59, 59, 999);
@@ -112,8 +122,18 @@ export async function ExportGeneric({
     endDate.setHours(23, 59, 59, 999);
   }
 
-  const start = startRange.toISOString().slice(0, 19).replace("T", " ");
-  const end = endDate.toISOString().slice(0, 19).replace("T", " ");
+  const formatSQLDate = (d: Date) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const hours = String(d.getHours()).padStart(2, "0");
+    const minutes = String(d.getMinutes()).padStart(2, "0");
+    const seconds = String(d.getSeconds()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
+  const start = formatSQLDate(startRange);
+  const end = formatSQLDate(endDate);
 
   const formatWaktu =
     interval === "day"

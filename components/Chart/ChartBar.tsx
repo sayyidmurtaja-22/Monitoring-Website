@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/chart";
 import { WeatherData } from "@/types/weather";
 import { AvgWeatherData } from "@/types/AvgTypes";
+import { useTheme } from "next-themes";
 
 const chartConfig = {
   avg_CNR_Wm2_Avg: { label: "Net Radiometer Average", color: "#2563eb" },
@@ -30,27 +31,34 @@ interface ChartAreaProps {
 }
 
 export function ChartBar({ avgData }: ChartAreaProps) {
+  const { resolvedTheme } = useTheme();
+  const chartTextColor = resolvedTheme === "dark" ? "#F1FAEE" : "#1D3557";
+  
+  const hasTime = avgData && avgData.length > 0 ? (avgData[0].period?.includes(" ") || avgData[0].period?.includes(":")) : true;
+
   const formattedData =
-    avgData?.map((item) => ({
-      // Ganti spasi dengan "T" agar format "YYYY-MM-DD HH:00:00" menjadi ISO string yang valid
-      displayTime: new Date(item.period.replace(" ", "T")).toLocaleTimeString("id-ID", {
-        day: "numeric",
-        month: "short",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }),
-      period: item.period,
-      avg_CNR_Wm2_Avg: (item as any).CNR_Wm2_Avg != null ? Number((item as any).CNR_Wm2_Avg) : null,
-      avg_CNR_Wm2_Max: (item as any).CNR_Wm2_Max != null ? Number((item as any).CNR_Wm2_Max) : null,
-      avg_CNR_Wm2_Min: (item as any).CNR_Wm2_Min != null ? Number((item as any).CNR_Wm2_Min) : null,
-    })) || [];
+    avgData?.map((item) => {
+      const safeString = item.period ? item.period.replace(/-/g, "/") : "";
+      const opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short" };
+      if (hasTime) {
+        opts.hour = "2-digit";
+        opts.minute = "2-digit";
+        opts.hour12 = false;
+      }
+      return {
+        displayTime: safeString ? new Date(safeString).toLocaleTimeString("id-ID", opts) : "-",
+        period: item.period,
+        avg_CNR_Wm2_Avg: (item as any).CNR_Wm2_Avg != null ? Number((item as any).CNR_Wm2_Avg) : null,
+        avg_CNR_Wm2_Max: (item as any).CNR_Wm2_Max != null ? Number((item as any).CNR_Wm2_Max) : null,
+        avg_CNR_Wm2_Min: (item as any).CNR_Wm2_Min != null ? Number((item as any).CNR_Wm2_Min) : null,
+      };
+    }) || [];
   // console.log("Data chart:", formattedData);
 
   return (
-    <div className="w-full border rounded-3xl bg-[#A8DADC] dark:bg-blue-950 flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6 mb-4">
+    <div className="w-full border dark:border-[#457B9D] rounded-3xl bg-[#A8DADC] dark:bg-[#1D3557] flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6 mb-4">
       <div className="w-full flex justify-center mb-4">
-        <h3 className="text-[#575555ff] font-poppins font-bold text-lg md:text-xl tracking-wide">
+        <h3 className="text-[#1D3557] dark:text-[#F1FAEE] font-poppins font-bold text-lg md:text-xl tracking-wide">
           Bar Chart NetRadiometer
         </h3>
       </div>
@@ -72,7 +80,7 @@ export function ChartBar({ avgData }: ChartAreaProps) {
             <XAxis
               dataKey="displayTime"
               type="category"
-              tick={{ fill: "#575555ff", fontSize: 11 }}
+              tick={{ fill: chartTextColor, fontSize: 11 }}
               tickMargin={10}
               domain={["auto", "auto"]}
               axisLine={false}
@@ -82,11 +90,11 @@ export function ChartBar({ avgData }: ChartAreaProps) {
                 value: "Suhu (W/m^2)",
                 angle: -90,
                 position: "insideLeft",
-                color: "#575555ff",
+                fill: chartTextColor,
               }}
               axisLine={true}
               tickLine={true}
-              tick={{ fill: "#575555ff", fontSize: 12 }}
+              tick={{ fill: chartTextColor, fontSize: 12 }}
               tickCount={4}
               interval={0}
               domain={["auto", "auto"]}
@@ -99,20 +107,21 @@ export function ChartBar({ avgData }: ChartAreaProps) {
                     const timestamp = payload?.[0]?.payload?.period;
 
                     if (!timestamp) return "";
+                    const safeString = timestamp.replace(/-/g, "/");
 
-                    return new Date(timestamp).toLocaleString("id-ID", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    });
+                    const opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short", year: "numeric" };
+                    if (hasTime) {
+                      opts.hour = "2-digit";
+                      opts.minute = "2-digit";
+                    }
+
+                    return new Date(safeString).toLocaleString("id-ID", opts);
                   }}
                   indicator="dot"
                 />
               }
             />
-            <ChartLegend content={<ChartLegendContent className="text-[#575555ff]" />} />
+            <ChartLegend content={<ChartLegendContent className="text-[#1D3557] dark:text-[#F1FAEE]" />} />
             <Bar dataKey="avg_CNR_Wm2_Avg" fill="#FBBF24" radius={4} />
             <Bar dataKey="avg_CNR_Wm2_Max" fill="#10B981" radius={4} />
             <Bar dataKey="avg_CNR_Wm2_Min" fill="#F43F5E" radius={4} />

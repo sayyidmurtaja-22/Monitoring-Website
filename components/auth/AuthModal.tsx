@@ -7,13 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FcGoogle } from "react-icons/fc";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-export default function AuthModal({ children,defaultTab = "login" }: { children: React.ReactNode; defaultTab?: "login" | "register"; }) {
+export default function AuthModal({ children, defaultTab = "login" }: { children: React.ReactNode; defaultTab?: "login" | "register"; }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(defaultTab === "login");
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -40,10 +43,12 @@ export default function AuthModal({ children,defaultTab = "login" }: { children:
 
       if (res?.error) {
         toast.error("Login failed. Check your credentials.");
+        setIsLoading(false);
       } else {
         toast.success("Login successful!");
-        setIsOpen(false);
-        router.refresh();
+        setIsSuccess(true);
+        // Force a hard reload to ensure server session is fresh
+        window.location.href = "/users/dashboard";
       }
     } else {
       // Registration flow
@@ -65,12 +70,12 @@ export default function AuthModal({ children,defaultTab = "login" }: { children:
       } catch (err) {
         toast.error("An error occurred");
       }
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const handleGoogleSignIn = () => {
+    setIsGoogleLoading(true);
     signIn("google", { callbackUrl: "/users/dashboard" });
   };
 
@@ -122,14 +127,21 @@ export default function AuthModal({ children,defaultTab = "login" }: { children:
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading
-              ? isLogin
-                ? "Signing in..."
-                : "Creating account..."
-              : isLogin
-              ? "Sign In"
-              : "Register"}
+          <Button type="submit" className="w-full" disabled={isLoading || isSuccess}>
+            {isLoading || isSuccess ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {isSuccess
+                  ? "Loading dashboard..."
+                  : isLogin
+                  ? "Signing in..."
+                  : "Creating account..."}
+              </>
+            ) : isLogin ? (
+              "Sign In"
+            ) : (
+              "Register"
+            )}
           </Button>
         </form>
 
@@ -149,9 +161,19 @@ export default function AuthModal({ children,defaultTab = "login" }: { children:
           variant="outline"
           className="w-full mb-4"
           onClick={handleGoogleSignIn}
+          disabled={isGoogleLoading || isSuccess}
         >
-          <FcGoogle className="mr-2 size-5" />
-          Google
+          {isGoogleLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Connecting to Google...
+            </>
+          ) : (
+            <>
+              <FcGoogle className="mr-2 size-5" />
+              Google
+            </>
+          )}
         </Button>
 
         <div className="text-center text-sm">
@@ -159,6 +181,7 @@ export default function AuthModal({ children,defaultTab = "login" }: { children:
             type="button"
             className="text-blue-600 hover:underline dark:text-blue-400"
             onClick={() => setIsLogin(!isLogin)}
+            disabled={isLoading || isSuccess || isGoogleLoading}
           >
             {isLogin
               ? "Don't have an account? Sign up"

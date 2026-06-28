@@ -70,7 +70,7 @@ export default function DashboardBali({
             <button
               onClick={exportData}
               disabled={exporting}
-              className="export ml-auto px-4 py-2 bg-blue-700 text-white dark:bg-blue-950"
+              className="export ml-auto px-4 py-2 bg-[#457B9D] text-white dark:bg-[#1D3557]"
             >
               {exporting ? "mengunduh..." : "Download PDF"}
             </button>

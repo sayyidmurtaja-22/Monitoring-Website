@@ -178,7 +178,7 @@ function StatCards({ avgData, config, icon, secondary }: StatCardsProps) {
     const secKey = secondary.config.lines[0].key;
     const maxRow = avgData.find((d) => d.period === maxPeriod);
     const minRow = avgData.find((d) => d.period === minPeriod);
-    
+
     if (maxRow && maxRow[secKey] !== undefined && !isNaN(Number(maxRow[secKey]))) {
       maxStatus = getStatus(Number(maxRow[secKey]), 0, "", secondary.config.analysis);
     }

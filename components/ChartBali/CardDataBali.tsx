@@ -70,8 +70,8 @@ export default function CardDataBali({ data, getDataBali }: ChartAreaProps) {
             animate={{ y: 0 }}
           >
             <Card
-              className="w-full h-full bg-blue-600 dark:bg-blue-950  transition-all duration-300 ease-in-out
-                    hover:shadow-2xl hover:-translate-y-1 hover:border-transparent"
+              className="w-full h-full bg-[#A8DADC] dark:bg-[#1D3557]  transition-all duration-300 ease-in-out
+              hover:shadow-2xl hover:-translate-y-1 hover:border-transparent "
             >
               <CardHeader className="pb-2">
                 <CardTitle className="text-xl flex items-center gap-2">

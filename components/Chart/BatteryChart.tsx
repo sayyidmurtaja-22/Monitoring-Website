@@ -11,8 +11,9 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { WeatherData } from "@/types/weather";
-import { ChartContainer } from "../ui/chart";
+import { ChartContainer, ChartLegend, ChartLegendContent } from "../ui/chart";
 import { AvgWeatherData } from "@/types/AvgTypes";
+import { useTheme } from "next-themes";
 
 // Data simulasi tegangan baterai (V)
 // const data = [
@@ -36,24 +37,39 @@ const chartConfig = {
 };
 
 export default function BatteryChart({ avgData }: ChartAreaProps) {
+  const { resolvedTheme } = useTheme();
+  const chartTextColor = resolvedTheme === "dark" ? "#F1FAEE" : "#1D3557";
+  
+  const tooltipStyle = {
+    backgroundColor: resolvedTheme === "dark" ? "rgba(29, 53, 87, 0.95)" : "rgba(241, 250, 238, 0.95)",
+    borderColor: resolvedTheme === "dark" ? "#457B9D" : "#A8DADC",
+    borderRadius: "12px",
+    color: resolvedTheme === "dark" ? "#F1FAEE" : "#1D3557",
+    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+  };
+  
+  const hasTime = avgData && avgData.length > 0 ? (avgData[0].period?.includes(" ") || avgData[0].period?.includes(":")) : true;
+
   const formattedData =
-    avgData?.map((item) => ({
-      rawTimeStamp: item.period,
-      // Ganti spasi dengan "T" agar format "YYYY-MM-DD HH:00:00" menjadi ISO string yang valid
-      Batt_Time: new Date(item.period.replace(" ", "T")).toLocaleTimeString("id-ID", {
-        day: "numeric",
-        month: "short",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }),
-      avg_Batt: (item as any).Batt_V_Avg != null ? Number((item as any).Batt_V_Avg) : null,
-    })) || [];
+    avgData?.map((item) => {
+      const safeString = item.period ? item.period.replace(/-/g, "/") : "";
+      const opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short" };
+      if (hasTime) {
+        opts.hour = "2-digit";
+        opts.minute = "2-digit";
+        opts.hour12 = false;
+      }
+      return {
+        rawTimeStamp: item.period,
+        Batt_Time: safeString ? new Date(safeString).toLocaleTimeString("id-ID", opts) : "-",
+        avg_Batt: (item as any).Batt_V_Avg != null ? Number((item as any).Batt_V_Avg) : null,
+      };
+    }) || [];
 
   return (
-    <div className="w-full border rounded-3xl bg-[#A8DADC] dark:bg-blue-950 flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6 mb-4">
+    <div className="w-full border dark:border-[#457B9D] rounded-3xl bg-[#A8DADC] dark:bg-[#1D3557] flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6 mb-4">
       <div className="w-full flex justify-center mb-4">
-        <h3 className="text-[#575555ff] font-poppins font-bold text-lg md:text-xl tracking-wide">
+        <h3 className="text-[#1D3557] dark:text-[#F1FAEE] font-poppins font-bold text-lg md:text-xl tracking-wide">
           Chart Tegangan Baterai
         </h3>
       </div>
@@ -63,74 +79,72 @@ export default function BatteryChart({ avgData }: ChartAreaProps) {
       >
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
-          data={formattedData}
-          margin={{
-            top: 20,
-            right: 40,
-            left: 20,
-            bottom: 10,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" strokeWidth={1} opacity={0.1} />
-          <XAxis
-            dataKey="Batt_Time"
-            tick={{ fill: "#575555ff", fontSize: 11 }}
-            domain={["auto", "auto"]}
-            axisLine={true}
+            data={formattedData}
+            margin={{
+              top: 20,
+              right: 40,
+              left: 20,
+              bottom: 10,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" strokeWidth={1} opacity={0.1} />
+            <XAxis
+              dataKey="Batt_Time"
+              tick={{ fill: chartTextColor, fontSize: 11 }}
+              domain={["auto", "auto"]}
+              axisLine={true}
             // label={{
             //   value: "Waktu",
             //   position: "insideBottomLeft",
             //   offset: 0,
             // }}
-          />
-          <YAxis
-            label={{
-              value: "Tegangan (V)",
-              angle: -90,
-              position: "insideLeft",
-              fill: "#575555ff",
-            }}
-            tick={{ fill: "#575555ff", fontSize: 12 }}
-            domain={["auto", "auto"]}
-          />
-          <Tooltip
-            labelFormatter={(_: any, payload: any) => {
-              const timestamp = payload?.[0]?.payload?.rawTimeStamp;
+            />
+            <YAxis
+              label={{
+                value: "Tegangan (V)",
+                angle: -90,
+                position: "insideLeft",
+                fill: chartTextColor,
+              }}
+              tick={{ fill: chartTextColor, fontSize: 12 }}
+              domain={["auto", "auto"]}
+            />
+            <Tooltip
+              labelFormatter={(_: any, payload: any) => {
+                const timestamp = payload?.[0]?.payload?.rawTimeStamp;
 
-              if (!timestamp) return "";
+                if (!timestamp) return "";
+                const safeString = timestamp.replace(/-/g, "/");
 
-              return new Date(timestamp).toLocaleString("id- ID", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              });
-            }}
-            formatter={(value: any) => [
-              `${value?.toFixed(2)} V`,
-              "Tegangan",
-            ]}
-            contentStyle={{
-              backgroundColor: "rgba(15, 23, 42,0.9)",
-              borderColor: "#FFFFFF33",
-              borderRadius: "12px",
-              color: "#fff",
-            }}
-          />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="avg_Batt"
-            stroke="#8884d8"
-            dot={false}
-            // dot={{ r: 4, fill: "#60a5fa" }}
-            activeDot={{ r: 6, stroke: "#fff", strokeWidth: 2 }}
-            name="Rata-Rata Tegangan Baterai"
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </ChartContainer>
+                const opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short", year: "numeric" };
+                if (hasTime) {
+                  opts.hour = "2-digit";
+                  opts.minute = "2-digit";
+                }
+
+                return new Date(safeString).toLocaleString("id-ID", opts);
+              }}
+              formatter={(value: any) => [
+                `${value?.toFixed(2)} V`,
+                "Tegangan",
+              ]}
+              contentStyle={tooltipStyle}
+            />
+            <ChartLegend
+              content={<ChartLegendContent className="text-[#1D3557] dark:text-[#F1FAEE]" />}
+            />
+            <Line
+              type="monotone"
+              dataKey="avg_Batt"
+              stroke="#8884d8"
+              dot={false}
+              // dot={{ r: 4, fill: "#60a5fa" }}
+              activeDot={{ r: 6, stroke: "#fff", strokeWidth: 2 }}
+              name="Rata-Rata Tegangan Baterai"
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </ChartContainer>
     </div>
   );
 }
