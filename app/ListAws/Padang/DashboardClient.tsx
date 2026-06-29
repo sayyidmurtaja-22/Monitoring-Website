@@ -35,6 +35,7 @@ interface AuthProps {
 import dynamic from "next/dynamic";
 
 const TourGuide = dynamic(() => import("@/components/TourGuide"), { ssr: false });
+import { track } from "@vercel/analytics";
 
 export default function DashboardClient({
   user,
@@ -107,6 +108,7 @@ export default function DashboardClient({
 
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`);
+      track("Filter Date Range", { region: "Padang", from: range.from, to: range.to });
     });
     setShowDateDropdown(false); // Tutup dropdown setelah pilih tanggal
   };
@@ -116,6 +118,7 @@ export default function DashboardClient({
       const params = new URLSearchParams(searchParams.toString());
       params.set("interval", newInterval);
       router.push(`${pathname}?${params.toString()}`);
+      track("Change Interval", { region: "Padang", interval: newInterval });
     });
   };
 
@@ -133,6 +136,7 @@ export default function DashboardClient({
     const element = exportRef.current;
     if (!element) return;
     setExporting(true);
+    const startTime = performance.now();
     try {
       const canvas = await html2canvas(element, {
         scale: 2,
@@ -153,8 +157,13 @@ export default function DashboardClient({
 
       pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
       pdf.save(`Laporan_${data.nama}_Padang.pdf`);
+
+      const duration = performance.now() - startTime;
+      console.log(`[Metrics] PDF Export (Padang) took ${duration.toFixed(2)}ms`);
+      track("Export PDF", { region: "Padang", durationMs: Math.round(duration) });
     } catch (error) {
       alert("Gagal unduh");
+      track("Export PDF Error", { region: "Padang" });
     } finally {
       setExporting(false);
       setExportHeaderData(null);

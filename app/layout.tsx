@@ -7,6 +7,8 @@ import 'primereact/resources/themes/lara-light-cyan/theme.css'; // Theme
 import 'primereact/resources/primereact.min.css';                // Core CSS
 import 'primeicons/primeicons.css';      
 import { Toaster } from 'sonner';
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 
  
@@ -59,6 +61,8 @@ export default function RootLayout({
         {children}
 
          <Toaster />
+         <SpeedInsights />
+         <Analytics />
       </main>
         </ThemeProvider>
      </body>

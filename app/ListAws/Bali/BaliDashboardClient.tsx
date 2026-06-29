@@ -17,6 +17,7 @@ import jsPDF from "jspdf";
 import { ExportPdfDialog, ExportConfigData } from "@/components/ExportPdfDialog";
 
 import dynamic from "next/dynamic";
+import { track } from "@vercel/analytics";
 
 const TourGuide = dynamic(() => import("@/components/TourGuide"), { ssr: false });
 
@@ -89,7 +90,9 @@ export default function BaliDashboardClient({
     }
 
     startTransition(() => {
+      const startTime = performance.now();
       router.push(`${pathname}?${params.toString()}`);
+      track("Filter Date Range", { region: "Bali", from: range.from, to: range.to });
     });
   };
 
@@ -98,6 +101,7 @@ export default function BaliDashboardClient({
       const params = new URLSearchParams(searchParams.toString());
       params.set("interval", newInterval);
       router.push(`${pathname}?${params.toString()}`);
+      track("Change Interval", { region: "Bali", interval: newInterval });
     });
   };
 
@@ -115,6 +119,7 @@ export default function BaliDashboardClient({
     const element = exportRef.current;
     if (!element) return;
     setExporting(true);
+    const startTime = performance.now();
     try {
       const canvas = await html2canvas(element, {
         scale: 2,
@@ -135,8 +140,13 @@ export default function BaliDashboardClient({
 
       pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
       pdf.save(`Laporan_${data.nama}_Bali.pdf`);
+      
+      const duration = performance.now() - startTime;
+      console.log(`[Metrics] PDF Export (Bali) took ${duration.toFixed(2)}ms`);
+      track("Export PDF", { region: "Bali", durationMs: Math.round(duration) });
     } catch (error) {
       alert("Gagal unduh");
+      track("Export PDF Error", { region: "Bali" });
     } finally {
       setExporting(false);
       setExportHeaderData(null);

@@ -11,6 +11,7 @@ import {
 import { AvgWeatherData } from "../../types/AvgTypes";
 import { CSVLink } from "react-csv";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { track } from "@vercel/analytics";
 import { DatePicker } from "@/components/Calendar/DatePicker";
 import { useEffect, useRef, useState } from "react";
 import CheckboxBtn, { allParameters } from "@/components/CheckBoxParams/CheckboxBtn";
@@ -118,6 +119,7 @@ export default function ExportClient({ data, initialFrom, initialTo, activeParam
     if (range.to) params.set("to", range.to);
     
     router.push(`${pathname}?${params.toString()}`);
+    track("Filter Date Range", { region: "Export", from: range.from, to: range.to });
   };
 
   // Navigasi ke lokasi lain, mempertahankan filter tanggal & parameter
@@ -126,6 +128,7 @@ export default function ExportClient({ data, initialFrom, initialTo, activeParam
     params.set("location", key);
     router.push(`${pathname}?${params.toString()}`);
     setShowLocationDropdown(false);
+    track("Change Location", { newLocation: key, context: "Export" });
   };
 
   // Filter parameterGroups berdasarkan yang diceklis
@@ -301,6 +304,15 @@ export default function ExportClient({ data, initialFrom, initialTo, activeParam
             <CSVLink
               data={csvData}
               filename={`Data_Cuaca_${currentLocationConfig.label}_${dateRange.from}_to_${dateRange.to}.csv`}
+              onClick={() => {
+                const startTime = performance.now();
+                const dataLen = csvData.length;
+                track("Export CSV", { 
+                  region: currentLocationConfig.label,
+                  rows: dataLen
+                });
+                console.log(`[Metrics] CSV Export (${currentLocationConfig.label}) clicked, ${dataLen} rows`);
+              }}
               className={`px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors flex items-center gap-2 ${
                 selectedKeys.length === 0
                   ? "bg-gray-400 cursor-not-allowed pointer-events-none"
