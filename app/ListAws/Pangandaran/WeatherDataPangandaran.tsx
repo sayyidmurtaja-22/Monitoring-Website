@@ -416,11 +416,25 @@ export default function WeatherDataPangandaran({
         </div>
 
         {/* ── WindRose ── */}
-        <WindRose
-          data={avgData}
-          speedConfig={WIND_CONFIG}
-          directionConfig={WIND_DIRECTION_CONFIG}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 w-full">
+          <WindRose
+            data={avgData}
+            speedConfig={WIND_CONFIG}
+            directionConfig={WIND_DIRECTION_CONFIG}
+          />
+          <div className="h-full">
+            <StatCards
+              avgData={avgData}
+              config={WIND_CONFIG}
+              icon={<IconWind />}
+              secondary={{
+                config: WIND_DIRECTION_CONFIG,
+                icon: <IconCompass />,
+                label: "Arah Dominan"
+              }}
+            />
+          </div>
+        </div>
 
       </div>
     </div>
