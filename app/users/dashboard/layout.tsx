@@ -12,6 +12,7 @@ import Greeting from "@/components/Greeting";
 import ClockCard from "@/components/Clock/Clock";
 import { userSession } from "@/libs/auth-libs";
 import { Suspense } from "react";
+import Footer from "@/app/footer/page";
 
 
 const poppins = Poppins({
@@ -48,6 +49,7 @@ export default async function DashboardLayout({
           </div>
         </nav>
         <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>
+        <Footer />
       </SidebarInset>
     </SidebarProvider>
   );

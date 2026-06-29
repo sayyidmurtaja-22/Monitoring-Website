@@ -7,7 +7,7 @@ import 'primereact/resources/themes/lara-light-cyan/theme.css'; // Theme
 import 'primereact/resources/primereact.min.css';                // Core CSS
 import 'primeicons/primeicons.css';      
 import { Toaster } from 'sonner';
-import Footer from "./footer/page";
+
 
  
 
@@ -57,7 +57,7 @@ export default function RootLayout({
         >
         <main className="flex flex-1 flex-col">
         {children}
-        <Footer />
+
          <Toaster />
       </main>
         </ThemeProvider>

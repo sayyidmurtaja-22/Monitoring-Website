@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, FileText, Table, Download, Activity, BarChart2, ChevronDown, Smartphone, Monitor } from "lucide-react";
 import { MeshGradient } from "@paper-design/shaders-react";
 import "./style.css";
-
+import Footer from "@/app/footer/page";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -579,7 +579,7 @@ export default function HomePageClient({ user, session }: Auth) {
           </AuthModal>
         </div>
       </section>
-
+      <Footer />
     </div>
   );
 }

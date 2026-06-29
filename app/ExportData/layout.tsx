@@ -12,7 +12,7 @@ import Greeting from "@/components/Greeting";
 import ClockCard from "@/components/Clock/Clock";
 
 import { userSession } from "@/libs/auth-libs";
-
+import Footer from "@/app/footer/page";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "600", "700"], // Pilih weight yang dibutuhkan
@@ -45,6 +45,7 @@ export default async function DashboardLayout({
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>
+        <Footer />
       </SidebarInset>
     </SidebarProvider>
   );

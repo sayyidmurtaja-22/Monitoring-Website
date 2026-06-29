@@ -248,9 +248,8 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
             className={`${
               isMobile 
                 ? 'fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-[340px]' 
-                : 'absolute right-0 mt-2 w-auto origin-top-right'
+                : 'absolute left-0 mt-2 w-auto origin-top-left'
             } z-[60] bg-white dark:bg-slate-800 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden`} 
-            style={!isMobile ? { minWidth: '380px' } : {}}
           >
             <style>{calendarCSS}</style>
 
@@ -261,7 +260,7 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
                   defaultMonth={tempRange?.from || new Date()}
                   selected={tempRange}
                   onSelect={handleDateChange}
-                  numberOfMonths={isMobile ? 1 : 2}
+                  numberOfMonths={1}
                   locale={id}
                   showOutsideDays={true}
                 />

@@ -24,8 +24,9 @@ interface ChartAreaProps {
 export default function CardDataBali({ data, getDataBali }: ChartAreaProps) {
   const latest = data && data.length > 0 ? data[0] : null;
   const latestavg =
-    getDataBali && getDataBali.length > 0 ? getDataBali[0] : null;
-  // const totalRecords = latestavg.reduce((acc, curr) => acc + Number(curr.jumlah_data), 0);
+    getDataBali && getDataBali.length > 0 ? getDataBali[getDataBali.length - 1] : null;
+  const totalRecords = getDataBali?.reduce((acc, curr) => acc + Number(curr.jumlah_data || 0), 0) || 0;
+  const totalRain = getDataBali?.reduce((acc, curr) => acc + Number(curr.avg_Rain_mm_Tot || 0), 0) || 0;
   const cardsInfo = [
     {
       title: "Suhu Rata-rata",
@@ -47,13 +48,13 @@ export default function CardDataBali({ data, getDataBali }: ChartAreaProps) {
     },
     {
       title: "Curah Hujan",
-      value: `${Number(latestavg?.avg_Rain_mm_Tot ?? 0).toFixed(1)} mm`,
+      value: `${Number(totalRain).toFixed(1)} mm`,
       icon: <CloudRain className="text-sky-300" size={22} />,
       suffix: " mm",
     },
     {
       title: "Jumlah Data",
-      value: `${Number(latestavg?.jumlah_data ?? 0).toLocaleString("id-ID")} data`,
+      value: `${Number(totalRecords).toLocaleString("id-ID")} data`,
       icon: <Flame className="text-red-300" size={22} />,
       // suffix: "°C=",
     },

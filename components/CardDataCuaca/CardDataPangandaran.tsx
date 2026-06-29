@@ -27,6 +27,8 @@ export default function CardDataPangandaran({ data, avgData }: ChartAreaProps) {
   
   // Hitung total data dari semua data rata-rata
   const totalRecords = avgData?.reduce((acc, curr) => acc + Number(curr.jumlah_data || 0), 0) || 0;
+  // Hitung total curah hujan dari semua data
+  const totalRain = avgData?.reduce((acc, curr) => acc + Number(curr.avg_Rain_mm_Tot || 0), 0) || 0;
 
   const cardsInfo = [
     {
@@ -49,7 +51,7 @@ export default function CardDataPangandaran({ data, avgData }: ChartAreaProps) {
     },
     {
       title: "Curah Hujan",
-      value: Number(latest?.avg_Rain_mm_Tot ?? 0).toFixed(1),
+      value: Number(totalRain).toFixed(1),
       icon: <CloudRain className="text-sky-300" size={22} />,
       suffix: " mm",
     },
