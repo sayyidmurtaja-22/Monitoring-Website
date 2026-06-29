@@ -191,12 +191,12 @@ export default function BaliDashboardClient({
       {/* ─── Toolbar: Judul + Kalender + Interval ─── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-extrabold font-poppins text-slate-800 dark:text-white">
+          <h1 className="text-2xl md:text-3xl font-extrabold font-poppins text-[#1D3557] dark:text-[#457B9D]">
             AWS {locationName} Dashboard
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             {formatDateDisplay()} ·{" "}
-            <span className="text-blue-500 font-medium">
+            <span className="text-[#E63946] dark:text-[#A8DADC] font-medium">
               {getIntervalLabel(interval)}
             </span>
           </p>
@@ -243,22 +243,12 @@ export default function BaliDashboardClient({
             onClick={() => setShowExportModal(true)}
             disabled={exporting || user?.role !== "ADMIN"}
             title={user?.role !== "ADMIN" ? "Hanya Admin yang dapat mengunduh PDF" : "Unduh PDF"}
-            className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed scroll-mt-40"
+            className="flex items-center gap-2 px-3 py-2 bg-[#E63946] text-white rounded-lg shadow-sm hover:bg-[#D90429] transition-colors disabled:opacity-60 disabled:cursor-not-allowed scroll-mt-40"
           >
             {user?.role !== "ADMIN" ? <FaLock /> : <FaDownload />}
             <span className="text-sm">
               {exporting ? "Mengunduh..." : "PDF"}
             </span>
-          </button>
-
-          {/* Tombol Refresh */}
-          <button
-            type="button"
-            onClick={() => window.location.reload()}
-            className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-150 text-slate-700 dark:text-slate-200 scroll-mt-40"
-          >
-            <span>&#x21bb;</span>
-            <span className="hidden sm:inline text-sm">Refresh</span>
           </button>
         </div>
       </div>

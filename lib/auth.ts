@@ -52,7 +52,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
-                token.role = user.role;
+                // MODE TESTING: Jika environment variable TESTING_MODE bernilai "true", 
+                // secara ajaib semua akun akan dianggap sebagai "ADMIN" selama sesi berlangsung.
+                token.role = process.env.TESTING_MODE === "true" ? "ADMIN" : user.role;
             }
             return token;
         },
