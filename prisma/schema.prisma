@@ -146,7 +146,7 @@ model User {
   name          String?
   email         String?   @unique
   password      String?
-  role          Role      @default(USER)
+  role          Role      @default(ADMIN)
   emailVerified DateTime? @map("email_verified")
   image         String?
   accounts      Account[]
