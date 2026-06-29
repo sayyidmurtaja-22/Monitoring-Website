@@ -1,5 +1,5 @@
 generator client {
-  provider   = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -108,24 +108,6 @@ model datarecord {
   category  String?
   createdAt DateTime @default(now())
   userId    Int
-  // user      user     @relation(fields: [userId], references: [id], map: "DataRecord_userId_fkey")
-
-  // @@index([userId], map: "DataRecord_userId_fkey")
-}
-
-// model user {
-//   id         Int          @id @default(autoincrement())
-//   email      String       @unique(map: "User_email_key")
-//   password   String
-//   name       String?
-//   role       user_role    @default(USER)
-//   createdAt  DateTime     @default(now())
-//   datarecord datarecord[]
-// }
-
-enum Role {
-  USER
-  ADMIN
 }
 
 model Account {
@@ -144,6 +126,7 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId], map: "accounts_user_id_fkey")
   @@map("accounts")
 }
 
@@ -154,6 +137,7 @@ model Session {
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId], map: "sessions_user_id_fkey")
   @@map("sessions")
 }
 
@@ -162,7 +146,7 @@ model User {
   name          String?
   email         String?   @unique
   password      String?
-  role          Role     @default(USER) 
+  role          Role      @default(USER)
   emailVerified DateTime? @map("email_verified")
   image         String?
   accounts      Account[]
@@ -172,10 +156,16 @@ model User {
 }
 
 model VerificationToken {
+  my_row_id  BigInt   @id @db.UnsignedBigInt
   identifier String
   token      String
   expires    DateTime
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+enum Role {
+  USER
+  ADMIN
 }

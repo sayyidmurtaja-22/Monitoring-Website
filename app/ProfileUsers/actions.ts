@@ -1,6 +1,7 @@
 "use server";
 import prisma from "@/libs/prisma";
 import { revalidatePath } from "next/cache";
+import { Role } from "@prisma/client";
 
 export async function getAllUsers() {
   return await prisma.user.findMany({
