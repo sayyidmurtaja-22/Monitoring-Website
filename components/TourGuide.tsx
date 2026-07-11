@@ -15,7 +15,7 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
   const storageKey = 
     page === 'dashboard' ? 'hasSeenDashboardTour' : 
     page === 'export' ? 'hasSeenExportTour' : 
-    'hasSeenStationTour';
+    'hasSeenStationTourV2';
 
   useEffect(() => {
     // Only run on mount
@@ -85,7 +85,12 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
     },
     {
       target: '#tour-weather-cards', 
-      content: 'Bagian ini menampilkan ringkasan data cuaca harian dan grafik pergerakan elemen cuaca.',
+      content: 'Bagian ini menampilkan ringkasan data cuaca harian dan 10 susunan grafik pergerakan elemen cuaca.',
+      skipBeacon: true,
+    },
+    {
+      target: '#tour-new-charts', 
+      content: 'BARU! Grafik Curah Hujan kini ditampilkan menggunakan Bar Chart (Grafik Batang) untuk memudahkan Anda mengamati intensitas hujan.',
       skipBeacon: true,
     }
   ];

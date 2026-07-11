@@ -55,7 +55,7 @@ export function WeatherLineDual({ data, lines, title }: ChartAreaProps) {
   const hasTime = data && data.length > 0 ? (data[0].period?.includes(" ") || data[0].period?.includes(":")) : true;
 
   return (
-    <div className="w-full border dark:border-[#457B9D] rounded-3xl bg-[#A8DADC] dark:bg-[#1D3557] flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6 mb-4">
+    <div className="w-full border dark:border-[#457B9D] rounded-3xl bg-[#A8DADC] dark:bg-[#1D3557] flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6">
       <div className="w-full flex justify-center mb-4">
         <h3 className="text-[#1D3557] dark:text-[#F1FAEE] font-poppins font-bold text-lg md:text-xl tracking-wide">
           {title}

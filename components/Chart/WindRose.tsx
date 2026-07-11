@@ -94,7 +94,7 @@ const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
 
   if (!data || data.length === 0 || totalCount === 0) {
     return (
-      <div className="w-full border dark:border-[#457B9D] rounded-3xl bg-[#A8DADC] dark:bg-[#1D3557] flex flex-col items-center justify-center h-[500px] mb-4 transition-all duration-300">
+      <div className="w-full border dark:border-[#457B9D] rounded-3xl bg-[#A8DADC] dark:bg-[#1D3557] flex flex-col items-center justify-center h-[500px] transition-all duration-300">
         <p className="text-[#1D3557] dark:text-[#F1FAEE] font-poppins font-medium">Tidak ada data angin valid untuk ditampilkan</p>
       </div>
     );
@@ -194,7 +194,7 @@ const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
   };
 
   return (
-    <div className="w-full border dark:border-[#457B9D] rounded-3xl bg-[#A8DADC] dark:bg-[#1D3557] flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6 mb-4">
+    <div className="w-full border dark:border-[#457B9D] rounded-3xl bg-[#A8DADC] dark:bg-[#1D3557] flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6">
       <div className="w-full flex justify-center mb-2">
         <h3 className="text-[#1D3557] dark:text-[#F1FAEE] font-poppins font-bold text-lg md:text-xl tracking-wide">
           Wind Rose (Arah & Kecepatan Angin)

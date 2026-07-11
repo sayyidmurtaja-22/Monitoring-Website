@@ -6,18 +6,19 @@ import BatteryChart from "@/components/Chart/BatteryChart";
 import { AvgWeatherData, WeatherDataTypes } from "@/types/AvgTypes";
 import { type DateRange } from "react-day-picker";
 import {
+  TEMPERATURE_CONFIG,
   HUMIDITY_CONFIG,
   VAPOR_PRESSURE_CONFIG,
-  TEMPERATURE_CONFIG,
   PRESSURE_CONFIG,
+  RAIN_CONFIG,
+  WIND_CONFIG,
+  WIND_DIRECTION_CONFIG,
   NET_RADIATION_CONFIG,
   CNR_RADIATION_CONFIG,
   BATTERY_CONFIG,
-  WIND_CONFIG,
-  WIND_DIRECTION_CONFIG,
-  RAIN_CONFIG,
 } from "@/config/Location";
 import { WeatherLine } from "@/components/Chart/WeatherLine";
+import { WeatherBar } from "@/components/Chart/WeatherBar";
 import { WeatherLineDual } from "@/components/Chart/WeatherLineDual";
 import WindRose from "@/components/Chart/WindRose";
 import CardData from "@/components/CardDataCuaca/CardData";
@@ -255,49 +256,33 @@ function StatCards({ avgData, config, icon, secondary }: StatCardsProps) {
   );
 }
 
-// ─── Icon SVG tambahan ──────────────────────────────────────────────────────────
+// ─── Icon SVG untuk visualisasi sederhana (Mudah Dipahami) ───────────────────
 const IconDrop = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2C6.48 2 2 8.27 2 13a10 10 0 0020 0C22 8.27 17.52 2 12 2z" />
-  </svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 8.27 2 13a10 10 0 0020 0C22 8.27 17.52 2 12 2z" /></svg>
 );
 const IconSun = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="5" />
-    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" strokeWidth="2" fill="none" />
-  </svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" strokeWidth="2" fill="none" /></svg>
 );
 const IconBattery = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M7 7h11a2 2 0 012 2v6a2 2 0 01-2 2H7a2 2 0 01-2-2V9a2 2 0 012-2zm13 4h1a1 1 0 010 2h-1v-2z" />
-  </svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 7h11a2 2 0 012 2v6a2 2 0 01-2 2H7a2 2 0 01-2-2V9a2 2 0 012-2zm13 4h1a1 1 0 010 2h-1v-2z" /></svg>
 );
 const IconWave = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z" /><circle cx="12" cy="12" r="3" /></svg>
 );
 const IconThermometer = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
-  </svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" /></svg>
 );
 const IconWind = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2" />
-  </svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2" /></svg>
 );
 const IconCompass = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-  </svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" /></svg>
 );
 const IconRain = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M12 3v14M16 13l-4 4-4-4" />
-  </svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3v14M16 13l-4 4-4-4" /></svg>
+);
+const IconGauge = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 12l3-3" /><path d="M12 12V6" /><path d="M8 12h4" /></svg>
 );
 
 // ─── Header Laporan PDF ─────────────────────────────────────────────────────────
@@ -355,7 +340,7 @@ export default function WeatherDataPangandaran({
           <CardData data={initialData} avgData={avgData} />
         </div>
 
-        {/* ── Baris 1: Suhu ── */}
+        {/* ── 1. Kondisi Suhu Udara ── */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 w-full">
           <WeatherLine
             data={avgData}
@@ -370,9 +355,54 @@ export default function WeatherDataPangandaran({
           />
         </div>
 
-        {/* ── Baris 2: Curah Hujan ── */}
+        {/* ── 2. Kondisi Kelembapan Udara ── */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 w-full">
           <WeatherLine
+            data={avgData}
+            lines={HUMIDITY_CONFIG.lines}
+            title={HUMIDITY_CONFIG.title}
+            yLabel={HUMIDITY_CONFIG.yLabel}
+          />
+          <StatCards
+            avgData={avgData}
+            config={HUMIDITY_CONFIG}
+            icon={<IconDrop />}
+          />
+        </div>
+
+        {/* ── 3. Tekanan Uap Air di Udara ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 w-full">
+          <WeatherLine
+            data={avgData}
+            lines={VAPOR_PRESSURE_CONFIG.lines}
+            title={VAPOR_PRESSURE_CONFIG.title}
+            yLabel={VAPOR_PRESSURE_CONFIG.yLabel}
+          />
+          <StatCards
+            avgData={avgData}
+            config={VAPOR_PRESSURE_CONFIG}
+            icon={<IconWave />}
+          />
+        </div>
+
+        {/* ── 4. Kondisi Tekanan Udara ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 w-full">
+          <WeatherLine
+            data={avgData}
+            lines={PRESSURE_CONFIG.lines}
+            title={PRESSURE_CONFIG.title}
+            yLabel={PRESSURE_CONFIG.yLabel}
+          />
+          <StatCards
+            avgData={avgData}
+            config={PRESSURE_CONFIG}
+            icon={<IconGauge />}
+          />
+        </div>
+
+        {/* ── 5. Total Curah Hujan ── */}
+        <div id="tour-new-charts" className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 w-full">
+          <WeatherBar
             data={avgData}
             lines={RAIN_CONFIG.lines}
             title={RAIN_CONFIG.title}
@@ -385,22 +415,22 @@ export default function WeatherDataPangandaran({
           />
         </div>
 
-        {/* ── Baris 3: Tekanan Uap Air ── */}
+        {/* ── 6. Kecepatan Angin ── */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 w-full">
           <WeatherLine
             data={avgData}
-            lines={VAPOR_PRESSURE_CONFIG.lines}
-            title={VAPOR_PRESSURE_CONFIG.title}
-            yLabel={VAPOR_PRESSURE_CONFIG.yLabel}
+            lines={WIND_CONFIG.lines}
+            title={WIND_CONFIG.title}
+            yLabel={WIND_CONFIG.yLabel}
           />
           <StatCards
             avgData={avgData}
-            config={VAPOR_PRESSURE_CONFIG}
-            icon={<IconDrop />}
+            config={WIND_CONFIG}
+            icon={<IconWind />}
           />
         </div>
 
-        {/* ── Baris 4: Arah Angin ── */}
+        {/* ── 7. Pergerakan Arah Angin ── */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 w-full">
           <WeatherLine
             data={avgData}
@@ -411,11 +441,55 @@ export default function WeatherDataPangandaran({
           <StatCards
             avgData={avgData}
             config={WIND_DIRECTION_CONFIG}
-            icon={<IconWind />}
+            icon={<IconCompass />}
           />
         </div>
 
-        {/* ── WindRose ── */}
+        {/* ── 8. Radiasi Matahari Langsung (Radiasi Neto) ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 w-full">
+          <WeatherLine
+            data={avgData}
+            lines={NET_RADIATION_CONFIG.lines}
+            title={NET_RADIATION_CONFIG.title}
+            yLabel={NET_RADIATION_CONFIG.yLabel}
+          />
+          <StatCards
+            avgData={avgData}
+            config={NET_RADIATION_CONFIG}
+            icon={<IconSun />}
+          />
+        </div>
+
+        {/* ── 9. Pantulan Sinar Matahari (Radiasi CNR) ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 w-full">
+          <WeatherLine
+            data={avgData}
+            lines={CNR_RADIATION_CONFIG.lines}
+            title={CNR_RADIATION_CONFIG.title}
+            yLabel={CNR_RADIATION_CONFIG.yLabel}
+          />
+          <StatCards
+            avgData={avgData}
+            config={CNR_RADIATION_CONFIG}
+            icon={<IconSun />}
+          />
+        </div>
+
+        {/* ── 10. Kondisi Baterai Stasiun & Suhu Panel ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 w-full">
+          <WeatherLineDual
+            data={avgData}
+            lines={BATTERY_CONFIG.lines}
+            title={BATTERY_CONFIG.title}
+          />
+          <StatCards
+            avgData={avgData}
+            config={BATTERY_CONFIG}
+            icon={<IconBattery />}
+          />
+        </div>
+
+        {/* ── 11. Diagram Distribusi Arah Angin (WindRose) ── */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 w-full">
           <WindRose
             data={avgData}

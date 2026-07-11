@@ -101,14 +101,6 @@ model aws_bungus {
   Rain_mm_Tot Float?   @db.Float
 }
 
-model datarecord {
-  id        Int      @id @default(autoincrement())
-  label     String
-  value     Int
-  category  String?
-  createdAt DateTime @default(now())
-  userId    Int
-}
 
 model Account {
   id                String  @id @default(cuid())

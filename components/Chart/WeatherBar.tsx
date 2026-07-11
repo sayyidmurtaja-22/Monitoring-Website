@@ -1,14 +1,12 @@
 "use client";
 
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
-  LabelProps,
   ResponsiveContainer,
 } from "recharts";
 import { RechartsDevtools } from "@recharts/devtools";
@@ -25,7 +23,7 @@ interface ChartAreaProps {
   yLabel: string;
 }
 
-export function WeatherLine({ data, lines, title, yLabel }: ChartAreaProps) {
+export function WeatherBar({ data, lines, title, yLabel }: ChartAreaProps) {
   const { resolvedTheme } = useTheme();
   const chartTextColor = resolvedTheme === "dark" ? "#F1FAEE" : "#1D3557";
   
@@ -62,7 +60,7 @@ export function WeatherLine({ data, lines, title, yLabel }: ChartAreaProps) {
       </div>
       <ChartContainer config={chartConfig} className="h-[380px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
+          <BarChart
             style={{
               aspectRatio: 1.618,
             }}
@@ -131,25 +129,16 @@ export function WeatherLine({ data, lines, title, yLabel }: ChartAreaProps) {
             />
 
             {lines.map((line) => (
-              <Line
-                type="monotone"
+              <Bar
                 key={line.key}
                 dataKey={line.key}
-                stroke={line.color}
-                strokeWidth={2.5}
-                // label={CustomizedLabel}
-                // dot={{
-                //   fill: "var(--color-surface-base)",
-                // }}
-                dot={false}
-                isAnimationActive={false}
-              // activeDot={{
-              //   stroke: "#fffff",
-              // }}
+                fill={line.color}
+                radius={[4, 4, 0, 0]}
+                isAnimationActive={true}
               />
             ))}
             <RechartsDevtools />
-          </LineChart>
+          </BarChart>
         </ResponsiveContainer>
       </ChartContainer>
     </div>

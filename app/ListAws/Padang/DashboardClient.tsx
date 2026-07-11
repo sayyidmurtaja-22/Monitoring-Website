@@ -277,7 +277,7 @@ export default function DashboardClient({
           <LoadingSkeleton />
         </div>
       ) : (
-        <div id="tour-weather-cards" className="scroll-mt-40">
+        <div id="tour-weather-cards" className="flex flex-col gap-6 scroll-mt-40">
           <WeatherData
             exportRef={exportRef}
             initialData={initialData}
