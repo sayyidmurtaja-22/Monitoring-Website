@@ -34,14 +34,11 @@ export function ChartBarBali({ getDataBali }: ChartAreaProps) {
     getDataBali?.map((item) => ({
       ...item,
 
-      displayTime: new Date(item.hour_timestampBali as any).toLocaleTimeString(
+      displayTime: new Date(item.hour_timestampBali as any).toLocaleDateString(
         "id-ID",
         {
           day: "numeric", // Muncul angka tanggal
           month: "short", // Muncul singkatan bulan (Jan, Feb, dsb)
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
         },
       ),
     })) || [];
@@ -99,12 +96,9 @@ export function ChartBarBali({ getDataBali }: ChartAreaProps) {
 
                     if (!timestamp) return "";
 
-                    return new Date(timestamp).toLocaleString("id-ID", {
+                    return new Date(timestamp).toLocaleDateString("id-ID", {
                       day: "numeric",
                       month: "short",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
                     });
                   }}
                   indicator="dot"

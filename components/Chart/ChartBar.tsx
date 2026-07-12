@@ -46,7 +46,7 @@ export function ChartBar({ avgData }: ChartAreaProps) {
         opts.hour12 = false;
       }
       return {
-        displayTime: safeString ? new Date(safeString).toLocaleTimeString("id-ID", opts) : "-",
+        displayTime: safeString ? new Date(safeString).toLocaleString("id-ID", opts) : "-",
         period: item.period,
         avg_CNR_Wm2_Avg: (item as any).CNR_Wm2_Avg != null ? Number((item as any).CNR_Wm2_Avg) : null,
         avg_CNR_Wm2_Max: (item as any).CNR_Wm2_Max != null ? Number((item as any).CNR_Wm2_Max) : null,

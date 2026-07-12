@@ -73,12 +73,9 @@ export function BaliTemperatureChart({ avgData }: BaliTemperatureChartProps) {
               scale="time"
               tick={{ fill: "#ffffff", fontSize: 11 }}
               tickFormatter={(unixTime) => {
-                return new Date(unixTime).toLocaleTimeString("id-ID", {
+                return new Date(unixTime).toLocaleDateString("id-ID", {
                   day: "numeric",
                   month: "short",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false,
                 });
               }}
             />
@@ -99,7 +96,11 @@ export function BaliTemperatureChart({ avgData }: BaliTemperatureChartProps) {
             <Tooltip
               formatter={(value: any) => [typeof value === 'number' ? value.toFixed(2) : value, "Nilai"]}
               labelFormatter={(label) =>
-                new Date(label).toLocaleString("id-ID")
+                new Date(label).toLocaleDateString("id-ID", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric"
+                })
               }
               contentStyle={{
                 backgroundColor: "rgba(0, 0, 0, 0.8)",

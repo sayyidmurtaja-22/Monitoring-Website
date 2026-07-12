@@ -171,9 +171,9 @@ export default function ExportClient({ data, initialFrom, initialTo, activeParam
           <Table>
             <TableHeader className="bg-[#a8dadc]/20 dark:bg-slate-700">
               <TableRow>
-                <TableHead className="font-bold text-slate-700 dark:text-slate-200">Waktu Data</TableHead>
+                <TableHead className="font-bold text-slate-700 dark:text-slate-200 w-[200px] md:w-[300px]">Waktu Data</TableHead>
                 {group.params.map((param) => (
-                  <TableHead key={param.key} className="font-bold text-slate-700 dark:text-slate-200">
+                  <TableHead key={param.key} className="font-bold text-slate-700 dark:text-slate-200 text-center">
                     {param.label} <span className="text-xs font-normal">({param.unit})</span>
                   </TableHead>
                 ))}
@@ -187,7 +187,7 @@ export default function ExportClient({ data, initialFrom, initialTo, activeParam
                       {formatDateTime(row.period)}
                     </TableCell>
                     {group.params.map((param) => (
-                      <TableCell key={param.key} className="whitespace-nowrap">
+                      <TableCell key={param.key} className="whitespace-nowrap text-center">
                         {formatValue(row[param.key as keyof AvgWeatherData])}
                       </TableCell>
                     ))}

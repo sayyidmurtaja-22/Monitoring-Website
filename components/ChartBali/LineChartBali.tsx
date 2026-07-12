@@ -132,12 +132,9 @@ export function ChartLineBali({ getDataBali }: ChartAreaProps) {
               tick={{ fill: "#ffffff", fontSize: 11 }}
               tickFormatter={(unixTime) => {
                 // Menampilkan label per hari (Contoh: 13 Sep)
-                return new Date(unixTime).toLocaleTimeString("id-ID", {
+                return new Date(unixTime).toLocaleDateString("id-ID", {
                   day: "numeric", // Muncul angka tanggal
                   month: "short", // Muncul singkatan bulan (Jan, Feb, dsb)
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false,
                 });
               }}
             />
@@ -158,7 +155,11 @@ export function ChartLineBali({ getDataBali }: ChartAreaProps) {
             <Tooltip
               formatter={(value: any) => [typeof value === 'number' ? value.toFixed(2) : value, "Nilai"]}
               labelFormatter={(label) =>
-                new Date(label).toLocaleString("id-ID")
+                new Date(label).toLocaleDateString("id-ID", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric"
+                })
               }
               contentStyle={{
                 backgroundColor: "rgba(0, 0, 0, 0.8)",

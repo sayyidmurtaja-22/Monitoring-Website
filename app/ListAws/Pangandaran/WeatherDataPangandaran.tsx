@@ -38,13 +38,21 @@ function formatPeriod(period: string | null | undefined): string {
   if (!period) return "-";
   const d = new Date(period);
   if (isNaN(d.getTime())) return period;
-  return d.toLocaleDateString("id-ID", {
+  
+  const hasTime = period.includes(" ") || period.includes(":");
+  
+  const opts: Intl.DateTimeFormatOptions = {
     day: "numeric",
     month: "short",
     year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  };
+  
+  if (hasTime) {
+    opts.hour = "2-digit";
+    opts.minute = "2-digit";
+  }
+  
+  return d.toLocaleDateString("id-ID", opts);
 }
 
 // ─── Helper: hitung statistik dari avgData untuk key tertentu ────────────────

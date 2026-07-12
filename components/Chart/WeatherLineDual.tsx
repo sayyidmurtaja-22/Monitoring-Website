@@ -94,7 +94,7 @@ export function WeatherLineDual({ data, lines, title }: ChartAreaProps) {
                   opts.minute = "2-digit";
                   opts.hour12 = false;
                 }
-                return new Date(unixTime).toLocaleTimeString("id-ID", opts);
+                return new Date(unixTime).toLocaleString("id-ID", opts);
               }}
             />
 

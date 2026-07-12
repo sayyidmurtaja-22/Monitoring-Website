@@ -61,7 +61,7 @@ export default function BatteryChart({ avgData }: ChartAreaProps) {
       }
       return {
         rawTimeStamp: item.period,
-        Batt_Time: safeString ? new Date(safeString).toLocaleTimeString("id-ID", opts) : "-",
+        Batt_Time: safeString ? new Date(safeString).toLocaleString("id-ID", opts) : "-",
         avg_Batt: (item as any).Batt_V_Avg != null ? Number((item as any).Batt_V_Avg) : null,
       };
     }) || [];
