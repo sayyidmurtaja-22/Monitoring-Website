@@ -59,7 +59,14 @@ export function AppSidebar({ role, user }: UserProps) {
     return pathname === url;
   };
 
-  const menuItems = [
+  type MenuItem = {
+    title: string;
+    icon: React.ElementType;
+    url?: string;
+    subItems?: { title: string; url: string; icon: React.ElementType }[];
+  };
+
+  const menuItems: MenuItem[] = [
     { 
       title: "Dashboard", 
       icon: LayoutDashboard,
