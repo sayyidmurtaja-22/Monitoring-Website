@@ -42,7 +42,7 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
     },
     {
       target: '#tour-menu-sidebar', 
-      content: 'Gunakan navigasi ini untuk mengakses fitur lain. Anda bisa kembali ke halaman ini melalui menu Dashboard, atau mengunduh laporan di menu Export Data.',
+      content: 'Gunakan navigasi ini untuk menjelajah. Menu Dashboard kini dilengkapi dengan Dropdown untuk langsung melompat ke Stasiun Wilayah tertentu (Pangandaran, Bali, Padang). Anda juga bisa mengunduh laporan di menu Export Data.',
       skipBeacon: true,
     },
     {
@@ -70,7 +70,7 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
     },
     {
       target: '#tour-filter-tanggal', 
-      content: 'Tentukan rentang tanggal spesifik untuk melihat data cuaca historis.',
+      content: 'Tentukan rentang tanggal spesifik. Kini Anda dapat menggunakan Shortcut Cepat (7 Hari, Bulan Ini, dll) di sebelah kiri kalender tanpa repot memilih satu-satu.',
       skipBeacon: true,
     },
     {
@@ -80,7 +80,7 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
     },
     {
       target: '#tour-export-pdf', 
-      content: 'Klik tombol ini untuk mengunduh laporan data cuaca beserta grafik saat ini ke dalam format PDF.',
+      content: 'Klik tombol ini untuk mengunduh laporan data cuaca. PDF kini di-generate dalam 1 halaman panjang utuh sehingga grafik tidak lagi terpotong secara paksa!',
       skipBeacon: true,
     },
     {

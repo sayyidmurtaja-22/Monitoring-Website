@@ -1,7 +1,7 @@
 "use client"; // Required for usePathname in Next.js App Router
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, LogOut, ChevronDown, ChevronRight, MapPin, BarChart2 } from "lucide-react";
 import {
   Sidebar,
   SidebarHeader,
@@ -16,6 +16,7 @@ import {
 import { cn } from "@/lib/utils"; // Assuming shadcn utils
 import { BiExport } from "react-icons/bi";
 import { signOut } from "next-auth/react";
+import { useState, useEffect } from "react";
 
 interface UserProps {
   role?: "ADMIN" | "USER";
@@ -24,8 +25,30 @@ interface UserProps {
 
 export function AppSidebar({ role, user }: UserProps) {
   const pathname = usePathname();
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+
+  // Auto-buka menu yang sedang aktif saat pertama load
+  useEffect(() => {
+    if (pathname.includes("/ListAws") || pathname.includes("/dashboard")) {
+      setOpenMenus(prev => ({ ...prev, "Dashboard": true }));
+    }
+  }, [pathname]);
+
+  const toggleMenu = (title: string) => {
+    setOpenMenus(prev => ({ ...prev, [title]: !prev[title] }));
+  };
+
   const menuItems = [
-    { title: "Dashboard", url: "/users/dashboard", icon: LayoutDashboard },
+    { 
+      title: "Dashboard", 
+      icon: LayoutDashboard,
+      subItems: [
+        { title: "Overview", url: "/users/dashboard", icon: BarChart2 },
+        { title: "Pangandaran", url: "/ListAws/Pangandaran", icon: MapPin },
+        { title: "Bali", url: "/ListAws/Bali", icon: MapPin },
+        { title: "Padang", url: "/ListAws/Padang", icon: MapPin },
+      ]
+    },
     { title: "Export Data", url: "/ExportData", icon: BiExport },
   ];
 
@@ -63,27 +86,105 @@ export function AppSidebar({ role, user }: UserProps) {
             Menu
           </SidebarGroupLabel>
           <SidebarGroupContent id="tour-menu-sidebar">
-            <SidebarMenu className="gap-1.5">
+            <SidebarMenu className="gap-2">
               {menuItems.map((item) => {
-                // Perbaikan: Pastikan perbandingan URL akurat (contoh: /users vs /users/dashboard)
-                const isActive = pathname === item.url;
+                const isActive = item.url ? pathname === item.url : item.subItems?.some(sub => pathname === sub.url);
+                const isOpen = openMenus[item.title];
 
                 return (
-                  <SidebarMenuItem key={item.title}>
-                    <Link
-                      href={item.url}
-                      className={cn(
-                        "flex items-center w-full p-2 rounded-md transition-colors ",
-                        "hover:bg-[#457B9D] hover:text-accent-foreground font-poppins",
-                        isActive
-                          ? "bg-[#457B9D] text-white "
-                          : "text-muted-foreground",
-                      )}
-                    >
-                      {/* PERBAIKAN: Hapus kata 'fon' yang salah */}
-                      <item.icon className="h-4 w-4 mr-3" />
-                      {item.title}
-                    </Link>
+                  <SidebarMenuItem key={item.title} className="flex flex-col">
+                    {item.subItems ? (
+                      <>
+                        <div
+                          onClick={() => toggleMenu(item.title)}
+                          className={cn(
+                            "flex items-center justify-between w-full p-2.5 rounded-lg transition-all duration-200 cursor-pointer select-none group",
+                            isOpen ? "bg-slate-100 dark:bg-slate-800" : "hover:bg-slate-50 dark:hover:bg-slate-800/50",
+                            "font-poppins font-medium"
+                          )}
+                        >
+                          <div className="flex items-center">
+                            <div className={cn(
+                              "p-1.5 rounded-md mr-3 transition-colors",
+                              isOpen || isActive ? "bg-[#457B9D] text-white" : "bg-transparent text-slate-500 group-hover:text-[#457B9D]"
+                            )}>
+                              <item.icon className="h-4 w-4" />
+                            </div>
+                            <span className={cn(
+                              "text-sm transition-colors",
+                              isOpen || isActive ? "text-[#1D3557] dark:text-white font-bold" : "text-slate-600 dark:text-slate-300 group-hover:text-[#1D3557] dark:group-hover:text-white"
+                            )}>
+                              {item.title}
+                            </span>
+                          </div>
+                          {isOpen ? (
+                            <ChevronDown className="h-4 w-4 text-slate-400" />
+                          ) : (
+                            <ChevronRight className="h-4 w-4 text-slate-400" />
+                          )}
+                        </div>
+                        
+                        {/* Dropdown Content */}
+                        <div className={cn(
+                          "grid transition-all duration-300 ease-in-out",
+                          isOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
+                        )}>
+                          <div className="overflow-hidden">
+                            <div className="ml-[22px] pl-4 border-l-2 border-slate-100 dark:border-slate-800 flex flex-col gap-1 py-1">
+                              {item.subItems.map((sub) => {
+                                const isSubActive = pathname === sub.url;
+                                return (
+                                  <Link
+                                    key={sub.title}
+                                    href={sub.url}
+                                    className={cn(
+                                      "flex items-center w-full py-2 px-3 rounded-md text-sm transition-all duration-200 group",
+                                      "font-poppins relative overflow-hidden",
+                                      isSubActive
+                                        ? "bg-gradient-to-r from-[#457B9D]/10 to-transparent text-[#1D3557] dark:text-white font-bold shadow-sm"
+                                        : "text-slate-500 dark:text-slate-400 hover:text-[#1D3557] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                                    )}
+                                  >
+                                    {isSubActive && (
+                                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-[#457B9D] rounded-r-full" />
+                                    )}
+                                    <sub.icon className={cn(
+                                      "h-3.5 w-3.5 mr-2 transition-colors",
+                                      isSubActive ? "text-[#E63946]" : "text-slate-400 group-hover:text-[#457B9D]"
+                                    )} />
+                                    {sub.title}
+                                  </Link>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <Link
+                        href={item.url || "#"}
+                        className={cn(
+                          "flex items-center w-full p-2.5 rounded-lg transition-all duration-200 group",
+                          "hover:bg-slate-50 dark:hover:bg-slate-800/50 font-poppins font-medium",
+                          isActive
+                            ? "bg-slate-100 dark:bg-slate-800"
+                            : "transparent",
+                        )}
+                      >
+                        <div className={cn(
+                          "p-1.5 rounded-md mr-3 transition-colors",
+                          isActive ? "bg-[#457B9D] text-white" : "bg-transparent text-slate-500 group-hover:text-[#457B9D]"
+                        )}>
+                          <item.icon className="h-4 w-4" />
+                        </div>
+                        <span className={cn(
+                          "text-sm transition-colors",
+                          isActive ? "text-[#1D3557] dark:text-white font-bold" : "text-slate-600 dark:text-slate-300 group-hover:text-[#1D3557] dark:group-hover:text-white"
+                        )}>
+                          {item.title}
+                        </span>
+                      </Link>
+                    )}
                   </SidebarMenuItem>
                 );
               })}
