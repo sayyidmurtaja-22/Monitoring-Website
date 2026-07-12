@@ -42,7 +42,7 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
     },
     {
       target: '#tour-menu-sidebar', 
-      content: 'Gunakan navigasi ini untuk menjelajah. Menu Dashboard kini dilengkapi dengan Dropdown untuk langsung melompat ke Stasiun Wilayah tertentu (Pangandaran, Bali, Padang). Anda juga bisa mengunduh laporan di menu Export Data.',
+      content: 'Gunakan navigasi ini untuk menjelajah. Menu Dashboard dan Export Data kini dilengkapi dengan Dropdown elegan untuk langsung melompat ke stasiun wilayah spesifik (Pangandaran, Bali, Padang) hanya dengan sekali klik.',
       skipBeacon: true,
     },
     {

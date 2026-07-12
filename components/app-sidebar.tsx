@@ -1,6 +1,6 @@
 "use client"; // Required for usePathname in Next.js App Router
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { LayoutDashboard, Users, LogOut, ChevronDown, ChevronRight, MapPin, BarChart2 } from "lucide-react";
 import {
   Sidebar,
@@ -25,6 +25,7 @@ interface UserProps {
 
 export function AppSidebar({ role, user }: UserProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
   // Auto-buka menu yang sedang aktif saat pertama load
@@ -32,10 +33,30 @@ export function AppSidebar({ role, user }: UserProps) {
     if (pathname.includes("/ListAws") || pathname.includes("/dashboard")) {
       setOpenMenus(prev => ({ ...prev, "Dashboard": true }));
     }
+    if (pathname.includes("/ExportData")) {
+      setOpenMenus(prev => ({ ...prev, "Export Data": true }));
+    }
   }, [pathname]);
 
   const toggleMenu = (title: string) => {
     setOpenMenus(prev => ({ ...prev, [title]: !prev[title] }));
+  };
+
+  const isUrlActive = (url: string) => {
+    if (!url) return false;
+    if (url.includes('?')) {
+      const [path, query] = url.split('?');
+      if (pathname !== path) return false;
+      const urlParams = new URLSearchParams(query);
+      for (const [key, value] of urlParams.entries()) {
+        // Khusus untuk ExportData, default location adalah padang jika kosong
+        const currentParam = searchParams.get(key);
+        if (key === "location" && !currentParam && value === "padang") return true;
+        if (currentParam !== value) return false;
+      }
+      return true;
+    }
+    return pathname === url;
   };
 
   const menuItems = [
@@ -49,7 +70,15 @@ export function AppSidebar({ role, user }: UserProps) {
         { title: "Padang", url: "/ListAws/Padang", icon: MapPin },
       ]
     },
-    { title: "Export Data", url: "/ExportData", icon: BiExport },
+    { 
+      title: "Export Data", 
+      icon: BiExport,
+      subItems: [
+        { title: "Pangandaran", url: "/ExportData?location=pangandaran", icon: MapPin },
+        { title: "Bali", url: "/ExportData?location=bali", icon: MapPin },
+        { title: "Padang", url: "/ExportData?location=padang", icon: MapPin },
+      ]
+    },
   ];
 
   return (
@@ -88,7 +117,7 @@ export function AppSidebar({ role, user }: UserProps) {
           <SidebarGroupContent id="tour-menu-sidebar">
             <SidebarMenu className="gap-2">
               {menuItems.map((item) => {
-                const isActive = item.url ? pathname === item.url : item.subItems?.some(sub => pathname === sub.url);
+                const isActive = item.url ? isUrlActive(item.url) : item.subItems?.some(sub => isUrlActive(sub.url));
                 const isOpen = openMenus[item.title];
 
                 return (
@@ -132,7 +161,7 @@ export function AppSidebar({ role, user }: UserProps) {
                           <div className="overflow-hidden">
                             <div className="ml-[22px] pl-4 border-l-2 border-slate-100 dark:border-slate-800 flex flex-col gap-1 py-1">
                               {item.subItems.map((sub) => {
-                                const isSubActive = pathname === sub.url;
+                                const isSubActive = isUrlActive(sub.url);
                                 return (
                                   <Link
                                     key={sub.title}
