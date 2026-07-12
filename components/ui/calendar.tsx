@@ -77,14 +77,15 @@ function Calendar({
           defaultClassNames.dropdown_root
         ),
         dropdown: cn(
-          "absolute inset-0 bg-popover opacity-0",
+          "appearance-none bg-transparent pl-1 pr-5 py-1 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md focus:outline-none cursor-pointer z-10",
+          "bg-[url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg>')] bg-[position:right_4px_center] bg-no-repeat dark:invert",
           defaultClassNames.dropdown
         ),
         caption_label: cn(
           "font-medium select-none",
-          captionLayout === "label"
-            ? "text-sm"
-            : "flex items-center gap-1 rounded-(--cell-radius) text-sm [&>svg]:size-3.5 [&>svg]:text-muted-foreground",
+          captionLayout === "dropdown"
+            ? "hidden"
+            : "text-sm",
           defaultClassNames.caption_label
         ),
         table: "w-full border-collapse",

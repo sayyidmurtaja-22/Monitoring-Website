@@ -122,22 +122,18 @@ export default function BaliDashboardClient({
     const startTime = performance.now();
     try {
       const canvas = await html2canvas(element, {
-        scale: 2,
+        scale: 1,
         useCORS: true,
         logging: true,
         backgroundColor: "#ffffff",
+        scrollY: -window.scrollY,
       });
 
       const imgData = canvas.toDataURL("image/png");
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      
-      const pdf = new jsPDF({
-        orientation: imgWidth > imgHeight ? "landscape" : "portrait",
-        unit: "px",
-        format: [imgWidth, imgHeight],
-      });
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
+      const pdf = new jsPDF("p", "mm", [imgWidth, imgHeight]);
       pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
       pdf.save(`Laporan_${data.nama}_Bali.pdf`);
       

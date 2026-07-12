@@ -7,7 +7,7 @@ import { type DateRange } from "react-day-picker";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { FaCalendarAlt } from "react-icons/fa";
-
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 const MAX_RANGE_DAYS = 90;
 
@@ -28,6 +28,15 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
   const [error, setError] = React.useState<string | null>(null);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = React.useState(false);
+
+  // Custom states for the grid views
+  const [month, setMonth] = React.useState<Date>(selectedRange?.from || new Date());
+  const [pickerView, setPickerView] = React.useState<"days" | "months" | "years">("days");
+  const [yearPage, setYearPage] = React.useState(Math.floor(month.getFullYear() / 12) * 12);
+
+  const monthsList = Array.from({ length: 12 }, (_, i) => 
+    format(new Date(2000, i, 1), "MMM", { locale: id })
+  );
 
   // Deteksi ukuran layar untuk responsivitas kalender
   React.useEffect(() => {
@@ -63,6 +72,16 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
       setTempRange(newRange);
     }
   }, [initialFrom, initialTo]);
+
+  // Sync state when popup opens
+  React.useEffect(() => {
+    if (isOpen) {
+      const start = selectedRange?.from || new Date();
+      setMonth(start);
+      setPickerView("days");
+      setYearPage(Math.floor(start.getFullYear() / 12) * 12);
+    }
+  }, [isOpen, selectedRange]);
 
   const handleDateChange = (range: DateRange | undefined) => {
     if (range?.from && range?.to) {
@@ -101,8 +120,9 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
 
   const formatDateDisplay = () => {
     if (selectedRange?.from && selectedRange?.to) {
-      const from = format(selectedRange.from, "dd/MM/yyyy");
-      const to = format(selectedRange.to, "dd/MM/yyyy");
+      const from = format(selectedRange.from, "dd MMM yyyy", { locale: id });
+      const to = format(selectedRange.to, "dd MMM yyyy", { locale: id });
+      if (from === to) return from;
       return `${from} - ${to}`;
     }
     return "Pilih Tanggal";
@@ -126,6 +146,9 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
     }
     .rdp-caption {
       padding: 0 0 8px 0 !important;
+    }
+    .rdp-caption_label {
+      visibility: hidden !important;
     }
     .rdp-table {
       margin: ${isMobile ? '0 auto' : '0'} !important;
@@ -216,6 +239,22 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
     .dark .rdp-button:hover:not([disabled]):not(.rdp-day_selected):not(.rdp-selected) {
       background-color: #334155 !important;
     }
+    
+    /* Scrollbar untuk sidebar preset */
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 4px;
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
   `;
 
   return (
@@ -253,47 +292,183 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
           >
             <style>{calendarCSS}</style>
 
-            <div className="p-3">
-              <div className="flex justify-center">
-                <DayPicker
-                  mode="range"
-                  defaultMonth={tempRange?.from || new Date()}
-                  selected={tempRange}
-                  onSelect={handleDateChange}
-                  numberOfMonths={1}
-                  locale={id}
-                  showOutsideDays={true}
-                />
+            <div className="flex flex-col sm:flex-row">
+              {/* Sidebar Presets */}
+              <div className="flex flex-row sm:flex-col gap-1 p-3 border-b sm:border-b-0 sm:border-r border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30 overflow-x-auto sm:w-[140px] shrink-0 custom-scrollbar">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 hidden sm:block px-2">Shortcut</span>
+                {[
+                  { label: "Hari Ini", days: 0 },
+                  { label: "7 Hari Terakhir", days: 6 },
+                  { label: "30 Hari Terakhir", days: 29 },
+                  { label: "Bulan Ini", type: "thisMonth" },
+                  { label: "Tahun Ini", type: "thisYear" },
+                ].map((preset) => (
+                  <button
+                    key={preset.label}
+                    onClick={() => {
+                      const end = new Date();
+                      let start = new Date();
+                      if (preset.type === "thisMonth") {
+                        start = new Date(end.getFullYear(), end.getMonth(), 1);
+                      } else if (preset.type === "thisYear") {
+                        start = new Date(end.getFullYear(), 0, 1);
+                      } else {
+                        start = addDays(end, -(preset.days || 0));
+                      }
+                      const range = { from: start, to: end };
+                      setTempRange(range);
+                      setSelectedRange(range);
+                      onDateChange?.({
+                        from: format(start, "yyyy-MM-dd"),
+                        to: format(end, "yyyy-MM-dd"),
+                      });
+                      setIsOpen(false);
+                    }}
+                    className="whitespace-nowrap px-3 py-1.5 text-xs text-left font-medium text-slate-600 dark:text-slate-300 hover:bg-[#E63946]/10 hover:text-[#E63946] dark:hover:bg-[#A8DADC]/10 dark:hover:text-[#A8DADC] rounded-md transition-colors"
+                  >
+                    {preset.label}
+                  </button>
+                ))}
               </div>
 
-              {error && (
-                <div className="mt-2 p-1.5 text-xs text-red-600 bg-red-50 dark:bg-red-950/30 rounded text-center">
-                  ⚠ {error}
-                </div>
-              )}
+              {/* Kalender Utama */}
+              <div>
+                <div className="p-3 relative w-full sm:min-w-[320px]">
+                  {pickerView === "days" && (
+                    <>
+                      <div className="absolute top-[18px] left-10 right-10 flex justify-center items-center gap-1 z-10">
+                        <button 
+                          type="button"
+                          onClick={() => setPickerView("months")} 
+                          className="h-7 px-2 text-sm font-semibold flex items-center gap-1 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+                        >
+                          {format(month, "MMMM", { locale: id })}
+                          <ChevronDownIcon className="h-4 w-4 opacity-70" />
+                        </button>
+                        <button 
+                          type="button"
+                          onClick={() => setPickerView("years")} 
+                          className="h-7 px-2 text-sm font-semibold flex items-center gap-1 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+                        >
+                          {format(month, "yyyy")}
+                          <ChevronDownIcon className="h-4 w-4 opacity-70" />
+                        </button>
+                      </div>
+                      <div className="flex justify-center">
+                        <DayPicker
+                          month={month}
+                          onMonthChange={setMonth}
+                          mode="range"
+                          defaultMonth={tempRange?.from || new Date()}
+                          selected={tempRange}
+                          onSelect={handleDateChange}
+                          numberOfMonths={1}
+                          locale={id}
+                          showOutsideDays={true}
+                        />
+                      </div>
+                    </>
+                  )}
 
-              {/* Info jumlah hari yang dipilih sementara */}
-              {tempRange?.from && tempRange?.to && !error && (
-                <div className="mt-3 p-2 text-xs font-medium text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 rounded-md text-center border border-slate-100 dark:border-slate-600">
-                  <span className="text-blue-600 dark:text-blue-400 font-bold">{differenceInDays(tempRange.to, tempRange.from)}</span> hari terpilih
-                </div>
-              )}
-            </div>
+                  {pickerView === "months" && (
+                    <div className="flex flex-col gap-4 p-2 mt-1 min-h-[260px]">
+                      <div className="flex justify-center items-center">
+                        <button 
+                          type="button"
+                          onClick={() => setPickerView("days")}
+                          className="h-8 px-3 text-sm font-semibold flex items-center gap-1 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
+                        >
+                          {format(month, "yyyy")}
+                          <ChevronDownIcon className="h-4 w-4 opacity-70 rotate-180" />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        {monthsList.map((m, i) => (
+                          <button
+                            type="button"
+                            key={m} 
+                            onClick={() => { 
+                              setMonth(new Date(month.getFullYear(), i, 1)); 
+                              setPickerView("days"); 
+                            }}
+                            className={`h-10 text-sm rounded-md font-medium transition-colors ${
+                              month.getMonth() === i 
+                                ? "bg-[#3b82f6] text-white" 
+                                : "hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200"
+                            }`}
+                          >
+                            {m}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-            {/* Tombol Terapkan dan Batal */}
-            <div className="flex items-center justify-end gap-2 px-3 py-2.5 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-              <button
-                onClick={handleCancel}
-                className="px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
-              >
-                Batal
-              </button>
-              <button
-                onClick={handleApply}
-                className="px-4 py-1.5 text-xs font-medium text-white bg-[#E63946] border border-[#E63946] rounded-md hover:bg-[#D90429] shadow-sm transition-colors"
-              >
-                Terapkan
-              </button>
+                  {pickerView === "years" && (
+                    <div className="flex flex-col gap-4 p-2 mt-1 min-h-[260px]">
+                      <div className="flex justify-between items-center px-1">
+                        <button type="button" className="h-8 w-8 flex items-center justify-center border border-slate-200 dark:border-slate-600 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors" onClick={() => setYearPage(y => y - 12)}>
+                          <ChevronLeftIcon className="h-4 w-4" />
+                        </button>
+                        <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                          {yearPage} - {yearPage + 11}
+                        </span>
+                        <button type="button" className="h-8 w-8 flex items-center justify-center border border-slate-200 dark:border-slate-600 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors" onClick={() => setYearPage(y => y + 12)}>
+                          <ChevronRightIcon className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        {Array.from({ length: 12 }, (_, i) => yearPage + i).map(y => (
+                          <button
+                            type="button"
+                            key={y} 
+                            onClick={() => { 
+                              setMonth(new Date(y, month.getMonth(), 1)); 
+                              setPickerView("days"); 
+                            }}
+                            className={`h-10 text-sm rounded-md font-medium transition-colors ${
+                              month.getFullYear() === y 
+                                ? "bg-[#3b82f6] text-white" 
+                                : "hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200"
+                            }`}
+                          >
+                            {y}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {error && (
+                    <div className="mt-2 p-1.5 text-xs text-red-600 bg-red-50 dark:bg-red-950/30 rounded text-center">
+                      ⚠ {error}
+                    </div>
+                  )}
+
+                  {/* Info jumlah hari yang dipilih sementara */}
+                  {tempRange?.from && tempRange?.to && !error && pickerView === "days" && (
+                    <div className="mt-3 p-2 text-xs font-medium text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 rounded-md text-center border border-slate-100 dark:border-slate-600">
+                      <span className="text-blue-600 dark:text-blue-400 font-bold">{differenceInDays(tempRange.to, tempRange.from)}</span> hari terpilih
+                    </div>
+                  )}
+                </div>
+
+                {/* Tombol Terapkan dan Batal */}
+                <div className="flex items-center justify-end gap-2 px-3 py-2.5 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                  <button
+                    onClick={handleCancel}
+                    className="px-4 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={handleApply}
+                    className="px-4 py-1.5 text-xs font-medium text-white bg-[#E63946] border border-[#E63946] rounded-md hover:bg-[#D90429] shadow-sm transition-colors"
+                  >
+                    Terapkan
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </>
