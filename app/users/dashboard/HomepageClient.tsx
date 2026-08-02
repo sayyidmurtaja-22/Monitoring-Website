@@ -92,7 +92,7 @@ export default function HomePage({ user, role }: HomePageProps) {
   }, []);
 
   return (
-    <main className="h-screen bg-background flex flex-col overflow-y-auto">
+    <main className="bg-background flex flex-col min-h-svh">
       <TourGuide isAdmin={role === "ADMIN"} />
 
       {/* ── Hero ─────────────────────────────────────────────────────── */}
