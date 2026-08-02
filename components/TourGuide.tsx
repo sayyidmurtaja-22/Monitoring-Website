@@ -32,12 +32,12 @@ export default function TourGuide({ page = 'dashboard', isAdmin = false }: TourG
   const dashboardSteps: Step[] = [
     {
       target: '#tour-status-server', 
-      content: 'Indikator ini menunjukkan status koneksi server pusat. Pastikan sistem terhubung dan seluruh stasiun aktif sebelum melakukan pemantauan.',
+      content: 'Indikator ini menunjukkan status koneksi server pusat dan berapa stasiun yang sedang mengirim data (misal: 2/3 stasiun mengirim data). Pastikan sistem terhubung sebelum melakukan pemantauan.',
       skipBeacon: true,
     },
     {
       target: '#tour-lokasi-stasiun', 
-      content: 'Ini adalah daftar stasiun AWS yang tersedia. Klik salah satu kartu stasiun (misalnya Padang atau Bali) untuk masuk dan melihat data cuaca secara detail.',
+      content: 'Ini adalah daftar stasiun AWS beserta status kesegaran datanya. ONLINE berarti data terakhir masih segar (≤ 15 menit), OFFLINE berarti data sudah lama tidak diperbarui. Klik salah satu kartu stasiun untuk melihat data cuaca secara detail.',
       skipBeacon: true,
     },
     {
