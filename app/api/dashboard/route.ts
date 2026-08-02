@@ -1,51 +1,62 @@
 import prisma from "@/libs/prisma";
 import { NextResponse } from "next/server";
+import { LOCATIONS } from "@/config/Location";
 
+// Stasiun dianggap ONLINE jika data terakhir tidak lebih tua dari ambang ini (menit).
+const STALE_THRESHOLD_MINUTES = 15;
 
-export async function GET(){
-    try{
-        const Data = await prisma.aws_bungus.findMany({ // findmany mengambil sekumpulan data list atau array
-            select:{
-                id: true,
-                time:true,
-                Batt_V_Avg:true,
-                PTemp_Max:true,
-                WS_S_Avg:true,
-                WD_Std:true,
-                WS_Max:true,
-                WD_Max_WS:true,
-                Ta_Avg:true,
-                Ta_Max:true,
-                Ta_Min:true,
-                RH_Avg:true,
-                RH_Max:true,
-                RH_Min:true,
-                NR_Wm2_Avg:true,
-                NR_Wm2_Max:true,
-                NR_Wm2_Min:true,
-                CNR_Wm2_Avg:true,
-                CNR_Wm2_Max:true,
-                CNR_Wm2_Min:true,
-                Rain_mm_Tot:true,
-                e_Avg:true,
-                e_Max:true,
-                e_Min:true,
-            },
-            take:20,
-            orderBy:{time: 'desc'},
-        });
-        return NextResponse.json(
-            {
-                success: true,
-                Data,
-            },
-            {status: 200});   
-    } catch (error) {
-        console.log("db error", error)
-        return NextResponse.json(
-            {
-            success: false,
-            Data : [],
-            message: "failed fetch data"}, {status:500});
+export async function GET() {
+  try {
+    const now = Date.now();
+    const stations = [];
+
+    for (const loc of Object.values(LOCATIONS)) {
+      const clientModel = prisma[loc.table] as unknown as {
+        findFirst: (args: {
+          orderBy: { time: "desc" };
+          select: { time: true };
+        }) => Promise<{ time: Date | null } | null>;
+      };
+      const last = await clientModel.findFirst({
+        orderBy: { time: "desc" },
+        select: { time: true },
+      });
+
+      const latestTime = last?.time ?? null;
+      const ageMinutes =
+        latestTime != null
+          ? Math.round((now - new Date(latestTime).getTime()) / 60000)
+          : null;
+
+      stations.push({
+        key: loc.table,
+        label: loc.label,
+        region: loc.region,
+        href: loc.href,
+        latestTime: latestTime ? new Date(latestTime).toISOString() : null,
+        ageMinutes,
+        isOnline: ageMinutes != null && ageMinutes <= STALE_THRESHOLD_MINUTES,
+      });
     }
-}       
+
+    return NextResponse.json(
+      {
+        success: true,
+        systemOnline: true,
+        stations,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.log("db error", error);
+    return NextResponse.json(
+      {
+        success: false,
+        systemOnline: false,
+        stations: [],
+        message: "failed fetch data",
+      },
+      { status: 500 }
+    );
+  }
+}

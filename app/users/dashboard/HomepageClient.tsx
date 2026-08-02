@@ -19,13 +19,39 @@ interface HomePageProps {
   role?: string;
 }
 
+interface StationStatus {
+  key: string;
+  label: string;
+  region: string;
+  href: string;
+  latestTime: string | null;
+  ageMinutes: number | null;
+  isOnline: boolean;
+}
+
+// Penyegaran status: 1 jam sekali
+const STATUS_REFRESH_MS = 3600000;
+
+function formatLastTime(t: string | null): string {
+  if (!t) return "—";
+  const d = new Date(t);
+  if (isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 export default function HomePage({ user, role }: HomePageProps) {
   const [status, setStatus] = useState<"loading" | "online" | "offline">("loading");
+  const [stations, setStations] = useState<StationStatus[]>([]);
   const [time, setTime] = useState("");
   
   const firstName = user?.split(" ")[0] ?? "User";
 
   const locations = Object.values(LOCATIONS)
+  const activeCount = stations.filter((s) => s.isOnline).length;
 
   // Cek status API
   useEffect(() => {
@@ -33,13 +59,20 @@ export default function HomePage({ user, role }: HomePageProps) {
       try {
         const res = await fetch("/api/dashboard");
         const result = await res.json();
-        setStatus(result.success ? "online" : "offline");
+        if (result.success) {
+          setStatus("online");
+          setStations(result.stations ?? []);
+        } else {
+          setStatus("offline");
+          setStations([]);
+        }
       } catch {
         setStatus("offline");
+        setStations([]);
       }
     };
     checkStatus();
-    const iv = setInterval(checkStatus, 5000);
+    const iv = setInterval(checkStatus, STATUS_REFRESH_MS);
     return () => clearInterval(iv);
   }, []);
 
@@ -100,13 +133,13 @@ export default function HomePage({ user, role }: HomePageProps) {
                 <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" />
                 <span className="relative inline-flex w-2 h-2 rounded-full bg-green-500" />
               </span>
-              Server connected — all stations active
+              Sistem terhubung · {activeCount}/3 stasiun mengirim data
             </>
           )}
           {status === "offline" && (
             <>
               <span className="w-2 h-2 rounded-full bg-[#E63946]" />
-              Server unreachable
+              Sistem tidak dapat dihubungi
             </>
           )}
         </div>
@@ -126,7 +159,12 @@ export default function HomePage({ user, role }: HomePageProps) {
 
           {/* Grid */}
           <div id="tour-lokasi-stasiun" className="scroll-mt-64 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {locations.map((loc) => (
+            {locations.map((loc) => {
+              const st = stations.find((s) => s.key === loc.table);
+              const isOnline = st?.isOnline ?? false;
+              const lastStr = formatLastTime(st?.latestTime ?? null);
+
+              return (
               <Link
                 key={loc.label}
                 href={loc.href}
@@ -155,13 +193,22 @@ export default function HomePage({ user, role }: HomePageProps) {
                     <span className="text-xs font-bold text-[#1D3557] dark:text-[#A8DADC]">LOADING</span>
                   </div>
                 )}
-                {status === "online" && (
+                {status === "online" && isOnline && (
                   <div className="flex items-center gap-2">
                     <span className="relative flex w-2 h-2">
                       <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" />
                       <span className="relative inline-flex w-2 h-2 rounded-full bg-green-500" />
                     </span>
                     <span className="text-xs font-bold text-green-400">ONLINE</span>
+                  </div>
+                )}
+                {status === "online" && !isOnline && (
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#E63946]" />
+                    <span className="text-xs font-bold text-[#E63946]">OFFLINE</span>
+                    <span className="text-[11px] text-[#1D3557] dark:text-[#F1FAEE] opacity-60">
+                      · Terakhir {lastStr}
+                    </span>
                   </div>
                 )}
                 {status === "offline" && (
@@ -171,7 +218,8 @@ export default function HomePage({ user, role }: HomePageProps) {
                   </div>
                 )}
               </Link>
-            ))}
+              );
+            })}
           </div>
 
           {/* Hint */}

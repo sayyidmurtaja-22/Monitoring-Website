@@ -21,8 +21,33 @@ interface LocationListClientProps {
   onClose?: () => void;
 }
 
+interface StationStatus {
+  key: string;
+  label: string;
+  region: string;
+  href: string;
+  latestTime: string | null;
+  ageMinutes: number | null;
+  isOnline: boolean;
+}
+
+// Penyegaran status: 1 jam sekali
+const STATUS_REFRESH_MS = 3600000;
+
+function formatLastTime(t: string | null): string {
+  if (!t) return "—";
+  const d = new Date(t);
+  if (isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 const LocationListClient = ({ user, onClose }: LocationListClientProps) => {
-  const [status, setStatus] = useState('loading');
+  const [status, setStatus] = useState<'loading' | 'online' | 'offline'>('loading');
+  const [stations, setStations] = useState<StationStatus[]>([]);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -32,17 +57,20 @@ const LocationListClient = ({ user, onClose }: LocationListClientProps) => {
         const result = await res.json();
         if (result.success) {
           setStatus('online');
+          setStations(result.stations ?? []);
         } else {
           setStatus('offline');
+          setStations([]);
         }
       } catch (e) {
         console.log("error", e);
-        setStatus('error');
+        setStatus('offline');
+        setStations([]);
       }
     };
     checkStatus();
 
-    const interval = setInterval(checkStatus, 5000);
+    const interval = setInterval(checkStatus, STATUS_REFRESH_MS);
     return () => clearInterval(interval);
   }, []);
 
@@ -75,6 +103,9 @@ const LocationListClient = ({ user, onClose }: LocationListClientProps) => {
         <div className="flex flex-col gap-2">
           {locations.map((loc) => {
             const isSelected = pathname === loc.href;
+            const st = stations.find((s) => s.key === loc.table);
+            const isOnline = st?.isOnline ?? false;
+            const lastStr = formatLastTime(st?.latestTime ?? null);
 
             return (
               <Link
@@ -97,7 +128,7 @@ const LocationListClient = ({ user, onClose }: LocationListClientProps) => {
                 </div>
 
                 {/* Status Indicator */}
-                {(loc.active === true && status === "online") ? (
+                {(loc.active === true && status === "online" && isOnline) ? (
                   <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm ${
                     isSelected 
                       ? "bg-white text-green-700" 
@@ -107,13 +138,20 @@ const LocationListClient = ({ user, onClose }: LocationListClientProps) => {
                     ONLINE
                   </div>
                 ) : (
-                  <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm ${
-                    isSelected 
-                      ? "bg-white/20 text-white border border-white/30" 
-                      : "bg-white/20 text-white border border-white/30"
-                  }`}>
-                    <div className="w-1.5 h-1.5 rounded-full bg-rose-400" />
-                    OFFLINE
+                  <div className="flex flex-col items-end gap-0.5">
+                    <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm ${
+                      isSelected 
+                        ? "bg-white/20 text-white border border-white/30" 
+                        : "bg-white/20 text-white border border-white/30"
+                    }`}>
+                      <div className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                      OFFLINE
+                    </div>
+                    {status === "online" && (
+                      <span className="text-[9px] text-white/60 font-medium">
+                        Terakhir {lastStr}
+                      </span>
+                    )}
                   </div>
                 )}
               </Link>

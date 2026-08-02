@@ -1,11 +1,17 @@
 import { userSession } from "@/libs/auth-libs";
 import { redirect } from "next/navigation";
 import { IntervalType, AvgWeatherData } from "@/types/AvgTypes";
-import { differenceInDays, subDays, format } from "date-fns";
+import { differenceInDays } from "date-fns";
 import BaliDashboardClient from "@/app/ListAws/Bali/BaliDashboardClient";
 import { AvgGeneralHour, ExportGeneric } from "@/components/action/AvgGeneralHour";
 import { LOCATIONS } from "@/config/Location";
 import PangandaranDashboard from "./PangandaranDashboard";
+
+// Format tanggal WIB (UTC+7) untuk UI kalender & batas query
+const wibDateStr = (d: Date) => {
+  const w = new Date(d.getTime() + 7 * 3600 * 1000);
+  return `${w.getUTCFullYear()}-${String(w.getUTCMonth() + 1).padStart(2, "0")}-${String(w.getUTCDate()).padStart(2, "0")}`;
+};
 
 export default async function PangandaranPage({
   searchParams,
@@ -30,24 +36,23 @@ export default async function PangandaranPage({
   let to: Date;
 
   if (fromParam && toParam) {
-    from = new Date(`${fromParam}T17:00:00Z`);
-    to = new Date(`${toParam}T16:59:59Z`);
+    from = new Date(`${fromParam}T00:00:00+07:00`);
+    to = new Date(`${toParam}T23:59:59+07:00`);
 
     const daysDiff = Math.abs(differenceInDays(to, from));
 
-    if (daysDiff > 90) {
-      const maxToDate = new Date(from);
-      maxToDate.setDate(maxToDate.getDate() + 90);
-      to = new Date(`${format(maxToDate, "yyyy-MM-dd")}T16:59:59Z`);
+    if (daysDiff >= 90) {
+      const maxToDate = new Date(from.getTime() + 90 * 24 * 3600 * 1000);
+      to = new Date(`${wibDateStr(maxToDate)}T23:59:59+07:00`);
     }
   } else {
     // Tentukan waktu fallback default ke November 2024 (1 November 2024 - 30 November 2024)
-    from = new Date("2024-11-01T17:00:00Z");
-    to = new Date("2024-11-30T16:59:59Z");
+    from = new Date("2024-11-01T00:00:00+07:00");
+    to = new Date("2024-11-30T23:59:59+07:00");
   }
 
   // ── Auto-switch interval berdasarkan rentang hari ──
-  let interval = intervalParam || "hour";
+  let interval = intervalParam || "day";
   const finalDaysDiff = Math.abs(differenceInDays(to, from));
 
   if (!intervalParam) {
@@ -74,8 +79,8 @@ export default async function PangandaranPage({
   }
 
   // ── Kirim string tanggal ke client agar kalender sinkron ──
-  const activeFromStr = format(from, "yyyy-MM-dd");
-  const activeToStr = format(to, "yyyy-MM-dd");
+  const activeFromStr = wibDateStr(from);
+  const activeToStr = wibDateStr(to);
 
   return (
     <div className="w-full">

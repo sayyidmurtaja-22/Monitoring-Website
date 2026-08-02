@@ -55,12 +55,44 @@ const parameterGroups = [
     name: "Data Angin",
     params: [
       { key: "avg_WS_S_Avg", label: "Kecepatan Angin Rata-rata", unit: "m/s" },
+      { key: "avg_WS_Max", label: "Kecepatan Angin Maksimum", unit: "m/s" },
+    ]
+  },
+  {
+    name: "Data Arah Angin",
+    params: [
+      { key: "avg_WD_Max_WS", label: "Arah Angin", unit: "°" },
     ]
   },
   {
     name: "Data Curah Hujan",
     params: [
       { key: "avg_Rain_mm_Tot", label: "Curah Hujan", unit: "mm" },
+    ]
+  },
+  {
+    name: "Data Baterai",
+    params: [
+      { key: "avg_Batt", label: "Tegangan Baterai", unit: "V" },
+    ]
+  },
+  {
+    name: "Data Panel Surya",
+    params: [
+      { key: "avg_Ptemp", label: "Suhu Panel Surya", unit: "°C" },
+    ]
+  },
+  {
+    name: "Data Radiasi Neto",
+    params: [
+      { key: "avg_NR_Wm2_Avg", label: "Radiasi Neto (Sensor 1)", unit: "W/m²" },
+      { key: "avg_CNR_Wm2_Avg", label: "Radiasi Neto (Sensor 2)", unit: "W/m²" },
+    ]
+  },
+  {
+    name: "Data Pelengkap",
+    params: [
+      { key: "jumlah_data", label: "Jumlah Data", unit: "data" },
     ]
   }
 ];

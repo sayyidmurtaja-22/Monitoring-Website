@@ -13,6 +13,32 @@ interface lastData {
   table:TableName
 }
 
+// Konversi instant ke waktu WIB (UTC+7) untuk filter yang konsisten
+// dengan pengelompokan DATE_ADD(timestamp, INTERVAL 7 HOUR).
+const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
+const shiftWIB = (d: Date) => new Date(d.getTime() + WIB_OFFSET_MS);
+
+function formatWIB(d: Date): string {
+  const w = shiftWIB(d);
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${w.getUTCFullYear()}-${p(w.getUTCMonth() + 1)}-${p(w.getUTCDate())} ${p(w.getUTCHours())}:${p(w.getUTCMinutes())}:${p(w.getUTCSeconds())}`;
+}
+
+// Snap rentang ke kalender WIB untuk interval bulan (pertahankan perilaku lama)
+function snapMonthRange(from: Date, to: Date): { from: Date; to: Date } {
+  const fs = shiftWIB(from);
+  fs.setUTCDate(1);
+  fs.setUTCHours(0, 0, 0, 0);
+  const te = shiftWIB(to);
+  te.setUTCDate(1);
+  te.setUTCMonth(te.getUTCMonth() + 1, 0);
+  te.setUTCHours(23, 59, 59, 999);
+  return {
+    from: new Date(fs.getTime() - WIB_OFFSET_MS),
+    to: new Date(te.getTime() - WIB_OFFSET_MS),
+  };
+}
+
 export async function AvgGeneralHour({
   from,
   to,
@@ -24,29 +50,19 @@ export async function AvgGeneralHour({
   const startRange = new Date(from);
   const endDate = new Date(to);
 
-  // 1. PERBAIKAN: Set jam/tanggal DULUAN dan format manual ke String (Mencegah pergeseran Timezone UTC dari toISOString)
-  if (interval !== "month") {
-    startRange.setHours(0, 0, 0, 0);
-    endDate.setHours(23, 59, 59, 999);
-  } else {
-    startRange.setDate(1);
-    startRange.setHours(0, 0, 0, 0);
-    endDate.setHours(23, 59, 59, 999);
+  if (isNaN(startRange.getTime()) || isNaN(endDate.getTime()))
+    throw new Error("from dan to perlu di isikan dahulu");
+
+  // Snap ke kalender WIB untuk interval bulan (pertahankan perilaku lama)
+  if (interval === "month") {
+    const snapped = snapMonthRange(startRange, endDate);
+    startRange.setTime(snapped.from.getTime());
+    endDate.setTime(snapped.to.getTime());
   }
 
-  // 2. Format secara manual menjadi YYYY-MM-DD HH:mm:ss menggunakan Local Time
-  const formatSQLDate = (d: Date) => {
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    const hours = String(d.getHours()).padStart(2, "0");
-    const minutes = String(d.getMinutes()).padStart(2, "0");
-    const seconds = String(d.getSeconds()).padStart(2, "0");
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  };
-
-  const start = formatSQLDate(startRange);
-  const end = formatSQLDate(endDate);
+  // Format waktu WIB (UTC+7) agar konsisten dengan GROUP BY periode
+  const start = formatWIB(startRange);
+  const end = formatWIB(endDate);
 
   const formatWaktu =
     interval === "day"
@@ -59,31 +75,31 @@ export async function AvgGeneralHour({
     const result = await prisma.$queryRawUnsafe<AvgWeatherData[]>(`
         SELECT 
         DATE_FORMAT(DATE_ADD(timestamp, INTERVAL 7 HOUR), '${formatWaktu}') as period,
-        AVG(Batt_V_Avg)   as avg_Batt,
-        AVG(PTemp_Max)    as avg_Ptemp,
-        AVG(WS_S_Avg)     as avg_WS_S_Avg,
-        AVG(WS_Max)       as avg_WS_Max,
-        AVG(W_D_Avg)       as avg_W_D_Avg,
-        AVG(WD_Max_WS)    as avg_WD_Max_WS,
-        AVG(Ta_Avg)       as avg_Ta_Avg,
-        MAX(Ta_Max)       as avg_Ta_Max,
-        MIN(Ta_Min)       as avg_Ta_Min,
-        AVG(RH_Avg)       as avg_RH_Avg,
-        MAX(RH_Max)       as avg_RH_Max,
-        MIN(RH_Min)       as avg_RH_Min,
-        AVG(NR_Wm2_Avg)  as avg_NR_Wm2_Avg,
-        MAX(NR_Wm2_Max)  as avg_NR_Wm2_Max,
-        AVG(CNR_Wm2_Avg) as avg_CNR_Wm2_Avg,
-        MAX(CNR_Wm2_Max) as avg_CNR_Wm2_Max,
-        MIN(CNR_Wm2_Min) as avg_CNR_Wm2_Min,
-        SUM(Rain_mm_Tot) as avg_Rain_mm_Tot,
-        AVG(e_Avg)       as avg_e_Avg,
-        MAX(e_Max)       as avg_e_Max,
-        MIN(e_Min)       as avg_e_Min,
-        AVG(P)           as avg_P,
+        AVG(CASE WHEN Batt_V_Avg BETWEEN 9 AND 18 THEN Batt_V_Avg END)   as avg_Batt,
+        AVG(CASE WHEN PTemp_Max BETWEEN -50 AND 80 THEN PTemp_Max END)    as avg_Ptemp,
+        AVG(CASE WHEN WS_S_Avg BETWEEN 0 AND 60 THEN WS_S_Avg END)     as avg_WS_S_Avg,
+        AVG(CASE WHEN WS_Max BETWEEN 0 AND 100 THEN WS_Max END)       as avg_WS_Max,
+        AVG(CASE WHEN W_D_Avg BETWEEN 0 AND 360 THEN W_D_Avg END)      as avg_W_D_Avg,
+        AVG(CASE WHEN WD_Max_WS BETWEEN 0 AND 360 THEN WD_Max_WS END)    as avg_WD_Max_WS,
+        AVG(CASE WHEN Ta_Avg BETWEEN -50 AND 60 THEN Ta_Avg END)       as avg_Ta_Avg,
+        MAX(CASE WHEN Ta_Max BETWEEN -50 AND 60 THEN Ta_Max END)       as avg_Ta_Max,
+        MIN(CASE WHEN Ta_Min BETWEEN -50 AND 60 THEN Ta_Min END)       as avg_Ta_Min,
+        AVG(CASE WHEN RH_Avg BETWEEN 0 AND 100 THEN RH_Avg END)       as avg_RH_Avg,
+        MAX(CASE WHEN RH_Max BETWEEN 0 AND 100 THEN RH_Max END)       as avg_RH_Max,
+        MIN(CASE WHEN RH_Min BETWEEN 0 AND 100 THEN RH_Min END)       as avg_RH_Min,
+        AVG(CASE WHEN NR_Wm2_Avg BETWEEN -200 AND 1100 THEN NR_Wm2_Avg END)  as avg_NR_Wm2_Avg,
+        MAX(CASE WHEN NR_Wm2_Max BETWEEN -200 AND 1100 THEN NR_Wm2_Max END)  as avg_NR_Wm2_Max,
+        AVG(CASE WHEN CNR_Wm2_Avg BETWEEN -200 AND 1100 THEN CNR_Wm2_Avg END) as avg_CNR_Wm2_Avg,
+        MAX(CASE WHEN CNR_Wm2_Max BETWEEN -200 AND 1100 THEN CNR_Wm2_Max END) as avg_CNR_Wm2_Max,
+        MIN(CASE WHEN CNR_Wm2_Min BETWEEN -200 AND 1100 THEN CNR_Wm2_Min END) as avg_CNR_Wm2_Min,
+        SUM(CASE WHEN Rain_mm_Tot >= 0 THEN Rain_mm_Tot END) as avg_Rain_mm_Tot,
+        AVG(CASE WHEN e_Avg BETWEEN 0 AND 100 THEN e_Avg END)       as avg_e_Avg,
+        MAX(CASE WHEN e_Max BETWEEN 0 AND 100 THEN e_Max END)       as avg_e_Max,
+        MIN(CASE WHEN e_Min BETWEEN 0 AND 100 THEN e_Min END)       as avg_e_Min,
+        AVG(CASE WHEN P BETWEEN 900 AND 1100 THEN P END)           as avg_P,
         COUNT(*)         as jumlah_data
         FROM ${table}
-        WHERE timestamp >= '${start}' AND timestamp <= '${end}'
+        WHERE DATE_ADD(timestamp, INTERVAL 7 HOUR) >= '${start}' AND DATE_ADD(timestamp, INTERVAL 7 HOUR) <= '${end}'
         GROUP BY DATE_FORMAT(DATE_ADD(timestamp, INTERVAL 7 HOUR), '${formatWaktu}')
         ORDER BY period ASC
     `);
@@ -112,28 +128,19 @@ export async function ExportGeneric({
   const startRange = new Date(from);
   const endDate = new Date(to);
 
-  // PERBAIKAN: Set waktu duluan dan format secara manual
-  if (interval !== "month") {
-    startRange.setHours(0, 0, 0, 0);
-    endDate.setHours(23, 59, 59, 999);
-  } else {
-    startRange.setDate(1);
-    startRange.setHours(0, 0, 0, 0);
-    endDate.setHours(23, 59, 59, 999);
+  if (isNaN(startRange.getTime()) || isNaN(endDate.getTime()))
+    throw new Error("from dan to di perlukan dan tidak boleh kosong");
+
+  // Snap ke kalender WIB untuk interval bulan (pertahankan perilaku lama)
+  if (interval === "month") {
+    const snapped = snapMonthRange(startRange, endDate);
+    startRange.setTime(snapped.from.getTime());
+    endDate.setTime(snapped.to.getTime());
   }
 
-  const formatSQLDate = (d: Date) => {
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    const hours = String(d.getHours()).padStart(2, "0");
-    const minutes = String(d.getMinutes()).padStart(2, "0");
-    const seconds = String(d.getSeconds()).padStart(2, "0");
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  };
-
-  const start = formatSQLDate(startRange);
-  const end = formatSQLDate(endDate);
+  // Format waktu WIB (UTC+7) agar konsisten dengan GROUP BY periode
+  const start = formatWIB(startRange);
+  const end = formatWIB(endDate);
 
   const formatWaktu =
     interval === "day"
@@ -148,33 +155,33 @@ export async function ExportGeneric({
     const hasil = await prisma.$queryRawUnsafe<AvgWeatherData[]>(`
         SELECT
         DATE_FORMAT(DATE_ADD(timestamp, INTERVAL 7 HOUR), '${formatWaktu}') as period,
-        AVG(Batt_V_Avg) as Batt_V_Avg, 
-        MAX(PTemp_Max) as PTemp_Max,
-        AVG(WS_S_Avg) as WS_S_Avg, 
-        AVG(WD_Std) as WD_Std, 
-        AVG(W_D_Avg) as W_D_Avg,
-        MAX(WS_Max) as WS_Max, 
-        AVG(WD_Max_WS) as WD_Max_WS,
-        AVG(Ta_Avg) as Ta_Avg, 
-        MAX(Ta_Max) as Ta_Max, 
-        MIN(Ta_Min) as Ta_Min,
-        AVG(RH_Avg) as RH_Avg, 
-        MAX(RH_Max) as RH_Max, 
-        MIN(RH_Min) as RH_Min,
-        AVG(NR_Wm2_Avg) as NR_Wm2_Avg, 
-        MAX(NR_Wm2_Max) as NR_Wm2_Max, 
-        MIN(NR_Wm2_Min) as NR_Wm2_Min,
-        AVG(CNR_Wm2_Avg) as CNR_Wm2_Avg, 
-        MAX(CNR_Wm2_Max) as CNR_Wm2_Max, 
-        MIN(CNR_Wm2_Min) as CNR_Wm2_Min,
-        SUM(Rain_mm_Tot) as Rain_mm_Tot,
-        AVG(e_Avg) as e_Avg, 
-        MAX(e_Max) as e_Max, 
-        MIN(e_Min) as e_Min,
-        AVG(P) as P,
+        AVG(CASE WHEN Batt_V_Avg BETWEEN 9 AND 18 THEN Batt_V_Avg END) as Batt_V_Avg, 
+        MAX(CASE WHEN PTemp_Max BETWEEN -50 AND 80 THEN PTemp_Max END) as PTemp_Max,
+        AVG(CASE WHEN WS_S_Avg BETWEEN 0 AND 60 THEN WS_S_Avg END) as WS_S_Avg, 
+        AVG(CASE WHEN WD_Std BETWEEN 0 AND 360 THEN WD_Std END) as WD_Std, 
+        AVG(CASE WHEN W_D_Avg BETWEEN 0 AND 360 THEN W_D_Avg END) as W_D_Avg,
+        MAX(CASE WHEN WS_Max BETWEEN 0 AND 100 THEN WS_Max END) as WS_Max, 
+        AVG(CASE WHEN WD_Max_WS BETWEEN 0 AND 360 THEN WD_Max_WS END) as WD_Max_WS,
+        AVG(CASE WHEN Ta_Avg BETWEEN -50 AND 60 THEN Ta_Avg END) as Ta_Avg, 
+        MAX(CASE WHEN Ta_Max BETWEEN -50 AND 60 THEN Ta_Max END) as Ta_Max, 
+        MIN(CASE WHEN Ta_Min BETWEEN -50 AND 60 THEN Ta_Min END) as Ta_Min,
+        AVG(CASE WHEN RH_Avg BETWEEN 0 AND 100 THEN RH_Avg END) as RH_Avg, 
+        MAX(CASE WHEN RH_Max BETWEEN 0 AND 100 THEN RH_Max END) as RH_Max, 
+        MIN(CASE WHEN RH_Min BETWEEN 0 AND 100 THEN RH_Min END) as RH_Min,
+        AVG(CASE WHEN NR_Wm2_Avg BETWEEN -200 AND 1100 THEN NR_Wm2_Avg END) as NR_Wm2_Avg, 
+        MAX(CASE WHEN NR_Wm2_Max BETWEEN -200 AND 1100 THEN NR_Wm2_Max END) as NR_Wm2_Max, 
+        MIN(CASE WHEN NR_Wm2_Min BETWEEN -200 AND 1100 THEN NR_Wm2_Min END) as NR_Wm2_Min,
+        AVG(CASE WHEN CNR_Wm2_Avg BETWEEN -200 AND 1100 THEN CNR_Wm2_Avg END) as CNR_Wm2_Avg, 
+        MAX(CASE WHEN CNR_Wm2_Max BETWEEN -200 AND 1100 THEN CNR_Wm2_Max END) as CNR_Wm2_Max, 
+        MIN(CASE WHEN CNR_Wm2_Min BETWEEN -200 AND 1100 THEN CNR_Wm2_Min END) as CNR_Wm2_Min,
+        SUM(CASE WHEN Rain_mm_Tot >= 0 THEN Rain_mm_Tot END) as Rain_mm_Tot,
+        AVG(CASE WHEN e_Avg BETWEEN 0 AND 100 THEN e_Avg END) as e_Avg, 
+        MAX(CASE WHEN e_Max BETWEEN 0 AND 100 THEN e_Max END) as e_Max, 
+        MIN(CASE WHEN e_Min BETWEEN 0 AND 100 THEN e_Min END) as e_Min,
+        AVG(CASE WHEN P BETWEEN 900 AND 1100 THEN P END) as P,
         COUNT(*) as jumlah_data
         FROM ${table}
-        WHERE timestamp >= '${start}' AND timestamp <= '${end}'
+        WHERE DATE_ADD(timestamp, INTERVAL 7 HOUR) >= '${start}' AND DATE_ADD(timestamp, INTERVAL 7 HOUR) <= '${end}'
         GROUP BY DATE_FORMAT(DATE_ADD(timestamp, INTERVAL 7 HOUR), '${formatWaktu}')
         ORDER BY period ASC
     `);

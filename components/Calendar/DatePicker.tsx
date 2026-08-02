@@ -86,7 +86,7 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
   const handleDateChange = (range: DateRange | undefined) => {
     if (range?.from && range?.to) {
       const daysDiff = differenceInDays(range.to, range.from);
-      if (daysDiff > MAX_RANGE_DAYS) {
+      if (daysDiff + 1 > MAX_RANGE_DAYS) {
         setError(`Maksimal ${MAX_RANGE_DAYS} hari`);
         return;
       }
@@ -98,7 +98,7 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
   const handleApply = () => {
     if (tempRange?.from && tempRange?.to) {
       const daysDiff = differenceInDays(tempRange.to, tempRange.from);
-      if (daysDiff > MAX_RANGE_DAYS) {
+      if (daysDiff + 1 > MAX_RANGE_DAYS) {
         setError(`Maksimal ${MAX_RANGE_DAYS} hari`);
         return;
       }
@@ -359,6 +359,7 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
                           month={month}
                           onMonthChange={setMonth}
                           mode="range"
+                          resetOnSelect
                           defaultMonth={tempRange?.from || new Date()}
                           selected={tempRange}
                           onSelect={handleDateChange}
@@ -446,9 +447,15 @@ export function DatePicker({ onDateChange, initialFrom, initialTo }: Props) {
                   )}
 
                   {/* Info jumlah hari yang dipilih sementara */}
-                  {tempRange?.from && tempRange?.to && !error && pickerView === "days" && (
+                  {tempRange?.from && !error && pickerView === "days" && (
                     <div className="mt-3 p-2 text-xs font-medium text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 rounded-md text-center border border-slate-100 dark:border-slate-600">
-                      <span className="text-blue-600 dark:text-blue-400 font-bold">{differenceInDays(tempRange.to, tempRange.from)}</span> hari terpilih
+                      {tempRange.to ? (
+                        <>
+                          <span className="text-blue-600 dark:text-blue-400 font-bold">{differenceInDays(tempRange.to, tempRange.from) + 1}</span> hari terpilih
+                        </>
+                      ) : (
+                        <span>Pilih tanggal akhir untuk menyelesaikan rentang</span>
+                      )}
                     </div>
                   )}
                 </div>

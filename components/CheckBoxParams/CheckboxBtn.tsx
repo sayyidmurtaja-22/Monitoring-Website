@@ -15,6 +15,11 @@ import {
   SlidersHorizontal,
   X,
   ListFilter,
+  Battery,
+  PanelTop,
+  Compass,
+  Sun,
+  List,
 } from "lucide-react";
 
 type ParameterOption = {
@@ -34,8 +39,20 @@ const allParameters: ParameterOption[] = [
   { key: "avg_e_Avg", label: "Tekanan Uap Air Rata-rata", unit: "hPa", group: "Data Tekanan Uap Air" },
   // Data Angin
   { key: "avg_WS_S_Avg", label: "Kecepatan Angin Rata-rata", unit: "m/s", group: "Data Angin" },
+  { key: "avg_WS_Max", label: "Kecepatan Angin Maksimum", unit: "m/s", group: "Data Angin" },
+  // Data Arah Angin
+  { key: "avg_WD_Max_WS", label: "Arah Angin", unit: "°", group: "Data Arah Angin" },
   // Data Curah Hujan
   { key: "avg_Rain_mm_Tot", label: "Curah Hujan", unit: "mm", group: "Data Curah Hujan" },
+  // Data Baterai
+  { key: "avg_Batt", label: "Tegangan Baterai", unit: "V", group: "Data Baterai" },
+  // Data Panel Surya
+  { key: "avg_Ptemp", label: "Suhu Panel Surya", unit: "°C", group: "Data Panel Surya" },
+  // Data Radiasi Neto
+  { key: "avg_NR_Wm2_Avg", label: "Radiasi Neto (Sensor 1)", unit: "W/m²", group: "Data Radiasi Neto" },
+  { key: "avg_CNR_Wm2_Avg", label: "Radiasi Neto (Sensor 2)", unit: "W/m²", group: "Data Radiasi Neto" },
+  // Data Pelengkap
+  { key: "jumlah_data", label: "Jumlah Data", unit: "data", group: "Data Pelengkap" },
 ];
 
 // Export agar bisa dipakai di komponen lain
@@ -48,7 +65,12 @@ const groupIcons: Record<string, React.ReactNode> = {
   "Data Kelembapan": <Droplets className="size-4" />,
   "Data Tekanan Uap Air": <Gauge className="size-4" />,
   "Data Angin": <Wind className="size-4" />,
+  "Data Arah Angin": <Compass className="size-4" />,
   "Data Curah Hujan": <CloudRain className="size-4" />,
+  "Data Baterai": <Battery className="size-4" />,
+  "Data Panel Surya": <PanelTop className="size-4" />,
+  "Data Radiasi Neto": <Sun className="size-4" />,
+  "Data Pelengkap": <List className="size-4" />,
 };
 
 // Color mapping per group
@@ -57,7 +79,12 @@ const groupColors: Record<string, string> = {
   "Data Kelembapan": "text-blue-500",
   "Data Tekanan Uap Air": "text-purple-500",
   "Data Angin": "text-teal-500",
+  "Data Arah Angin": "text-cyan-500",
   "Data Curah Hujan": "text-sky-500",
+  "Data Baterai": "text-amber-500",
+  "Data Panel Surya": "text-orange-500",
+  "Data Radiasi Neto": "text-yellow-500",
+  "Data Pelengkap": "text-slate-500",
 };
 
 interface CheckboxBtnProps {
