@@ -13,6 +13,7 @@ import { AvgWeatherData } from "@/types/AvgTypes";
 import WeatherDataBali from "./WeatherDataBali";
 import { FaLock, FaDownload } from "react-icons/fa";
 import html2canvas from "html2canvas-pro";
+import { applyExportMonochrome } from "@/components/ExportAnalysis/monochrome";
 import jsPDF from "jspdf";
 import { ExportPdfDialog, ExportConfigData } from "@/components/ExportPdfDialog";
 
@@ -115,26 +116,179 @@ export default function BaliDashboardClient({
     }, 500);
   };
 
+  const toGrayscale = (source: HTMLCanvasElement) => {
+    const target = document.createElement("canvas");
+    target.width = source.width;
+    target.height = source.height;
+    const ctx = target.getContext("2d");
+    if (!ctx) return source;
+
+    const ctxFilterable = ctx as CanvasRenderingContext2D & { filter?: string };
+    if (typeof ctxFilterable.filter === "string") {
+      ctxFilterable.filter = "grayscale(1)";
+      ctx.drawImage(source, 0, 0);
+      ctxFilterable.filter = "none";
+      return target;
+    }
+
+    ctx.drawImage(source, 0, 0);
+    const imgData = ctx.getImageData(0, 0, target.width, target.height);
+    const d = imgData.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const luminance = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+      d[i] = luminance;
+      d[i + 1] = luminance;
+      d[i + 2] = luminance;
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return target;
+  };
+
   const executeExport = async (data: {nama: string, nim: string, instansi: string}) => {
     const element = exportRef.current;
     if (!element) return;
     setExporting(true);
+    await new Promise<void>((resolve) => setTimeout(resolve, 60));
     const startTime = performance.now();
     try {
+      let headerHeightPx = 0;
+      let exportBoundaries: number[] = [];
       const canvas = await html2canvas(element, {
         scale: 1,
         useCORS: true,
         logging: true,
         backgroundColor: "#ffffff",
         scrollY: -window.scrollY,
+        onclone: (clonedDoc) => {
+          clonedDoc
+            .querySelectorAll("[data-export-header], [data-export-analysis], [data-export-table], [data-export-minmax], [data-export-subtitle]")
+            .forEach((el) => el.classList.remove("hidden"));
+          clonedDoc
+            .querySelectorAll("[data-export-card]")
+            .forEach((el) => el.classList.add("hidden"));
+          applyExportMonochrome(clonedDoc);
+
+          // Ukur batas-batas blok konten agar potongan halaman TIDAK memotong grafik/tabel/paragraf
+          exportBoundaries = [];
+          const areaEl = clonedDoc.querySelector("[data-export-area]");
+          if (areaEl) {
+            const areaTop = areaEl.getBoundingClientRect().top;
+            const headerEl = clonedDoc.querySelector("[data-export-header]");
+            if (headerEl) {
+              const rect = headerEl.getBoundingClientRect();
+              headerHeightPx = rect.height;
+            }
+            const headerBottom = headerEl ? headerEl.getBoundingClientRect().bottom - areaTop : 0;
+
+            const blocks: Element[] = [];
+            areaEl.querySelectorAll(":scope > *").forEach((child) => {
+              if (child.hasAttribute("hidden") || child.classList.contains("hidden")) return;
+              if (child.getAttribute("data-export-header") !== null) return;
+              if (child.getAttribute("data-export-card") !== null) return;
+              blocks.push(child);
+            });
+
+            const atoms: { start: number; end: number }[] = [];
+            for (let i = 0; i < blocks.length; i++) {
+              const el = blocks[i];
+              const top = el.getBoundingClientRect().top - areaTop;
+              let bottom = el.getBoundingClientRect().bottom - areaTop;
+              // Judul sub-bab disatukan dengan grafik/tabel yang menyertainya
+              if (el.matches("[data-export-subtitle]") && i + 1 < blocks.length) {
+                const next = blocks[i + 1];
+                if (
+                  next.matches("[data-chart-section]") ||
+                  next.matches("[data-export-table]") ||
+                  next.matches("[data-export-subtitle]")
+                ) {
+                  bottom = next.getBoundingClientRect().bottom - areaTop;
+                  i++;
+                }
+              }
+              if (bottom - top < 2) continue;
+              atoms.push({ start: Math.round(top - headerBottom), end: Math.ceil(bottom - headerBottom) + 3 });
+            }
+
+            atoms.sort((a, b) => a.start - b.start);
+            exportBoundaries = atoms.map((a) => a.end).filter((v) => v > 0);
+          }
+        },
       });
 
-      const imgData = canvas.toDataURL("image/png");
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const A4_WIDTH = 210;
+      const A4_HEIGHT = 297;
+      const marginLeft = 25;
+      const marginRight = 25;
+      const marginTop = 15;
+      const marginBottom = 25;
+      const contentWidth = A4_WIDTH - marginLeft - marginRight;
+      const scale = contentWidth / canvas.width;
+      const headerHmm = headerHeightPx * (A4_WIDTH / canvas.width);
 
-      const pdf = new jsPDF("p", "mm", [imgWidth, imgHeight]);
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      const pdf = new jsPDF("p", "mm", [A4_WIDTH, A4_HEIGHT]);
+
+      // Identitas header: selebar penuh halaman A4 (tidak mengikuti margin)
+      const headerCanvas = document.createElement("canvas");
+      headerCanvas.width = canvas.width;
+      headerCanvas.height = Math.max(1, Math.round(headerHeightPx));
+      const hctx = headerCanvas.getContext("2d");
+      if (hctx) hctx.drawImage(canvas, 0, 0, headerCanvas.width, headerCanvas.height, 0, 0, headerCanvas.width, headerCanvas.height);
+      pdf.addImage(toGrayscale(headerCanvas).toDataURL("image/png"), "PNG", 0, 0, A4_WIDTH, headerHmm);
+
+      // Isi (grafik & analisis): mengikuti margin, dipotong otomatis ke beberapa halaman A4
+      const bodyCanvas = document.createElement("canvas");
+      bodyCanvas.width = canvas.width;
+      bodyCanvas.height = Math.max(1, canvas.height - headerCanvas.height);
+      const bctx = bodyCanvas.getContext("2d");
+      if (bctx) bctx.drawImage(canvas, 0, headerCanvas.height, bodyCanvas.width, bodyCanvas.height, 0, 0, bodyCanvas.width, bodyCanvas.height);
+
+      // Tinggi body (dalam piksel) yang muat per halaman A4
+      const availPxPage1 = Math.max(0, Math.floor((A4_HEIGHT - headerHmm - marginTop - marginBottom) / scale));
+      const availPxNext = Math.max(0, Math.floor((A4_HEIGHT - marginTop - marginBottom) / scale));
+
+      let bodyOffsetPx = 0;
+      let pageNum = 0;
+      const bodyEndPx = bodyCanvas.height;
+      // Berhenti di batas blok terakhir (sisa di bawahnya hanya whitespace, tidak perlu halaman kosong)
+      const sliceEndPx = exportBoundaries.length > 0 ? Math.min(exportBoundaries[exportBoundaries.length - 1], bodyEndPx) : bodyEndPx;
+
+      while (bodyOffsetPx < sliceEndPx) {
+        if (pageNum === 0 && availPxPage1 <= 0) {
+          pdf.addPage();
+          pageNum++;
+          continue;
+        }
+        const capacityPx = pageNum === 0 ? availPxPage1 : availPxNext;
+        if (capacityPx <= 0) break;
+
+        // Potong halaman hanya di batas blok konten, bukan di tengah grafik/tabel
+        let endPx: number | null = null;
+        for (const b of exportBoundaries) {
+          if (b <= sliceEndPx && b > bodyOffsetPx && b - bodyOffsetPx <= capacityPx) endPx = b;
+        }
+        if (endPx === null) {
+          // Tidak ada batas blok yang muat → terpaksa potong di kapasitas halaman
+          endPx = Math.min(bodyOffsetPx + capacityPx, sliceEndPx);
+        }
+        if (endPx <= bodyOffsetPx) break;
+
+        const slicePx = Math.max(1, endPx - bodyOffsetPx);
+        const sliceMm = slicePx * scale;
+
+        const sliceCanvas = document.createElement("canvas");
+        sliceCanvas.width = bodyCanvas.width;
+        sliceCanvas.height = slicePx;
+        const sctx = sliceCanvas.getContext("2d");
+        if (sctx) sctx.drawImage(bodyCanvas, 0, bodyOffsetPx, bodyCanvas.width, slicePx, 0, 0, bodyCanvas.width, slicePx);
+
+        const bodyTop = pageNum === 0 ? headerHmm + marginTop : marginTop;
+        pdf.addImage(toGrayscale(sliceCanvas).toDataURL("image/png"), "PNG", marginLeft, bodyTop, contentWidth, sliceMm);
+
+        bodyOffsetPx = endPx;
+        if (bodyOffsetPx < sliceEndPx) pdf.addPage();
+        pageNum++;
+      }
+
       pdf.save(`Laporan_${data.nama}_Bali.pdf`);
       
       const duration = performance.now() - startTime;
@@ -287,6 +441,7 @@ export default function BaliDashboardClient({
             lastData={null}
             interval={interval}
             exportHeaderData={exportHeaderData}
+            exporting={exporting}
           />
         </div>
       )}

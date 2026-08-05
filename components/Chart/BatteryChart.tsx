@@ -67,7 +67,7 @@ export default function BatteryChart({ avgData }: ChartAreaProps) {
     }) || [];
 
   return (
-    <div className="w-full border dark:border-[#457B9D] rounded-3xl bg-[#A8DADC] dark:bg-[#1D3557] flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6 mb-4">
+    <div className="w-full flex flex-col items-center mb-4">
       <div className="w-full flex justify-center mb-4">
         <h3 className="text-[#1D3557] dark:text-[#F1FAEE] font-poppins font-bold text-lg md:text-xl tracking-wide">
           Chart Tegangan Baterai
@@ -90,7 +90,7 @@ export default function BatteryChart({ avgData }: ChartAreaProps) {
             <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" strokeWidth={1} opacity={0.1} />
             <XAxis
               dataKey="Batt_Time"
-              tick={{ fill: chartTextColor, fontSize: 11 }}
+              tick={{ fill: chartTextColor, fontSize: 17 }}
               domain={["auto", "auto"]}
               axisLine={true}
             // label={{
@@ -105,8 +105,9 @@ export default function BatteryChart({ avgData }: ChartAreaProps) {
                 angle: -90,
                 position: "insideLeft",
                 fill: chartTextColor,
+                fontSize: 18,
               }}
-              tick={{ fill: chartTextColor, fontSize: 12 }}
+              tick={{ fill: chartTextColor, fontSize: 18 }}
               domain={["auto", "auto"]}
             />
             <Tooltip

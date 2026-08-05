@@ -54,7 +54,7 @@ export default function BatteryChartBali({ getDataBali }: ChartAreaProps) {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="Batt_Time"
-            tick={{ fill: "#ffffff", fontSize: 11 }}
+            tick={{ fill: "#ffffff", fontSize: 17 }}
             domain={["auto", "auto"]}
             axisLine={true}
             // label={{

@@ -94,7 +94,7 @@ const WindRose = ({ data }: ChartAreaProps) => {
       orient: "horizontal",
       bottom: 0,
       left: "center",
-      textStyle: { color: "#cccccc", fontSize: 11 },
+      textStyle: { color: "#cccccc", fontSize: 15 },
       itemWidth: 14,
       itemHeight: 14,
       icon: "circle",
@@ -111,7 +111,7 @@ const WindRose = ({ data }: ChartAreaProps) => {
       axisLabel: {
         show: true,
         color: "#cbd5e1",
-        fontSize: 11,
+        fontSize: 15,
         fontWeight: "500",
       },
       axisLine: { 
@@ -128,7 +128,7 @@ const WindRose = ({ data }: ChartAreaProps) => {
       axisLabel: {
         show: true,
         color: "#94a3b8",
-        fontSize: 10,
+        fontSize: 12,
         formatter: (value: number) => `${value}%`,
       },
       splitLine: {
@@ -159,7 +159,7 @@ const WindRose = ({ data }: ChartAreaProps) => {
         style: {
           text: "", // Bisa dikosongkan atau diisi teks
           fill: "#666666",
-          fontSize: 10,
+          fontSize: 12,
         },
         z: 100,
       },
@@ -168,7 +168,7 @@ const WindRose = ({ data }: ChartAreaProps) => {
   };
 
   return (
-    <div className="w-full bg-[#0f2044] rounded-2xl p-4 border border-[#1a3a6e]/40 shadow-xl">
+    <div className="w-full flex flex-col items-center">
       <ReactECharts
         option={option}
         style={{ height: "450px", width: "100%" }}

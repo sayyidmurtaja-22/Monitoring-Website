@@ -10,16 +10,23 @@ interface WindRoseProps {
   data?: AvgWeatherData[];
   speedConfig: ChartConfig;
   directionConfig: ChartConfig;
+  monochrome?: boolean;
 }
 
-const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
+const MONO_PALETTE = [
+  "#e2e8f0", "#94a3b8", "#cbd5e1", "#64748b", "#f1f5f9", "#475569",
+  "#cbd5e1", "#334155", "#e2e8f0", "#1e293b", "#94a3b8", "#475569", "#0f172a",
+];
+
+const WindRose = ({ data, speedConfig, directionConfig, monochrome = false }: WindRoseProps) => {
   const { resolvedTheme } = useTheme();
-  const chartTextColor = resolvedTheme === "dark" ? "#F1FAEE" : "#1D3557";
+  const chartTextColor = monochrome ? "#000000" : resolvedTheme === "dark" ? "#F1FAEE" : "#1D3557";
   
-  const tooltipBgColor = resolvedTheme === "dark" ? "rgba(29, 53, 87, 0.95)" : "rgba(241, 250, 238, 0.95)";
-  const tooltipBorderColor = resolvedTheme === "dark" ? "#457B9D" : "#A8DADC";
-  const tooltipTextColor = resolvedTheme === "dark" ? "#F1FAEE" : "#1D3557";
-  
+  const tooltipBgColor = monochrome ? "#ffffff" : resolvedTheme === "dark" ? "rgba(29, 53, 87, 0.95)" : "rgba(241, 250, 238, 0.95)";
+  const tooltipBorderColor = monochrome ? "#94a3b8" : resolvedTheme === "dark" ? "#457B9D" : "#A8DADC";
+  const tooltipTextColor = monochrome ? "#000000" : resolvedTheme === "dark" ? "#F1FAEE" : "#1D3557";
+  const petalBorderColor = monochrome ? "#000000" : "rgba(168, 218, 220, 0.8)";
+
   // Arah mata angin (16 arah atau 8 arah)
   const directions = [
     "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", 
@@ -42,6 +49,10 @@ const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
     { name: "11 Violent Storm (28.4-32.6)", min: 28.4, max: 32.6, color: "#b91c1c" }, // Red-700
     { name: "12 Hurricane (>32.6)", min: 32.6, max: Infinity, color: "#7e22ce" }, // Purple-600
   ];
+
+  const petalCategories = monochrome
+    ? speedCategories.map((cat, idx) => ({ ...cat, color: MONO_PALETTE[idx % MONO_PALETTE.length] }))
+    : speedCategories;
 
   // Hitung distribusi arah dan kecepatan angin dari data secara dinamis
   const { windData, totalCount } = useMemo(() => {
@@ -94,7 +105,7 @@ const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
 
   if (!data || data.length === 0 || totalCount === 0) {
     return (
-      <div className="w-full border dark:border-[#457B9D] rounded-3xl bg-[#A8DADC] dark:bg-[#1D3557] flex flex-col items-center justify-center h-[500px] transition-all duration-300">
+      <div className="w-full flex flex-col items-center justify-center h-[500px]">
         <p className="text-[#1D3557] dark:text-[#F1FAEE] font-poppins font-medium">Tidak ada data angin valid untuk ditampilkan</p>
       </div>
     );
@@ -120,7 +131,7 @@ const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
       orient: "horizontal",
       bottom: 0,
       left: "center",
-      textStyle: { color: chartTextColor, fontSize: 11, fontFamily: "inherit" }, // Sesuaikan warna tulisan agar seperti LineChart
+      textStyle: { color: chartTextColor, fontSize: 15, fontFamily: "inherit" }, // Sesuaikan warna tulisan agar seperti LineChart
       itemWidth: 12,
       itemHeight: 12,
       icon: "circle",
@@ -137,7 +148,7 @@ const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
       axisLabel: {
         show: true,
         color: chartTextColor, // Diubah sesuai keinginan pengguna mengikuti Chart yang lain
-        fontSize: 11,
+        fontSize: 15,
         fontWeight: "600",
       },
       axisLine: { 
@@ -154,7 +165,7 @@ const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
       axisLabel: {
         show: true,
         color: chartTextColor,
-        fontSize: 10,
+        fontSize: 14,
         formatter: (value: number) => `${value}%`,
       },
       splitLine: {
@@ -163,7 +174,7 @@ const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
       },
       axisLine: { show: false },
     },
-    series: speedCategories.map((category, idx) => ({
+    series: petalCategories.map((category, idx) => ({
       name: category.name,
       type: "bar",
       data: windData.map((dir) => dir.data[idx]),
@@ -172,7 +183,7 @@ const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
       barCategoryGap: 0,
       itemStyle: {
         color: category.color,
-        borderColor: "rgba(168, 218, 220, 0.8)", // Menyelaraskan border antar balok dengan background container
+        borderColor: petalBorderColor,
         borderWidth: 0.5,
       },
       emphasis: { focus: "series" },
@@ -185,7 +196,7 @@ const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
         style: {
           text: "", // Opsional teks di tengah
           fill: chartTextColor,
-          fontSize: 10,
+          fontSize: 12,
         },
         z: 100,
       },
@@ -194,7 +205,7 @@ const WindRose = ({ data, speedConfig, directionConfig }: WindRoseProps) => {
   };
 
   return (
-    <div className="w-full border dark:border-[#457B9D] rounded-3xl bg-[#A8DADC] dark:bg-[#1D3557] flex flex-col transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-1 hover:border-transparent p-4 sm:p-6">
+    <div className="w-full flex flex-col items-center">
       <div className="w-full flex justify-center mb-2">
         <h3 className="text-[#1D3557] dark:text-[#F1FAEE] font-poppins font-bold text-lg md:text-xl tracking-wide">
           Wind Rose (Arah & Kecepatan Angin)

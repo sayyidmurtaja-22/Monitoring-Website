@@ -124,7 +124,7 @@ export default function HomePageClient({ user, session }: Auth) {
         ease: "power3.out",
       });
     });
-    
+
     gsap.utils.toArray<HTMLElement>(".gsap-stagger-up").forEach((section) => {
       const items = section.querySelectorAll(".gsap-item");
       gsap.from(items, {
@@ -172,12 +172,12 @@ export default function HomePageClient({ user, session }: Auth) {
     "#457B9D",
     "#1D3557",
   ];
-  
+
   const currentColors = mounted && resolvedTheme === "dark" ? darkColors : lightColors;
 
   return (
     <div className="relative min-h-screen flex flex-col font-poppins">
-      
+
       {/* ========== MESH GRADIENT BACKGROUND ========== */}
       <div className="fixed inset-0 w-full h-full -z-10">
         {mounted && (
@@ -226,9 +226,9 @@ export default function HomePageClient({ user, session }: Auth) {
             </div>
           ) : null}
           <ModeToggle />
-          
+
           {/* Tombol Hamburger Mobile */}
-          <button 
+          <button
             className="md:hidden p-2 text-[#1D3557] dark:text-white focus:outline-none"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
@@ -238,17 +238,16 @@ export default function HomePageClient({ user, session }: Auth) {
       </header>
 
       {/* Mobile Menu Dropdown */}
-      <div 
-        className={`fixed top-20 left-4 right-4 z-40 bg-[#F1FAEE]/95 dark:bg-[#1D3557]/95 backdrop-blur-2xl rounded-3xl p-6 shadow-2xl border border-[#457B9D]/20 flex flex-col items-center gap-6 md:hidden transition-all duration-300 ease-out origin-top ${
-          isMobileMenuOpen 
-            ? "opacity-100 pointer-events-auto scale-100 translate-y-0" 
+      <div
+        className={`fixed top-20 left-4 right-4 z-40 bg-[#F1FAEE]/95 dark:bg-[#1D3557]/95 backdrop-blur-2xl rounded-3xl p-6 shadow-2xl border border-[#457B9D]/20 flex flex-col items-center gap-6 md:hidden transition-all duration-300 ease-out origin-top ${isMobileMenuOpen
+            ? "opacity-100 pointer-events-auto scale-100 translate-y-0"
             : "opacity-0 pointer-events-none scale-95 -translate-y-4"
-        }`}
+          }`}
       >
         <a href="#home" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold tracking-widest uppercase font-poppins text-[#1D3557] dark:text-[#F1FAEE] hover:text-[#457B9D] dark:hover:text-[#A8DADC] transition-colors">Home</a>
         <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold tracking-widest uppercase font-poppins text-[#1D3557] dark:text-[#F1FAEE] hover:text-[#457B9D] dark:hover:text-[#A8DADC] transition-colors">Features</a>
         <a href="#get-started" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-bold tracking-widest uppercase font-poppins text-[#1D3557] dark:text-[#F1FAEE] hover:text-[#457B9D] dark:hover:text-[#A8DADC] transition-colors">Get Started</a>
-        
+
         <div className="mt-2 w-full flex flex-col gap-3">
           {user ? (
             <Link href="/users/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full text-center py-3 bg-[#1D3557] dark:bg-[#A8DADC] text-white dark:text-[#1D3557] rounded-xl font-bold uppercase tracking-wider text-sm shadow-md active:scale-95 transition-transform">
@@ -266,21 +265,21 @@ export default function HomePageClient({ user, session }: Auth) {
 
       {/* Konten Utama */}
       <main id="home" className="relative z-10 grid grid-cols-1 lg:grid-cols-2 items-center justify-center pt-28 pb-24 px-6 lg:px-12 max-w-7xl mx-auto w-full gap-8 lg:gap-x-12 lg:gap-y-2 min-h-[90vh]">
-        
+
         {/* ========== BAGIAN 1: SLOGAN (Atas di Mobile, Kiri Atas di Desktop) ========== */}
         <div className="flex flex-col items-center lg:items-start text-center lg:text-left z-20 w-full max-w-xl mx-auto lg:mx-0 order-1 lg:col-start-1 lg:row-start-1 lg:self-end lg:pb-4">
-          
+
           {/* Overline / Kategori */}
           <motion.div
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ duration: 0.6 }}
-             className="mb-6 flex items-center gap-3"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-6 flex items-center gap-3"
           >
-             <div className="w-[2px] h-4 bg-[#1D3557] dark:bg-[#A8DADC]/50 hidden lg:block"></div>
-             <span className="text-[#1D3557] dark:text-[#F1FAEE]/80 text-sm md:text-base font-medium tracking-wide uppercase">
-                Universitas Jenderal Soedirman
-             </span>
+            <div className="w-[2px] h-4 bg-[#1D3557] dark:bg-[#A8DADC]/50 hidden lg:block"></div>
+            <span className="text-[#1D3557] dark:text-[#F1FAEE]/80 text-sm md:text-base font-medium tracking-wide uppercase">
+              Universitas Jenderal Soedirman
+            </span>
           </motion.div>
 
           {/* ========== JUDUL (Slogan) ========== */}
@@ -290,23 +289,23 @@ export default function HomePageClient({ user, session }: Auth) {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="text-4xl md:text-5xl lg:text-[3.5rem] font-semibold tracking-wide mb-8 leading-[1.2] text-[#1D3557] dark:text-[#F1FAEE] uppercase font-pliant flex flex-wrap items-center justify-center lg:justify-start gap-y-1 lg:gap-y-2 gap-x-4"
           >
-             <span className="w-full">DYNAMIC DATA</span>
-             <span className="w-full">EXPLORATION</span>
-             <span className="w-full">& MONITORING</span>
-             <span>DASHBOARDS.</span>
+            <span className="w-full">DYNAMIC DATA</span>
+            <span className="w-full">EXPLORATION</span>
+            <span className="w-full">& MONITORING</span>
+            <span>DASHBOARDS.</span>
 
-             {/* ========== TOMBOL BULAT (Elegan) ========== */}
-             {user ? (
-               <Link href="/users/dashboard" className="group inline-flex items-center justify-center w-10 h-10 md:w-14 md:h-14 rounded-full border border-[#1D3557] dark:border-[#F1FAEE]/50 align-middle hover:bg-[#1D3557] dark:hover:bg-[#F1FAEE] transition-all ml-2">
+            {/* ========== TOMBOL BULAT (Elegan) ========== */}
+            {user ? (
+              <Link href="/users/dashboard" className="group inline-flex items-center justify-center w-10 h-10 md:w-14 md:h-14 rounded-full border border-[#1D3557] dark:border-[#F1FAEE]/50 align-middle hover:bg-[#1D3557] dark:hover:bg-[#F1FAEE] transition-all ml-2">
+                <span className="transform -rotate-45 text-2xl font-light text-[#1D3557] dark:text-[#F1FAEE] group-hover:text-[#F1FAEE] dark:group-hover:text-[#1D3557] transition-colors">→</span>
+              </Link>
+            ) : (
+              <AuthModal defaultTab="login">
+                <button className="group inline-flex items-center justify-center w-10 h-10 md:w-14 md:h-14 rounded-full border border-[#1D3557] dark:border-[#F1FAEE]/50 align-middle hover:bg-[#1D3557] dark:hover:bg-[#F1FAEE] transition-all cursor-pointer ml-2">
                   <span className="transform -rotate-45 text-2xl font-light text-[#1D3557] dark:text-[#F1FAEE] group-hover:text-[#F1FAEE] dark:group-hover:text-[#1D3557] transition-colors">→</span>
-               </Link>
-             ) : (
-               <AuthModal defaultTab="login">
-                  <button className="group inline-flex items-center justify-center w-10 h-10 md:w-14 md:h-14 rounded-full border border-[#1D3557] dark:border-[#F1FAEE]/50 align-middle hover:bg-[#1D3557] dark:hover:bg-[#F1FAEE] transition-all cursor-pointer ml-2">
-                     <span className="transform -rotate-45 text-2xl font-light text-[#1D3557] dark:text-[#F1FAEE] group-hover:text-[#F1FAEE] dark:group-hover:text-[#1D3557] transition-colors">→</span>
-                  </button>
-               </AuthModal>
-             )}
+                </button>
+              </AuthModal>
+            )}
           </motion.h1>
         </div>
 
@@ -323,27 +322,27 @@ export default function HomePageClient({ user, session }: Auth) {
               <div className="block mb-6 mt-2">
                 <AuthModal defaultTab="register">
                   <button className="group relative inline-flex items-center justify-center px-8 py-4 bg-[#1D3557] dark:bg-[#F1FAEE] text-[#F1FAEE] dark:text-[#1D3557] rounded-full font-bold uppercase tracking-widest text-xs lg:text-sm shadow-[0_10px_30px_-10px_rgba(29,53,87,0.5)] dark:shadow-[0_10px_30px_-10px_rgba(241,250,238,0.5)] hover:shadow-[0_0_30px_-5px_rgba(29,53,87,0.6)] dark:hover:shadow-[0_0_30px_-5px_rgba(241,250,238,0.6)] transition-all duration-300 hover:-translate-y-1 active:scale-95 overflow-hidden border border-transparent">
-                     {/* Efek Kilap (Shimmer) Dinamis */}
-                     <motion.div 
-                       className="absolute top-0 left-0 h-full w-[150%] bg-gradient-to-r from-transparent via-white/20 dark:via-black/10 to-transparent -skew-x-12"
-                       animate={{ x: ["-100%", "100%"] }}
-                       transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut", delay: 0.5 }}
-                     />
-                     
-                     <span className="relative z-10 flex items-center gap-3">
-                        {/* Ping Dot untuk menarik mata */}
-                        <span className="relative flex h-3 w-3">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#A8DADC] dark:bg-[#457B9D] opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-3 w-3 bg-[#A8DADC] dark:bg-[#457B9D]"></span>
-                        </span>
-                        
-                        Register New Account 
-                        
-                        {/* Arrow dengan animasi panah */}
-                        <svg className="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                     </span>
+                    {/* Efek Kilap (Shimmer) Dinamis */}
+                    <motion.div
+                      className="absolute top-0 left-0 h-full w-[150%] bg-gradient-to-r from-transparent via-white/20 dark:via-black/10 to-transparent -skew-x-12"
+                      animate={{ x: ["-100%", "100%"] }}
+                      transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut", delay: 0.5 }}
+                    />
+
+                    <span className="relative z-10 flex items-center gap-3">
+                      {/* Ping Dot untuk menarik mata */}
+                      <span className="relative flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#A8DADC] dark:bg-[#457B9D] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-[#A8DADC] dark:bg-[#457B9D]"></span>
+                      </span>
+
+                      Register New Account
+
+                      {/* Arrow dengan animasi panah */}
+                      <svg className="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </span>
                   </button>
                 </AuthModal>
               </div>
@@ -365,9 +364,9 @@ export default function HomePageClient({ user, session }: Auth) {
               </span>
               <span className="text-sm font-bold text-[#1D3557] dark:text-[#F1FAEE] font-poppins">3 Active Stations</span>
             </div>
-            
+
             <div className="h-4 w-[1px] bg-[#1D3557]/20 dark:bg-[#F1FAEE]/20 hidden sm:block"></div>
-            
+
             <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
               {['Bali', 'Pangandaran', 'Bungus'].map(station => (
                 <span key={station} className="text-[11px] sm:text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full bg-[#457B9D]/10 dark:bg-[#A8DADC]/10 text-[#457B9D] dark:text-[#A8DADC] border border-[#457B9D]/20 dark:border-[#A8DADC]/20">
@@ -403,7 +402,7 @@ export default function HomePageClient({ user, session }: Auth) {
               />
 
               {/* PDF Card (Top Right) */}
-              <div 
+              <div
                 className="absolute -top-10 -right-6 sm:-top-12 sm:-right-8 md:-top-16 md:-right-12 lg:-top-24 lg:-right-24 w-40 sm:w-44 md:w-52 bg-[#F1FAEE]/95 dark:bg-[#1D3557]/95 backdrop-blur-md rounded-xl p-2.5 sm:p-3.5 shadow-lg border border-[#1D3557]/10 dark:border-[#457B9D]/30 cursor-pointer 
                 z-0 opacity-95 scale-95 sm:scale-95 rotate-6
                 transition-all duration-300 ease-out
@@ -421,7 +420,7 @@ export default function HomePageClient({ user, session }: Auth) {
               </div>
 
               {/* Excel/CSV Card (Bottom Left) */}
-              <div 
+              <div
                 className="absolute -bottom-10 -left-6 sm:-bottom-12 sm:-left-8 md:-bottom-16 md:-left-12 lg:-bottom-24 lg:-left-24 w-40 sm:w-44 md:w-52 bg-[#1D3557]/95 dark:bg-[#1D3557]/95 backdrop-blur-md rounded-xl p-2.5 sm:p-3.5 shadow-lg border border-[#457B9D]/30 cursor-pointer 
                 z-0 opacity-95 scale-95 sm:scale-95 -rotate-6
                 transition-all duration-300 ease-out
@@ -461,7 +460,7 @@ export default function HomePageClient({ user, session }: Auth) {
         </div>
 
         {/* Scroll Down Indicator (Static) */}
-        <div 
+        <div
           className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#1D3557]/20 dark:border-[#A8DADC]/20 bg-[#F1FAEE]/40 dark:bg-[#1D3557]/40 backdrop-blur-md opacity-80 hover:opacity-100 hover:scale-105 transition-all cursor-pointer z-30 shadow-sm"
           onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
         >
@@ -500,7 +499,7 @@ export default function HomePageClient({ user, session }: Auth) {
 
       {/* ========== RESPONSIVE SHOWCASE SECTION ========== */}
       <section id="cross-platform" className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 py-16 min-h-[50vh] flex flex-col justify-center items-center">
-        
+
         {/* Title */}
         <div className="w-full text-center mb-16 gsap-fade-up">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1D3557] dark:text-[#F1FAEE] mb-4 font-pliant uppercase tracking-wide">
@@ -513,49 +512,49 @@ export default function HomePageClient({ user, session }: Auth) {
 
         {/* Showcase Images (Side by Side, Bottom Aligned) */}
         <div className="w-full flex flex-col md:flex-row justify-center items-center md:items-end gap-12 lg:gap-20">
-          
+
           {/* Desktop Dashboard */}
           <div className="w-full md:w-3/5 flex flex-col items-center group gsap-fade-up">
-             <div className="relative w-full max-w-[700px] transition-transform duration-700 group-hover:-translate-y-3">
-                {/* Glow */}
-                <div className="absolute inset-0 bg-[#457B9D]/30 dark:bg-[#A8DADC]/30 blur-3xl rounded-[2rem] scale-95 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <Image 
-                   src={mounted && resolvedTheme === 'dark' ? '/dark desktop.png' : '/light desktop.png'}
-                   width={800}
-                   height={500}
-                   alt="Desktop Dashboard"
-                   className="relative z-10 w-full h-auto drop-shadow-2xl rounded-xl md:rounded-2xl border-[6px] lg:border-[8px] border-white/80 dark:border-[#1D3557]/80 backdrop-blur-sm"
-                />
-             </div>
-             {/* Label */}
-             <div className="mt-8 text-center bg-white/70 dark:bg-[#1D3557]/70 backdrop-blur-xl px-6 py-3 rounded-full border border-[#1D3557]/10 dark:border-[#F1FAEE]/10 shadow-[0_8px_30px_rgb(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
-                <h3 className="text-sm md:text-base font-bold text-[#1D3557] dark:text-[#F1FAEE] flex items-center justify-center gap-2.5">
-                  <Monitor className="w-5 h-5 text-[#457B9D] dark:text-[#A8DADC]" /> Desktop Powerhouse
-                </h3>
-             </div>
+            <div className="relative w-full max-w-[700px] transition-transform duration-700 group-hover:-translate-y-3">
+              {/* Glow */}
+              <div className="absolute inset-0 bg-[#457B9D]/30 dark:bg-[#A8DADC]/30 blur-3xl rounded-[2rem] scale-95 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <Image
+                src={mounted && resolvedTheme === 'dark' ? '/dark desktop.png' : '/light desktop.png'}
+                width={800}
+                height={500}
+                alt="Desktop Dashboard"
+                className="relative z-10 w-full h-auto drop-shadow-2xl rounded-xl md:rounded-2xl border-[6px] lg:border-[8px] border-white/80 dark:border-[#1D3557]/80 backdrop-blur-sm"
+              />
+            </div>
+            {/* Label */}
+            <div className="mt-8 text-center bg-white/70 dark:bg-[#1D3557]/70 backdrop-blur-xl px-6 py-3 rounded-full border border-[#1D3557]/10 dark:border-[#F1FAEE]/10 shadow-[0_8px_30px_rgb(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
+              <h3 className="text-sm md:text-base font-bold text-[#1D3557] dark:text-[#F1FAEE] flex items-center justify-center gap-2.5">
+                <Monitor className="w-5 h-5 text-[#457B9D] dark:text-[#A8DADC]" /> Desktop Powerhouse
+              </h3>
+            </div>
           </div>
 
           {/* Mobile Dashboard */}
           <div className="w-full md:w-2/5 flex flex-col items-center group gsap-fade-up" style={{ transitionDelay: '100ms' }}>
-             <div className="relative w-[220px] sm:w-[260px] lg:w-[280px] transition-transform duration-700 group-hover:-translate-y-3">
-                {/* Glow */}
-                <div className="absolute inset-0 bg-[#A8DADC]/40 dark:bg-[#457B9D]/40 blur-3xl rounded-[3rem] scale-90 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <Image 
-                   src={mounted && resolvedTheme === 'dark' ? '/dark mobile.png' : '/light mobile.png'}
-                   width={400}
-                   height={800}
-                   alt="Mobile Dashboard"
-                   className="relative z-10 w-full h-auto drop-shadow-2xl rounded-[2rem] lg:rounded-[2.5rem] border-[6px] lg:border-[8px] border-white/80 dark:border-[#1D3557]/80 backdrop-blur-sm"
-                />
-             </div>
-             {/* Label */}
-             <div className="mt-8 text-center bg-white/70 dark:bg-[#1D3557]/70 backdrop-blur-xl px-6 py-3 rounded-full border border-[#1D3557]/10 dark:border-[#F1FAEE]/10 shadow-[0_8px_30px_rgb(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
-                <h3 className="text-sm md:text-base font-bold text-[#1D3557] dark:text-[#F1FAEE] flex items-center justify-center gap-2.5">
-                  <Smartphone className="w-5 h-5 text-[#457B9D] dark:text-[#A8DADC]" /> Mobile Optimized
-                </h3>
-             </div>
+            <div className="relative w-[220px] sm:w-[260px] lg:w-[280px] transition-transform duration-700 group-hover:-translate-y-3">
+              {/* Glow */}
+              <div className="absolute inset-0 bg-[#A8DADC]/40 dark:bg-[#457B9D]/40 blur-3xl rounded-[3rem] scale-90 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <Image
+                src={mounted && resolvedTheme === 'dark' ? '/dark mobile.png' : '/light mobile.png'}
+                width={400}
+                height={800}
+                alt="Mobile Dashboard"
+                className="relative z-10 w-full h-auto drop-shadow-2xl rounded-[2rem] lg:rounded-[2.5rem] border-[6px] lg:border-[8px] border-white/80 dark:border-[#1D3557]/80 backdrop-blur-sm"
+              />
+            </div>
+            {/* Label */}
+            <div className="mt-8 text-center bg-white/70 dark:bg-[#1D3557]/70 backdrop-blur-xl px-6 py-3 rounded-full border border-[#1D3557]/10 dark:border-[#F1FAEE]/10 shadow-[0_8px_30px_rgb(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
+              <h3 className="text-sm md:text-base font-bold text-[#1D3557] dark:text-[#F1FAEE] flex items-center justify-center gap-2.5">
+                <Smartphone className="w-5 h-5 text-[#457B9D] dark:text-[#A8DADC]" /> Mobile Optimized
+              </h3>
+            </div>
           </div>
-          
+
         </div>
       </section>
 
@@ -565,7 +564,7 @@ export default function HomePageClient({ user, session }: Auth) {
           {/* Ornamen Latar Tipis */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#457B9D]/10 dark:bg-[#A8DADC]/10 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2"></div>
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#1D3557]/10 dark:bg-[#F1FAEE]/5 rounded-full blur-3xl -z-10 -translate-x-1/2 translate-y-1/2"></div>
-          
+
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#1D3557] dark:text-[#F1FAEE] mb-6 font-pliant uppercase tracking-wide">
             Ready to <span className="text-[#457B9D] dark:text-[#A8DADC]">Explore?</span>
           </h2>
